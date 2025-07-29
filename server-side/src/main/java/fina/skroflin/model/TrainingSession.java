@@ -4,16 +4,16 @@
  */
 package fina.skroflin.model;
 
-import fina.skroflin.model.enums.ConfirmationStatus;
+import fina.skroflin.model.enums.TrainingLevel;
+import fina.skroflin.model.enums.TrainingType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 
 /**
@@ -21,101 +21,74 @@ import java.time.LocalDateTime;
  * @author skroflin
  */
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "training_session_id"))
 @Table(name = "training_session")
-public class TrainingSession{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, name = "training_session_id")
-    private Integer id;
+@AttributeOverride(name = "id", column = @Column(name = "training_session_id"))
+public class TrainingSession extends MainEntity {
+
     @ManyToOne
-    private Coach coach;
-    @ManyToOne
-    private Client client;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String trainingType;
-    private boolean isBooked;
-    private String trainingNotes;
-    private ConfirmationStatus confirmationStatus;
+    @JoinColumn(name = "trainer_id")
+    private User trainer;
+    private LocalDateTime dateTime;
+    @Enumerated(EnumType.STRING)
+    private TrainingType trainingType;
+    @Enumerated(EnumType.STRING)
+    private TrainingLevel trainingLevel;
+    private int capacity;
 
     public TrainingSession() {
     }
 
-    public TrainingSession(Coach coach, Client client, LocalDateTime startTime, LocalDateTime endTime, String trainingType, boolean isBooked, String trainingNotes, ConfirmationStatus confirmationStatus) {
-        this.coach = coach;
-        this.client = client;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public TrainingSession(
+            User trainer,
+            LocalDateTime dateTime,
+            TrainingType trainingType,
+            TrainingLevel trainingLevel,
+            int capacity) {
+        this.trainer = trainer;
+        this.dateTime = dateTime;
         this.trainingType = trainingType;
-        this.isBooked = isBooked;
-        this.trainingNotes = trainingNotes;
-        this.confirmationStatus = confirmationStatus;
+        this.trainingLevel = trainingLevel;
+        this.capacity = capacity;
     }
 
-    public Coach getCoach() {
-        return coach;
+    public User getTrainer() {
+        return trainer;
     }
 
-    public void setCoach(Coach coach) {
-        this.coach = coach;
+    public void setTrainer(User trainer) {
+        this.trainer = trainer;
     }
 
-    public Client getClient() {
-        return client;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getTrainingType() {
+    public TrainingType getTrainingType() {
         return trainingType;
     }
 
-    public void setTrainingType(String trainingType) {
+    public void setTrainingType(TrainingType trainingType) {
         this.trainingType = trainingType;
     }
 
-    public boolean isIsBooked() {
-        return isBooked;
+    public TrainingLevel getTrainingLevel() {
+        return trainingLevel;
     }
 
-    public void setIsBooked(boolean isBooked) {
-        this.isBooked = isBooked;
+    public void setTrainingLevel(TrainingLevel trainingLevel) {
+        this.trainingLevel = trainingLevel;
     }
 
-    public String getTrainingNotes() {
-        return trainingNotes;
+    public int getCapacity() {
+        return capacity;
     }
 
-    public void setTrainingNotes(String trainingNotes) {
-        this.trainingNotes = trainingNotes;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
-    public ConfirmationStatus getConfirmationStatus() {
-        return confirmationStatus;
-    }
-
-    public void setConfirmationStatus(ConfirmationStatus confirmationStatus) {
-        this.confirmationStatus = confirmationStatus;
-    }
-    
-    
 }

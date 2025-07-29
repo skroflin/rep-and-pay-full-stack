@@ -19,11 +19,9 @@
         <property name="hbm2ddl.auto">update</property>
     
         <!-- <mapping class="ffos.kolokvij.model.ImeKlase" /> -->
-        <mapping class="fina.skroflin.model.Client" />
-        <mapping class="fina.skroflin.model.Coach" />
-        <mapping class="fina.skroflin.model.Membership" />
+        <mapping class="fina.skroflin.model.User" />
+        <mapping class="fina.skroflin.model.Booking" />
         <mapping class="fina.skroflin.model.TrainingSession" />
-        <mapping class="fina.skroflin.model.Admin" />
     
 
     </session-factory>
