@@ -28,14 +28,20 @@ public class Booking extends MainEntity {
     private TrainingSession trainingSession;
     @Column(name = "reservation_time")
     private LocalDateTime reservationTime;
+    private LocalDateTime endOfReservation;
 
     public Booking() {
     }
 
-    public Booking(User user, TrainingSession trainingSession, LocalDateTime reservationTime) {
+    public Booking(
+            User user, 
+            TrainingSession trainingSession, 
+            LocalDateTime reservationTime, 
+            LocalDateTime endOfReservation) {
         this.user = user;
         this.trainingSession = trainingSession;
         this.reservationTime = reservationTime;
+        this.endOfReservation = endOfReservation;
     }
 
     public User getUser() {
@@ -62,4 +68,11 @@ public class Booking extends MainEntity {
         this.reservationTime = reservationTime;
     }
 
+    public LocalDateTime getEndOfReservation() {
+        return endOfReservation;
+    }
+
+    public void setEndOfReservation(LocalDateTime endOfReservation) {
+        this.endOfReservation = endOfReservation;
+    }
 }

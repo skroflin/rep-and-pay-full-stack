@@ -4,21 +4,19 @@
  */
 package fina.skroflin.model.dto.booking;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import fina.skroflin.model.TrainingSession;
+import fina.skroflin.model.User;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author skroflin
  */
-public record BookingDTO(
-        @Schema(example = "1")
-        Integer userId,
-        @Schema(example = "1")
-        Integer trainingSessionId,
-        @Schema(example = "2025-07-29T20:00:00")
+public record BookingResponseDTO(
+        Integer id,
+        User user,
+        TrainingSession trainingSession,
         LocalDateTime reservationTime,
-        @Schema(example = "2025-07-29T21:30:00")
         LocalDateTime endOfReservationTime
         ) {
 
