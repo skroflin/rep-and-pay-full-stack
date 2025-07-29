@@ -28,10 +28,13 @@ public class TrainingSession extends MainEntity {
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private User trainer;
+    @Column(name = "date_time")
     private LocalDateTime dateTime;
     @Enumerated(EnumType.STRING)
+    @Column(name = "training_type")
     private TrainingType trainingType;
     @Enumerated(EnumType.STRING)
+    @Column(name = "training_level")
     private TrainingLevel trainingLevel;
     private int capacity;
 

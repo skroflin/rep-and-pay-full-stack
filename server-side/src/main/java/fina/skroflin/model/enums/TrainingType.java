@@ -14,5 +14,6 @@ public enum TrainingType {
     legs,
     crossfit,
     conditioning,
-    yoga
+    yoga,
+    weightlifting
 }

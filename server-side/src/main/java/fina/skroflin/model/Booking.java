@@ -7,6 +7,7 @@ package fina.skroflin.model;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -23,7 +24,9 @@ public class Booking extends MainEntity {
     @ManyToOne
     private User user;
     @ManyToOne
+    @JoinColumn(name = "training_session_id")
     private TrainingSession trainingSession;
+    @Column(name = "reservation_time")
     private LocalDateTime reservationTime;
 
     public Booking() {

@@ -26,9 +26,13 @@ public class User extends MainEntity {
     private String lastName;
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
+    private String username;
     private String password;
     private Role role;
+    @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
+    @Column(name = "membership_month")
     private Date memberShipMonth;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
@@ -39,9 +43,10 @@ public class User extends MainEntity {
     }
 
     public User(
-            String firstName, 
-            String lastName, 
+            String firstName,
+            String lastName,
             String email, 
+            String username, 
             String password, 
             Role role, 
             boolean isMembershipPaid, 
@@ -51,6 +56,7 @@ public class User extends MainEntity {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.role = role;
         this.isMembershipPaid = isMembershipPaid;
@@ -83,6 +89,14 @@ public class User extends MainEntity {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
     public String getPassword() {
         return password;
     }
