@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -18,11 +20,13 @@ import java.util.Date;
  * @author skroflin
  */
 @Entity
-public class Membership extends MainEntity{
+@Table(name = "membership")
+public class Membership{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "membership_id")
     private Integer id;
+    @ManyToOne
     private Client client;
     private int month;
     private int year;

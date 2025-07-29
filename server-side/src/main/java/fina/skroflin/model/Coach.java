@@ -8,16 +8,19 @@ import fina.skroflin.model.enums.Role;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author skroflin
  */
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "coach_id"))
 @AttributeOverride(name = "first_name", column = @Column(name = "coach_first_name"))
 @AttributeOverride(name = "last_name", column = @Column(name = "coach_last_name"))
 @AttributeOverride(name = "email", column = @Column(name = "coach_email"))
@@ -32,13 +35,20 @@ public class Coach extends MainEntity{
     private Date dateEmployed;
     private boolean isEmployed;
     private Date dateOfTermination;
+    @Lob
     private String bio;
+    @OneToMany(mappedBy = "coach")
+    private List<TrainingSession> trainingSessions; 
 
-    public Coach(Date dateEmployed, boolean isEmployed, Date dateOfTermination, String bio) {
+    public Coach() {
+    }
+
+    public Coach(Date dateEmployed, boolean isEmployed, Date dateOfTermination, String bio, List<TrainingSession> trainingSessions) {
         this.dateEmployed = dateEmployed;
         this.isEmployed = isEmployed;
         this.dateOfTermination = dateOfTermination;
         this.bio = bio;
+        this.trainingSessions = trainingSessions;
     }
 
     public Date getDateEmployed() {
@@ -71,5 +81,18 @@ public class Coach extends MainEntity{
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<TrainingSession> getTrainingSessions() {
+        return trainingSessions;
+    }
+
+    public void setTrainingSessions(List<TrainingSession> trainingSessions) {
+        this.trainingSessions = trainingSessions;
+    }
+    
+    @PrePersist
+    protected void onEmployment(){
+        dateEmployed = new Date();
     }
 }

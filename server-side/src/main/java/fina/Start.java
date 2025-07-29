@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Start {
 
 	public static void main(String[] args) {
+            HibernateUtil.getSession();
 		SpringApplication.run(Start.class, args);
 	}
 

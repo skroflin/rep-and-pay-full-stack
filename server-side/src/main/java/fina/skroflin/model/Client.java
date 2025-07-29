@@ -18,7 +18,6 @@ import java.util.Date;
  * @author skroflin
  */
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "client_id"))
 @AttributeOverride(name = "first_name", column = @Column(name = "client_first_name"))
 @AttributeOverride(name = "last_name", column = @Column(name = "client_last_name"))
 @AttributeOverride(name = "email", column = @Column(name = "client_email"))

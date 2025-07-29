@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
@@ -22,12 +23,14 @@ import java.time.LocalDateTime;
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "training_session_id"))
 @Table(name = "training_session")
-public class TrainingSession extends MainEntity{
+public class TrainingSession{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "training_session_id")
     private Integer id;
+    @ManyToOne
     private Coach coach;
+    @ManyToOne
     private Client client;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
