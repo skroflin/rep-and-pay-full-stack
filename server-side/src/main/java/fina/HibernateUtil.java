@@ -1,4 +1,4 @@
-package ffos;
+package fina;
 
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
