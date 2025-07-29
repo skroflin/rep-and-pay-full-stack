@@ -33,7 +33,7 @@ public class User extends MainEntity {
     @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
     @Column(name = "membership_month")
-    private Date memberShipMonth;
+    private Date membershipMonth;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
     @OneToMany(mappedBy = "user")
@@ -60,7 +60,7 @@ public class User extends MainEntity {
         this.password = password;
         this.role = role;
         this.isMembershipPaid = isMembershipPaid;
-        this.memberShipMonth = memberShipMonth;
+        this.membershipMonth = membershipMonth;
         this.trainingSessions = trainingSessions;
         this.bookings = bookings;
     }
@@ -121,12 +121,12 @@ public class User extends MainEntity {
         this.isMembershipPaid = isMembershipPaid;
     }
 
-    public Date getMemberShipMonth() {
-        return memberShipMonth;
+    public Date getMembershipMonth() {
+        return membershipMonth;
     }
 
-    public void setMemberShipMonth(Date memberShipMonth) {
-        this.memberShipMonth = memberShipMonth;
+    public void setMembershipMonth(Date memberShipMonth) {
+        this.membershipMonth = memberShipMonth;
     }
 
     public List<TrainingSession> getTrainingSessions() {

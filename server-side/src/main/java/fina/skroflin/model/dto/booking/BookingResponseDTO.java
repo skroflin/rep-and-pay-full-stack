@@ -6,6 +6,7 @@ package fina.skroflin.model.dto.booking;
 
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +15,9 @@ import java.time.LocalDateTime;
  */
 public record BookingResponseDTO(
         Integer id,
+        @ManyToOne
         User user,
+        @ManyToOne
         TrainingSession trainingSession,
         LocalDateTime reservationTime,
         LocalDateTime endOfReservationTime
