@@ -28,6 +28,7 @@ public class Booking extends MainEntity {
     private TrainingSession trainingSession;
     @Column(name = "reservation_time")
     private LocalDateTime reservationTime;
+    @Column(name = "end_of_reservation_time")
     private LocalDateTime endOfReservation;
 
     public Booking() {

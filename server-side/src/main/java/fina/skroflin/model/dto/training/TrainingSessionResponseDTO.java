@@ -4,12 +4,10 @@
  */
 package fina.skroflin.model.dto.training;
 
-import fina.skroflin.model.User;
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 /**
@@ -18,8 +16,7 @@ import java.time.LocalDateTime;
  */
 public record TrainingSessionResponseDTO(
         Integer id,
-        @ManyToOne
-        User trainer,
+        Integer trainerId,
         LocalDateTime dateTime,
         @Enumerated(EnumType.STRING)
         TrainingType trainingType,
