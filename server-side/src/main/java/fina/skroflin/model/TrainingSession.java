@@ -8,6 +8,9 @@ import fina.skroflin.model.enums.ConfirmationStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
@@ -20,6 +23,10 @@ import java.time.LocalDateTime;
 @AttributeOverride(name = "id", column = @Column(name = "training_session_id"))
 @Table(name = "training_session")
 public class TrainingSession extends MainEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, name = "training_session_id")
+    private Integer id;
     private Coach coach;
     private Client client;
     private LocalDateTime startTime;

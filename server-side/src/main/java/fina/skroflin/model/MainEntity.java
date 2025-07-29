@@ -22,12 +22,15 @@ public abstract class MainEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
-    @Column(name = "first_name")
+    @Column(name = "first_name", unique = true)
     private String firstName;
-    @Column(name = "last_name")
+    @Column(name = "last_name", unique = true)
     private String lastName;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false)
     private String password;
     private Role role;
     
@@ -62,8 +65,6 @@ public abstract class MainEntity {
     public void setEmail(String email) {
         this.email = email;
     }
-    
-    
     
     public String getUsername() {
         return username;

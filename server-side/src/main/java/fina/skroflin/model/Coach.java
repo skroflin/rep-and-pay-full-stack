@@ -33,4 +33,43 @@ public class Coach extends MainEntity{
     private boolean isEmployed;
     private Date dateOfTermination;
     private String bio;
+
+    public Coach(Date dateEmployed, boolean isEmployed, Date dateOfTermination, String bio) {
+        this.dateEmployed = dateEmployed;
+        this.isEmployed = isEmployed;
+        this.dateOfTermination = dateOfTermination;
+        this.bio = bio;
+    }
+
+    public Date getDateEmployed() {
+        return dateEmployed;
+    }
+
+    public void setDateEmployed(Date dateEmployed) {
+        this.dateEmployed = dateEmployed;
+    }
+
+    public boolean isIsEmployed() {
+        return isEmployed;
+    }
+
+    public void setIsEmployed(boolean isEmployed) {
+        this.isEmployed = isEmployed;
+    }
+
+    public Date getDateOfTermination() {
+        return dateOfTermination;
+    }
+
+    public void setDateOfTermination(Date dateOfTermination) {
+        this.dateOfTermination = dateOfTermination;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 }

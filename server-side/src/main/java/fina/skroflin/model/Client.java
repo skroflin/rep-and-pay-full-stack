@@ -30,79 +30,12 @@ import java.util.Date;
             @UniqueConstraint(columnNames = "email", name = "uq_client_email")
         })
 public class Client extends MainEntity{
-    @Column(name = "username", nullable = false)
-    private String username;
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-    private String email;
-    private String password;
     @Column(name = "date_joined")
     private Date dateJoined;
 
     public Client() {
     }
-
-    public Client(String username, String firstName, String lastName, String email, String password, Date dateJoined) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.dateJoined = dateJoined;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String getFirstName() {
-        return firstName;
-    }
-
-    @Override
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    @Override
-    public String getLastName() {
-        return lastName;
-    }
-
-    @Override
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    
     public Date getDateJoined() {
         return dateJoined;
     }
@@ -110,8 +43,6 @@ public class Client extends MainEntity{
     public void setDateJoined(Date dateJoined) {
         this.dateJoined = dateJoined;
     }
-    
-    
 
     @PrePersist
     protected void onUserCreation(){
