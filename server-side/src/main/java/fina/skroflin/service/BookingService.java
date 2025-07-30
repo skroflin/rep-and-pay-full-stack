@@ -167,7 +167,7 @@ public class BookingService extends MainService {
             }
             
             Long count = session.createQuery(
-                    "select count() from Booking b "
+                    "select count(b) from Booking b "
                             + "where b.userId = :userId "
                             + "and b.id != :currentId "
                             + "and :start < b.endOfReservationTime "
@@ -177,6 +177,11 @@ public class BookingService extends MainService {
                     .setParameter("end", o.endOfReservationTime())
                     .setParameter("currentId", id)
                     .uniqueResult();
+            
+            if (count > 0) {
+                throw new IllegalArgumentException("You already have a booking"
+                        + " " + "that overlaps with this time!");
+            }
             
             User user = 
                     (User) session.get(User.class, o.userId());
