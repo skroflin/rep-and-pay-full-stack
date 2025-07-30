@@ -27,7 +27,9 @@ public class UserService extends MainService {
     private final BookingService bookingService;
 
     @Autowired
-    public UserService(TrainingSessionService trainingSessionService, BookingService bookingService) {
+    public UserService(
+            TrainingSessionService trainingSessionService, 
+            BookingService bookingService) {
         this.trainingSessionService = trainingSessionService;
         this.bookingService = bookingService;
     }
