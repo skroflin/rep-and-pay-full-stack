@@ -8,7 +8,10 @@ import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -73,5 +76,42 @@ public class TrainingSessionService extends MainService {
         trainingSession.setTrainingType(dto.trainingType());
         trainingSession.setTrainingLevel(dto.trainingLevel());
         trainingSession.setCapacity(dto.capacity());
+    }
+    
+    public List<TrainingSessionResponseDTO> getAll() {
+        try {
+            List<TrainingSession> trainingSessions = session.createQuery(
+                    "select ts from TrainingSession ts "
+                            + "left join fetch ts.trainer", TrainingSession.class)
+                    .list();
+            return trainingSessions.stream()
+                    .map(this::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching training sessions:" 
+                    + " " + e.getMessage(), e);
+        }
+    }
+    
+    public TrainingSessionResponseDTO getById(int id) {
+        try {
+            TrainingSession trainingSession = session.createQuery(
+                    "select ts from TrainingSession ts "
+                            + "left join fetch ts.trainer "
+                            + "where ts.id = :id", TrainingSession.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+            
+            if (trainingSession == null) {
+                throw new NoResultException("Training session with id" 
+                        + " " + id + " " + "doesn't exist!");
+            }
+            
+            return convertToResponseDTO(trainingSession);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching "
+                    + "training session with id" 
+                    + " " + id + ": " + e.getMessage(), e);
+        }
     }
 }
