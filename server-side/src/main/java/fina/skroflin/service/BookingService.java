@@ -123,7 +123,8 @@ public class BookingService extends MainService {
 
             return convertToResponseDTO(booking);
         } catch (Exception e) {
-            throw new RuntimeException("Error upon fetching booking with id"
+            throw new RuntimeException("Error upon fetching "
+                    + "booking with id"
                     + " " + id + ": " + e.getMessage(), e);
         }
     }

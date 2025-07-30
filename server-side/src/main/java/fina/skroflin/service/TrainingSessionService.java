@@ -114,4 +114,26 @@ public class TrainingSessionService extends MainService {
                     + " " + id + ": " + e.getMessage(), e);
         }
     }
+    
+    public TrainingSessionResponseDTO post(TrainingSessionDTO o) {
+        try {
+            User trainer = (User) session.get(User.class, o.trainerId());
+            if (trainer == null || !"trainer".equals(trainer.getRole())) {
+                throw new IllegalArgumentException(
+                        "Trainer with the id" + " " 
+                                + o.trainerId() + " " 
+                                        + "doesn't exist or is not a trainer");
+            }
+            
+            TrainingSession ts = convertToEntity(o);
+            session.beginTransaction();
+            session.persist(ts);
+            session.getTransaction().commit();
+            
+            return convertToResponseDTO(ts);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon training session "
+                    + "booking:" + e.getMessage(), e);
+        }
+    }
 }
