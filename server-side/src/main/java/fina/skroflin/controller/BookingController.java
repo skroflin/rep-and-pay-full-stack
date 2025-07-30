@@ -1,0 +1,151 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package fina.skroflin.controller;
+
+import fina.skroflin.model.dto.booking.BookingDTO;
+import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.service.BookingService;
+import fina.skroflin.service.TrainingSessionService;
+import fina.skroflin.service.UserService;
+import jakarta.persistence.NoResultException;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+/**
+ *
+ * @author skroflin
+ */
+@RestController
+@RequestMapping("/api/fina/skroflin/booking")
+public class BookingController {
+    private final BookingService bookingService;
+    private final UserService userService;
+    private final TrainingSessionService trainingSessionService;
+
+    public BookingController(BookingService bookingService, UserService userService, TrainingSessionService trainingSessionService) {
+        this.bookingService = bookingService;
+        this.userService = userService;
+        this.trainingSessionService = trainingSessionService;
+    }
+    
+    @GetMapping("/get")
+    public ResponseEntity<List<BookingResponseDTO>> getAll(){
+        try {
+            return new ResponseEntity<>(
+                    bookingService.getAll(),HttpStatus.OK
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @GetMapping("/getById")
+    public ResponseEntity<BookingResponseDTO> getById(
+            @RequestParam int id
+    ){
+        try {
+            if (id <= 0) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, 
+                        "Id musn't be lesser than 0"
+                );
+            }
+            BookingResponseDTO booking = bookingService.getById(id);
+            if (booking == null) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, 
+                        "Booking with the id" + " " + id + " " + "doesn't exist!"
+                );
+            }
+            return new ResponseEntity<>(booking, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching booking with id"
+                            + " " + id + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @PostMapping("/post")
+    public ResponseEntity<BookingResponseDTO> post(
+            @RequestBody(required = true)
+            BookingDTO dto
+    ){
+        try {
+            if (dto == null) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, 
+                        "The necessary data wasn't inserted!"
+                );
+            }
+            if (dto.userId() != null) {
+                try {
+                    userService.getById(dto.userId());
+                } catch (Exception e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Error user with id" 
+                                    + " " + dto.userId() 
+                                    + " " + "doesn't exist"
+                    );
+                }
+            }
+            if (dto.trainingSessionId() != null) {
+                try {
+                    trainingSessionService.getById(dto.trainingSessionId());
+                } catch (Exception e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Error training session with id" 
+                                    + " " + dto.userId() 
+                                    + " " + "doesn't exist"
+                    );
+                }
+            }
+            if (dto.reservationTime() == null || 
+                    dto.reservationTime().equals(null)) {
+               throw new ResponseStatusException(
+                       HttpStatus.BAD_REQUEST,
+                       "Reservation time is necessary!"
+               );
+            }
+            
+            BookingResponseDTO createdBooking = bookingService.post(dto);
+            return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, 
+                    e.getMessage(), 
+                    e
+            );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, 
+                    e.getMessage(), 
+                    e
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage(), 
+                    e
+            );
+        }
+    }
+}
