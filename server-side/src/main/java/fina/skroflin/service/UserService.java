@@ -4,10 +4,94 @@
  */
 package fina.skroflin.service;
 
+import fina.skroflin.model.User;
+import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.model.dto.user.UserDTO;
+import fina.skroflin.model.dto.user.UserResponseDTO;
+import fina.skroflin.model.enums.Role;
+import jakarta.transaction.Transactional;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  *
  * @author skroflin
  */
 public class UserService extends MainService {
     
+    private final TrainingSessionService trainingSessionService;
+    private final BookingService bookingService;
+
+    @Autowired
+    public UserService(TrainingSessionService trainingSessionService, BookingService bookingService) {
+        this.trainingSessionService = trainingSessionService;
+        this.bookingService = bookingService;
+    }
+    
+    @Transactional
+    private UserResponseDTO convertToResponseDTO(User user){
+        if (user == null) {
+            return null;
+        }
+        
+        List<TrainingSessionResponseDTO> trainingSessions = 
+                Collections.emptyList();
+                if (user.getRole() == Role.coach) {
+            trainingSessions = user.getTrainingSessions() == null
+                    ? Collections.emptyList()
+                    : user.getTrainingSessions().stream()
+                    .map(trainingSessionService::convertToResponseDTO)
+                    .collect(Collectors.toList());
+                    
+        }
+        
+        List<BookingResponseDTO> bookings =
+                Collections.emptyList();
+                if (user.getRole() == Role.user) {
+            bookings = user.getBookings() == null
+                    ? Collections.emptyList()
+                    : user.getBookings().stream()
+                    .map(bookingService::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        }
+        
+        return new UserResponseDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getRole(),
+                user.isIsMembershipPaid(),
+                user.getMembershipMonth(),
+                trainingSessions,
+                bookings
+        );
+    }
+    
+    @Transactional
+    private User convertToEntity(UserDTO dto){
+        User user = new User();
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setEmail(dto.email());
+        user.setUsername(dto.username());
+        user.setPassword(dto.password());
+        user.setRole(dto.role());
+        return user;
+    }
+    
+    @Transactional
+    private void updateEntityFromDto(User user, UserDTO dto) {
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setEmail(dto.email());
+        user.setUsername(dto.username());
+        user.setPassword(dto.password());
+        user.setRole(dto.role());
+    }
 }

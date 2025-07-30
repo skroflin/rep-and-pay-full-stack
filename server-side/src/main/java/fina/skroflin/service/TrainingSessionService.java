@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class TrainingSessionService extends MainService {
 
     @Transactional
-    private TrainingSessionResponseDTO convertToResponseDTO(
+    public TrainingSessionResponseDTO convertToResponseDTO(
             TrainingSession trainingSession) {
 
         if (trainingSession == null) {

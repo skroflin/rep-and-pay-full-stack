@@ -9,7 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -33,7 +33,7 @@ public class User extends MainEntity {
     @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
     @Column(name = "membership_month")
-    private Date membershipMonth;
+    private LocalDateTime membershipMonth;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
     @OneToMany(mappedBy = "user")
@@ -50,7 +50,7 @@ public class User extends MainEntity {
             String password, 
             Role role, 
             boolean isMembershipPaid, 
-            Date memberShipMonth, 
+            LocalDateTime membershipMonth, 
             List<TrainingSession> trainingSessions, 
             List<Booking> bookings) {
         this.firstName = firstName;
@@ -121,11 +121,11 @@ public class User extends MainEntity {
         this.isMembershipPaid = isMembershipPaid;
     }
 
-    public Date getMembershipMonth() {
+    public LocalDateTime getMembershipMonth() {
         return membershipMonth;
     }
 
-    public void setMembershipMonth(Date memberShipMonth) {
+    public void setMembershipMonth(LocalDateTime memberShipMonth) {
         this.membershipMonth = memberShipMonth;
     }
 

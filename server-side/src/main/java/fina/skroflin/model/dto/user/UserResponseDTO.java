@@ -4,12 +4,10 @@
  */
 package fina.skroflin.model.dto.user;
 
-import fina.skroflin.model.Booking;
-import fina.skroflin.model.TrainingSession;
+import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.enums.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,13 +21,11 @@ public record UserResponseDTO(
         String email,
         String username,
         String password,
-        @Enumerated(EnumType.STRING)
         Role role,
         boolean isMembershipPaid,
-        @OneToMany(mappedBy = "trainer")
-        List<TrainingSession> trainingSessions,
-        @OneToMany(mappedBy = "user")
-        List<Booking> bookings
+        LocalDateTime membershipMonth,
+        List<TrainingSessionResponseDTO> trainingSessions,
+        List<BookingResponseDTO> bookings
         ) {
     
 }

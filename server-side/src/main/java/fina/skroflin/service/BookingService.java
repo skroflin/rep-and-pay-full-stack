@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class BookingService extends MainService {
 
     @Transactional
-    private BookingResponseDTO convertToResponseDTO(Booking booking) {
+    public BookingResponseDTO convertToResponseDTO(Booking booking) {
         if (booking == null) {
             return null;
         }
