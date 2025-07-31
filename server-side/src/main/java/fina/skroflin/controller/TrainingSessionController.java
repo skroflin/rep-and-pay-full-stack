@@ -7,7 +7,7 @@ package fina.skroflin.controller;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
-import fina.skroflin.service.UserService;
+import fina.skroflin.service.user.UserService;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.springframework.http.HttpStatus;

@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fina.skroflin.service;
+package fina.skroflin.service.user;
 
-import fina.skroflin.model.User;
+import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.user.LoginDTO;
@@ -14,6 +14,9 @@ import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.model.dto.user.password.PasswordDTO;
 import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
 import fina.skroflin.model.enums.Role;
+import fina.skroflin.service.BookingService;
+import fina.skroflin.service.MainService;
+import fina.skroflin.service.TrainingSessionService;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.util.Collections;
@@ -34,14 +37,18 @@ public class UserService extends MainService {
     private final BookingService bookingService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     
-    public UserService(TrainingSessionService trainingSessionService, BookingService bookingService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(
+            TrainingSessionService trainingSessionService, 
+            BookingService bookingService, 
+            BCryptPasswordEncoder bCryptPasswordEncoder
+    ) {
         this.trainingSessionService = trainingSessionService;
         this.bookingService = bookingService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Transactional
-    private UserResponseDTO convertToResponseDTO(User user) {
+    private UserResponseDTO convertToResponseDTO(Users user) {
         if (user == null) {
             return null;
         }
@@ -84,7 +91,7 @@ public class UserService extends MainService {
     
     @Transactional
     private PasswordResponseDTO convertPassToResponseDTO(
-            User user
+            Users user
     ){
         return new PasswordResponseDTO(
                 user.getId(),
@@ -94,8 +101,8 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private User convertToEntity(UserDTO dto) {
-        User user = new User();
+    private Users convertToEntity(UserDTO dto) {
+        Users user = new Users();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
@@ -106,7 +113,7 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private void updateEntityFromDto(User user, UserDTO dto) {
+    private void updateEntityFromDto(Users user, UserDTO dto) {
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
@@ -116,26 +123,25 @@ public class UserService extends MainService {
     }
     
     @Transactional
-    private void updatePassEntityFromDto(User user, PasswordDTO dto) {
+    private void updatePassEntityFromDto(Users user, PasswordDTO dto) {
         user.setPassword(dto.password());
     }
 
     public List<UserResponseDTO> getAll() {
-        List<User> users = session.createQuery(
-                "from User u", User.class).list();
+        List<Users> users = session.createQuery("from User u", Users.class).list();
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
     public UserResponseDTO getById(int id) {
-        User user = session.get(User.class, id);
+        Users user = session.get(Users.class, id);
         return convertToResponseDTO(user);
     }
 
     public UserResponseDTO put(UserDTO o, int id) {
         try {
-            User existingUser = (User) session.get(User.class, id);
+            Users existingUser = (Users) session.get(Users.class, id);
             if (existingUser == null) {
                 throw new NoResultException("User with id" + " "
                         + id + " " + "doesn't exist!");
@@ -168,7 +174,7 @@ public class UserService extends MainService {
 
     public String delete(int id) {
         try {
-            User user = (User) session.get(User.class, id);
+            Users user = (Users) session.get(Users.class, id);
             if (user == null) {
                 throw new NoResultException("User with id"
                         + " " + id + " " + "doesn't exist!");
@@ -183,7 +189,7 @@ public class UserService extends MainService {
     public UserResponseDTO registration(RegistrationDTO o) {
         try {
             session.beginTransaction();
-            User newUser = new User(
+            Users newUser = new Users(
                     o.firstName(),
                     o.lastName(),
                     o.email(),
@@ -205,9 +211,8 @@ public class UserService extends MainService {
 
     public UserResponseDTO login(LoginDTO o) {
         try {
-            User user = session.createQuery(
-                    "from User u where u.username = :username",
-                    User.class)
+            Users user = session.createQuery("from User u where u.username = :username",
+                    Users.class)
                     .setParameter("username", o.username())
                     .getSingleResult();
             if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
@@ -225,7 +230,7 @@ public class UserService extends MainService {
     
     public PasswordResponseDTO changePassword(PasswordDTO o, int id){
         try {
-            User user = (User) session.get(User.class, id);
+            Users user = (Users) session.get(Users.class, id);
             if (user == null) {
                 throw new NoResultException(
                         "User with the id"

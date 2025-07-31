@@ -6,7 +6,7 @@ package fina.skroflin.service;
 
 import fina.skroflin.model.Booking;
 import fina.skroflin.model.TrainingSession;
-import fina.skroflin.model.User;
+import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import jakarta.persistence.NoResultException;
@@ -45,7 +45,7 @@ public class BookingService extends MainService {
     private Booking convertToEntity(BookingDTO dto) {
         Booking booking = new Booking();
         if (dto.userId() != null) {
-            User user = session.get(User.class, dto.userId());
+            Users user = session.get(Users.class, dto.userId());
             if (user == null) {
                 throw new IllegalArgumentException("User with the id"
                         + " " + dto.userId() + " " + "doesn't exist!");
@@ -69,7 +69,7 @@ public class BookingService extends MainService {
     @Transactional
     private void updateEntityFromDto(Booking booking, BookingDTO dto) {
         if (dto.userId() != null) {
-            User user = session.get(User.class, dto.userId());
+            Users user = session.get(Users.class, dto.userId());
             if (user == null) {
                 throw new IllegalArgumentException("User with id"
                         + " " + dto.userId() + " " + "doesn't exist!");
@@ -185,8 +185,8 @@ public class BookingService extends MainService {
                         + " " + "that overlaps with this time!");
             }
             
-            User user = 
-                    (User) session.get(User.class, o.userId());
+            Users user = 
+                    (Users) session.get(Users.class, o.userId());
             if (user == null) {
                 throw new NoResultException("User with id" + " " 
                         + o.userId() + " " + "doesn't exist!");

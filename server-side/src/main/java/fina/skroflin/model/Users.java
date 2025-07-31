@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
-public class User extends MainEntity {
+public class Users extends MainEntity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -42,10 +42,10 @@ public class User extends MainEntity {
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
-    public User() {
+    public Users() {
     }
 
-    public User(
+    public Users(
             String firstName, 
             String lastName, 
             String email, 
@@ -61,7 +61,7 @@ public class User extends MainEntity {
         this.role = role;
     }
 
-    public User(
+    public Users(
             String firstName,
             String lastName,
             String email, 

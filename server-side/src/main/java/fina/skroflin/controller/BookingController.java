@@ -8,7 +8,7 @@ import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.TrainingSessionService;
-import fina.skroflin.service.UserService;
+import fina.skroflin.service.user.UserService;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.springframework.http.HttpStatus;

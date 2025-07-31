@@ -5,7 +5,7 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.dto.user.UserResponseDTO;
-import fina.skroflin.service.UserService;
+import fina.skroflin.service.user.UserService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
