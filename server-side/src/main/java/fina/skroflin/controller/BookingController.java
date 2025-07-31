@@ -64,7 +64,7 @@ public class BookingController {
             if (id <= 0) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0"
+                        "Id musn't be lesser than 0!"
                 );
             }
             BookingResponseDTO booking = bookingService.getById(id);
@@ -104,7 +104,7 @@ public class BookingController {
                             HttpStatus.NOT_FOUND,
                             "Error user with id"
                             + " " + dto.userId()
-                            + " " + "doesn't exist"
+                            + " " + "doesn't exist!"
                     );
                 }
             }
@@ -120,8 +120,7 @@ public class BookingController {
                     );
                 }
             }
-            if (dto.reservationTime() == null
-                    || dto.reservationTime().equals(null)) {
+            if (dto.reservationTime() == null) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
                         "Reservation time is necessary!"

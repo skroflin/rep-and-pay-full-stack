@@ -7,6 +7,8 @@ package fina.skroflin.model;
 import fina.skroflin.model.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ public class User extends MainEntity {
     @Column(unique = true)
     private String username;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
     @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
