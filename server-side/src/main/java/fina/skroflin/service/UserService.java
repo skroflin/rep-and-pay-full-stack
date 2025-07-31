@@ -113,6 +113,11 @@ public class UserService extends MainService {
         user.setPassword(dto.password());
         user.setRole(dto.role());
     }
+    
+    @Transactional
+    private void updatePassEntityFromDto(User user, PasswordDTO dto) {
+        user.setPassword(dto.password());
+    }
 
     public List<UserResponseDTO> getAll() {
         List<User> users = session.createQuery(
@@ -229,6 +234,10 @@ public class UserService extends MainService {
             if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
                 throw new IllegalArgumentException("Wrong password!");
             }
+            updatePassEntityFromDto(user, o);
+            session.beginTransaction();
+            session.persist(user);
+            session.getTransaction().commit();
             return convertPassToResponseDTO(user);
         } catch (Exception e) {
             throw new RuntimeException(
