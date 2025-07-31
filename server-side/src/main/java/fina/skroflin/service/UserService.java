@@ -7,6 +7,8 @@ package fina.skroflin.service;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.model.dto.user.LoginDTO;
+import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.model.enums.Role;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
@@ -25,13 +28,13 @@ public class UserService extends MainService {
 
     private final TrainingSessionService trainingSessionService;
     private final BookingService bookingService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(
-            TrainingSessionService trainingSessionService, 
-            BookingService bookingService) {
+    public UserService(TrainingSessionService trainingSessionService, BookingService bookingService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.trainingSessionService = trainingSessionService;
         this.bookingService = bookingService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Transactional
@@ -143,8 +146,8 @@ public class UserService extends MainService {
                     + " " + id + " " + e.getMessage(), e);
         }
     }
-    
-    public String delete(int id){
+
+    public String delete(int id) {
         try {
             User user = (User) session.get(User.class, id);
             if (user == null) {
@@ -155,6 +158,49 @@ public class UserService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException("Error upon deleting user with id"
                     + " " + id + " " + e.getMessage(), e);
+        }
+    }
+
+    public UserResponseDTO registration(RegistrationDTO o) {
+        try {
+            session.beginTransaction();
+            User newUser = new User(
+                    o.firstName(),
+                    o.lastName(),
+                    o.email(),
+                    o.username(),
+                    bCryptPasswordEncoder.encode(o.password()),
+                    o.role()
+            );
+            session.persist(newUser);
+            session.getTransaction();
+            return convertToResponseDTO(newUser);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error upon registration"
+                    + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+
+    public UserResponseDTO login(LoginDTO o) {
+        try {
+            User user = session.createQuery(
+                    "from User u where u.username = :username",
+                    User.class)
+                    .setParameter("username", o.username())
+                    .getSingleResult();
+            if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
+                throw new IllegalArgumentException("Wrong password");
+            }
+            return convertToResponseDTO(user);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error upon logging in"
+                    + " " + e.getMessage(),
+                    e
+            );
         }
     }
 }

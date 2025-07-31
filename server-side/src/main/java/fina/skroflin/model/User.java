@@ -46,6 +46,22 @@ public class User extends MainEntity {
     }
 
     public User(
+            String firstName, 
+            String lastName, 
+            String email, 
+            String username, 
+            String password, 
+            Role role
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User(
             String firstName,
             String lastName,
             String email, 
@@ -55,7 +71,8 @@ public class User extends MainEntity {
             boolean isMembershipPaid, 
             LocalDateTime membershipMonth, 
             List<TrainingSession> trainingSessions, 
-            List<Booking> bookings) {
+            List<Booking> bookings
+    ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
