@@ -31,7 +31,7 @@ public class UserDetailService extends MainService implements UserDetailsService
             throws UsernameNotFoundException {
         Users user = null;
         try(Session sess = session.getSessionFactory().openSession()) {
-            user = sess.createQuery("from User u "
+            user = sess.createQuery("from Users u "
                             + "where u.username = :username", Users.class)
                     .setParameter("username", username)
                     .getSingleResult();

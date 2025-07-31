@@ -128,7 +128,7 @@ public class UserService extends MainService {
     }
 
     public List<UserResponseDTO> getAll() {
-        List<Users> users = session.createQuery("from User u", Users.class).list();
+        List<Users> users = session.createQuery("from Users u", Users.class).list();
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -147,7 +147,7 @@ public class UserService extends MainService {
                         + id + " " + "doesn't exist!");
             }
             Long count = session.createQuery(
-                    "select count(u) from User u "
+                    "select count(u) from Users u "
                     + "where (u.username = :username "
                     + "or u.email = :email) "
                     + "and u.id = :currentId", Long.class)
@@ -211,7 +211,7 @@ public class UserService extends MainService {
 
     public UserResponseDTO login(LoginDTO o) {
         try {
-            Users user = session.createQuery("from User u where u.username = :username",
+            Users user = session.createQuery("from Users u where u.username = :username",
                     Users.class)
                     .setParameter("username", o.username())
                     .getSingleResult();
