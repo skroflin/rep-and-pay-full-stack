@@ -24,11 +24,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 public class SecurityConfig {
     private final UserDetailService detailService;
     // private final JwtRequestFilter requestFilter;
-    private final AuthenticationEntryPoint entryPoint;
+    // private final AuthenticationEntryPoint entryPoint;
 
-    public SecurityConfig(UserDetailService detailService, AuthenticationEntryPoint entryPoint) {
+    public SecurityConfig(UserDetailService detailService) {
         this.detailService = detailService;
-        this.entryPoint = entryPoint;
     }
     
     @Bean
