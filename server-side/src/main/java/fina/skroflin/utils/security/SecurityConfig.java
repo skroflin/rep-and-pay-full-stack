@@ -23,12 +23,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final UserDetailService detailService;
-    private final JwtRequestFilter requestFilter;
+    // private final JwtRequestFilter requestFilter;
     private final AuthenticationEntryPoint entryPoint;
 
-    public SecurityConfig(UserDetailService detailService, JwtRequestFilter requestFilter, AuthenticationEntryPoint entryPoint) {
+    public SecurityConfig(UserDetailService detailService, AuthenticationEntryPoint entryPoint) {
         this.detailService = detailService;
-        this.requestFilter = requestFilter;
         this.entryPoint = entryPoint;
     }
     
