@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author skroflin
  */
+@Component
 public class JwtTokenUtil {
     @Value("${jwt.secret}")
     private String secret;
@@ -44,6 +46,16 @@ public class JwtTokenUtil {
     
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> extractRoles(
+            String token
+    ){
+        return extractClaim(
+                token, claims -> (List<String>) 
+                        claims.get("roles")
+        );
     }
     
     public <T> T extractClaim(
