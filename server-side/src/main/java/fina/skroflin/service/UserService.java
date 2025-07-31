@@ -11,6 +11,8 @@ import fina.skroflin.model.dto.user.LoginDTO;
 import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
+import fina.skroflin.model.dto.user.password.PasswordDTO;
+import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
 import fina.skroflin.model.enums.Role;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -76,6 +78,17 @@ public class UserService extends MainService {
                 user.getMembershipMonth(),
                 trainingSessions,
                 bookings
+        );
+    }
+    
+    @Transactional
+    private PasswordResponseDTO convertPassToResponseDTO(
+            User user
+    ){
+        return new PasswordResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword()
         );
     }
 
@@ -198,6 +211,28 @@ public class UserService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error upon logging in"
+                    + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    public PasswordResponseDTO changePassword(PasswordDTO o, int id){
+        try {
+            User user = (User) session.get(User.class, id);
+            if (user == null) {
+                throw new NoResultException(
+                        "User with the id"
+                        + " " + id + " " + "doesn't exist!"
+                );
+            }
+            if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
+                throw new IllegalArgumentException("Wrong password!");
+            }
+            return convertPassToResponseDTO(user);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error changing password"
                     + " " + e.getMessage(),
                     e
             );
