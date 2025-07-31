@@ -21,18 +21,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author skroflin
  */
+@Service
 public class UserService extends MainService {
 
     private final TrainingSessionService trainingSessionService;
     private final BookingService bookingService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
+    
     public UserService(TrainingSessionService trainingSessionService, BookingService bookingService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.trainingSessionService = trainingSessionService;
         this.bookingService = bookingService;

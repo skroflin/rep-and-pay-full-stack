@@ -12,11 +12,13 @@ import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author skroflin
  */
+@Service
 public class TrainingSessionService extends MainService {
 
     @Transactional

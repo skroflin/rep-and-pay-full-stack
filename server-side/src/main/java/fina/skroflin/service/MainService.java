@@ -7,6 +7,7 @@ package fina.skroflin.service;
 import fina.HibernateUtil;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.Session;
+import org.springframework.stereotype.Service;
 
 /**
  *
