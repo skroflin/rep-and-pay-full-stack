@@ -34,7 +34,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         this.detailService = detailService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
-
+    
+/*
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, 
@@ -113,5 +114,11 @@ public class JwtRequestFilter extends OncePerRequestFilter{
                     + SecurityContextHolder.getContext().getAuthentication().getName()
             );
         }
+    }
+*/
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
