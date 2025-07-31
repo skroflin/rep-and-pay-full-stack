@@ -7,14 +7,17 @@ package fina.skroflin.controller;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.service.user.UserService;
+import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +31,11 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/fina/skroflin/user")
 public class UserController {
     private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtTokenUtil jwtTokenUtil) {
         this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
     
     @GetMapping("/get")
@@ -49,31 +54,17 @@ public class UserController {
     }
     
     @GetMapping("/getById")
-    public ResponseEntity<UserResponseDTO> getById(
-            @RequestParam int id
+    public ResponseEntity<UserResponseDTO> getByToken(
+            @RequestHeader
+            HttpHeaders headers
     ){
         try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            UserResponseDTO user = userService.getById(id);
-            if (user == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User with the id" + " " + id
-                        + " " + "doesn't exist!"
-                );
-            }
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return ResponseEntity.ok(userService.getById(headers));
         } catch (Exception e) {
-            throw new ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Error upon fetching user with id"
-                + " " + id + " " + e.getMessage(),
-                e
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
+                    "Invalid or missing token:" 
+                            + " " + e.getMessage(), 
+                    e
             );
         }
     }

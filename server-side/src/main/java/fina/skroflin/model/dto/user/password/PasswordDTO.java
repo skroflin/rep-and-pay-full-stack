@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author skroflin
  */
 public record PasswordDTO(
-        @Schema(example = "1")
-        Integer id,
         @Schema(example = "pass123")
         String password
         ) {
-
 }

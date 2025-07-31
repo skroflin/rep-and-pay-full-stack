@@ -17,12 +17,13 @@ import fina.skroflin.model.enums.Role;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.MainService;
 import fina.skroflin.service.TrainingSessionService;
+import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,15 +36,18 @@ public class UserService extends MainService {
 
     private final TrainingSessionService trainingSessionService;
     private final BookingService bookingService;
+    private final JwtTokenUtil jwtTokenUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    
+
     public UserService(
-            TrainingSessionService trainingSessionService, 
-            BookingService bookingService, 
+            TrainingSessionService trainingSessionService,
+            BookingService bookingService,
+            JwtTokenUtil jwtTokenUtil, 
             BCryptPasswordEncoder bCryptPasswordEncoder
     ) {
         this.trainingSessionService = trainingSessionService;
         this.bookingService = bookingService;
+        this.jwtTokenUtil = jwtTokenUtil;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -95,8 +99,7 @@ public class UserService extends MainService {
     ){
         return new PasswordResponseDTO(
                 user.getId(),
-                user.getUsername(),
-                user.getPassword()
+                user.getUsername()
         );
     }
 
@@ -134,9 +137,27 @@ public class UserService extends MainService {
                 .collect(Collectors.toList());
     }
 
-    public UserResponseDTO getById(int id) {
-        Users user = session.get(Users.class, id);
-        return convertToResponseDTO(user);
+    public UserResponseDTO getById(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token, 
+                    claims -> claims.get("UserId", Integer.class));
+            Users users = (Users) session.get(Users.class, userId);
+            if (users == null) {
+                throw new NoResultException(
+                        "User with id" 
+                                + " " + userId + " " 
+                                        + "doesn't exist!"
+                );
+            }
+            return convertToResponseDTO(users);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error retrieving user from token" 
+                            + " " + e.getMessage(),
+                    e
+            );
+        }
     }
 
     public UserResponseDTO put(UserDTO o, int id) {
@@ -189,6 +210,19 @@ public class UserService extends MainService {
     public UserResponseDTO registration(RegistrationDTO o) {
         try {
             session.beginTransaction();
+            
+            Long count = session.createQuery(
+                    "select count(u) from Users u "
+                    + "where (u.username = :username "
+                    + "or u.email = :email) ", Long.class)
+                    .setParameter("username", o.username())
+                    .setParameter("email", o.email())
+                    .uniqueResult();
+            if (count > 0) {
+                throw new IllegalArgumentException("There is already a user"
+                        + " " + "with the same username or email!");
+            }
+            
             Users newUser = new Users(
                     o.firstName(),
                     o.lastName(),
@@ -198,7 +232,7 @@ public class UserService extends MainService {
                     o.role()
             );
             session.persist(newUser);
-            session.getTransaction();
+            session.getTransaction().commit();
             return convertToResponseDTO(newUser);
         } catch (Exception e) {
             throw new RuntimeException(
@@ -228,8 +262,10 @@ public class UserService extends MainService {
         }
     }
     
-    public PasswordResponseDTO changePassword(PasswordDTO o, int id){
+    public PasswordResponseDTO changePassword(PasswordDTO o, String token){
         try {
+            int id = jwtTokenUtil.extractClaim(token, claims -> 
+                    claims.get("UserId", Integer.class));
             Users user = (Users) session.get(Users.class, id);
             if (user == null) {
                 throw new NoResultException(
@@ -237,12 +273,8 @@ public class UserService extends MainService {
                         + " " + id + " " + "doesn't exist!"
                 );
             }
-            if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
-                throw new IllegalArgumentException("Wrong password!");
-            }
-            updatePassEntityFromDto(user, o);
             session.beginTransaction();
-            session.persist(user);
+            user.setPassword(bCryptPasswordEncoder.encode(o.password()));
             session.getTransaction().commit();
             return convertPassToResponseDTO(user);
         } catch (Exception e) {

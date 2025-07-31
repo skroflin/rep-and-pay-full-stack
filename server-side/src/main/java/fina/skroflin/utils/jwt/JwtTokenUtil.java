@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +59,16 @@ public class JwtTokenUtil {
         );
     }
     
+    public String extractTokenFromHeaders(HttpHeaders headers) {
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader == null 
+                || !authHeader.startsWith("Bearer ")) {
+            throw new 
+        IllegalArgumentException("Authorization header is missing or malformed");
+        }
+        return authHeader.substring(7);
+    }
+    
     public <T> T extractClaim(
             String token, 
             Function<Claims, T> claimsResolver
@@ -78,13 +89,14 @@ public class JwtTokenUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) 
+    public String generateToken(UserDetails userDetails, Long userId) 
     {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList());
         claims.put("roles", roles);
+        claims.put("UserId", userId);
         return createToken(claims, userDetails.getUsername());
     }
 

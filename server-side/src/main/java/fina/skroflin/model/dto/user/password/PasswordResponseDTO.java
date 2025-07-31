@@ -10,8 +10,7 @@ package fina.skroflin.model.dto.user.password;
  */
 public record PasswordResponseDTO(
         Integer id,
-        String username,
-        String password
+        String username
         ) {
 
 }
