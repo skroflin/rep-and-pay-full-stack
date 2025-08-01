@@ -142,6 +142,29 @@ public class TrainingSessionService extends MainService {
                     + " " + id + ": " + e.getMessage(), e);
         }
     }
+    
+    public List<MyTrainingSessionResponseDTO> getMyTrainingSessions(
+            HttpHeaders headers
+    ){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            List<TrainingSession> trainingSessions = session.createQuery(
+                    "select ts from TrainingSession ts "
+                    + "left join fetch ts.trainer "
+                    + "where ts.trainerId = :userId", 
+                    TrainingSession.class)
+                    .setParameter("userId", userId)
+                    .list();
+            return trainingSessions.stream()
+                    .map(this::converToMyResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching training sessions:"
+                    + " " + e.getMessage(), e);
+        }
+    }
 
     public TrainingSessionResponseDTO post(TrainingSessionDTO o) {
         try {
