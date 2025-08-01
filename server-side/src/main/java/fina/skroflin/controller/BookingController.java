@@ -5,7 +5,6 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.Booking;
-import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingDTO;
@@ -100,7 +99,7 @@ public class BookingController {
                 )})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
-        @ApiResponse(responseCode = "204", description = "Therer is no booking for the given id."),
+        @ApiResponse(responseCode = "204", description = "There is no booking for the given id."),
         @ApiResponse(responseCode = "400", description = "Id must be greater than 0!", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
@@ -353,7 +352,7 @@ public class BookingController {
     }
     
     @Operation(
-            summary = "Updates booking for authenticated user", tags = {"put", "updateMyBooking", "user"},
+            summary = "Updates booking for authenticated user", tags = {"put", "updateMyBooking", "booking"},
             description = "Updates booking for user that is currently logged"
                     + " " + "in the session."
     )
@@ -453,7 +452,8 @@ public class BookingController {
     }
     
     @Operation(
-            summary = "Deletes booking of user in session", tags = {"delete", "deleteMyBooking", "user"},
+            summary = "Deletes booking of user in session", 
+            tags = {"delete", "deleteMyBooking", "booking"},
             description = "Deletes booking for user that is" + " "
                     + "currently logged" + " " + "in the session."
     )

@@ -4,12 +4,22 @@
  */
 package fina.skroflin.controller;
 
+import fina.skroflin.model.Booking;
+import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +40,7 @@ import org.springframework.web.server.ResponseStatusException;
  *
  * @author skroflin
  */
+@Tag(name = "TrainingSession", description = "Available endpoints for the entity 'TrainingSession'")
 @RestController
 @RequestMapping("/api/fina/skroflin/trainingSession")
 public class TrainingSessionController {
@@ -45,6 +56,17 @@ public class TrainingSessionController {
         this.trainerService = trainerService;
     }
 
+    @Operation(
+            summary = "Retrieves all training sessions", tags = {"get", "trainingSessions"},
+            description = "Retrieves all bookings with information about"
+                    + " " + "their respectful users, date time"
+                    + " " + "training type, training level and capacity of the session."
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingSession.class)))),
+                @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
     @GetMapping("/get")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAll() {
         try {
@@ -60,6 +82,26 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Retrieves training session by id",
+            description = "Retrieves training session by id with its whole respectful data."
+                    + " " + "If there is no id for the given training session, no result is retrieved.",
+            tags = {"trainingSession", "getBy"},
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primary key of training session in the database."
+                                + " " + "Must be greater than 0!",
+                        example = "1"
+                )})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "204", description = "There is no training session for the given id."),
+        @ApiResponse(responseCode = "400", description = "Id must be greater than 0!", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @GetMapping("/getById")
     public ResponseEntity<TrainingSessionResponseDTO> getById(
             @RequestParam int id
@@ -91,6 +133,16 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Retrieves training session data of the user in the session", tags = {"get", "trainingSession", "getMyTrainingSession"},
+            description = "Retrieves data of the current authentiacted user with information about"
+                    + " " + "their trainer, date time, training type, training level and capacity."
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Booking.class)))),
+                @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
     @GetMapping("/getMyTrainingSessions")
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
             @RequestHeader HttpHeaders headers
@@ -107,7 +159,17 @@ public class TrainingSessionController {
             );
         }
     }
-
+    
+    @Operation(
+            summary = "Create new training session",
+            tags = {"post", "trainingSesion"},
+            description = "Create new training session. User id, date time,"
+                    + " " + "training type, training level and capacity is necessary!")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Bad request (dto object wasn't received)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PostMapping("/post")
     public ResponseEntity<TrainingSessionResponseDTO> post(
             @RequestBody(required = true) TrainingSessionDTO dto
@@ -182,6 +244,16 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Create new booking for the authenticated user",
+            tags = {"post", "createMyBooking"},
+            description = "Create new booking for the user that is authenticated and"
+                    + " " + "currently in the session.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Bad request (dto object wasn't received)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PostMapping("/createMyTrainingSession")
     public ResponseEntity<MyTrainingSessionResponseDTO> createMyTrainingSession(
             @RequestHeader HttpHeaders headers,
@@ -214,6 +286,24 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Updates training session", tags = {"put", "trainingSession"},
+            description = "Updates training session.",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primary key of the trainingSession in the database, must be greater than 0!",
+                        example = "2"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Updated", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Bad request (id wasn't received or dto object)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PutMapping("/put")
     public ResponseEntity<TrainingSessionResponseDTO> put(
             @RequestParam int id,
@@ -276,6 +366,16 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Updates training session for authenticated user", tags = {"put", "updateMyBooking", "trainingSession"},
+            description = "Updates training session for user that is currently logged"
+                    + " " + "in the session."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Updated", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PutMapping("/updateMySession")
     public ResponseEntity<MyTrainingSessionResponseDTO> updateMyTrainingSession(
             @RequestHeader HttpHeaders headers,
@@ -310,6 +410,30 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Deletes training session", tags = {"delete", "trainingSession"},
+            description = "Deletes training session.",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primary key of the trainingSession in the database, must be greater than 0!",
+                        example = "1"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                description = "Updated", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", 
+                description = "Bad request (can't delete because there is no booking)", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", 
+                description = "Internal server error", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(
             @RequestParam int id
@@ -341,6 +465,22 @@ public class TrainingSessionController {
         }
     }
 
+    @Operation(
+            summary = "Deletes training session of user in session", 
+            tags = {"delete", "deleteMyBooking", "trainingSession"},
+            description = "Deletes trainingSession for user that is" + " "
+                    + "currently logged" + " " + "in the session."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                description = "Deleted", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", 
+                description = "Bad request (can't delete because there is no trainingSession)", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", 
+                description = "Internal server error", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @DeleteMapping("/deleteMyTrainingSession")
     public ResponseEntity<String> deleteMyTrainingSession(
             @RequestHeader HttpHeaders headers,
