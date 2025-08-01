@@ -20,21 +20,14 @@ public class MyConfiguration {
   public OpenAPI myOpenAPI() {
     Server devServer = new Server();
     devServer.setUrl("http://localhost:8080");
-    devServer.setDescription("Razvoj (DEV)");
-
-     Contact contact = new Contact();
-    contact.setEmail("kolokvij@ffos.hr");
-    contact.setName("2. kolokvij");
-    contact.setUrl("https://www.ffos.unios.hr");
+    devServer.setDescription("Development (DEV)");
 
     License mitLicense = new License().name("Edukacijska licenca").url("https://unevoc.unesco.org/home/Open+Licensing+of+Educational+Resources");
 
     Info info = new Info()
-        .title("IT@FFOS Programiranje 2 Ispitni rok")
+        .title("R&P REST API")
         .version("1.0")
-        .contact(contact)
-        .description("Ovo je predložak za 2. kolokvij iz kolegija Programiranje 2 u sklopu Dvopredmetnog diplomskog studija Informacijske tehnologije koji se izvodi na Odsjeku za informacijske znanosti pri Filozofskom fakultetu u Osijeku")
-            .termsOfService("https://sokrat.ffos.hr/ff-info/kolegiji.php?action=show&id=1900")
+        .description("Simple REST API made with Spring Boot, Hibernate and MariaDB.")
         .license(mitLicense);
     
     return new OpenAPI().info(info).servers(List.of(devServer));
