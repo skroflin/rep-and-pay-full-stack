@@ -6,10 +6,13 @@ package fina.skroflin.controller;
 
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.user.UserService;
 import jakarta.persistence.NoResultException;
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +86,23 @@ public class TrainingSessionController {
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error upon fetching training session with id"
                     + " " + id + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+
+    @GetMapping("/getMyTrainingSessions")
+    public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ) {
+        try {
+            return ResponseEntity.ok(
+                    trainingSessionService.getMyTrainingSessions(headers)
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching" + " " + e.getMessage(),
                     e
             );
         }
@@ -161,6 +182,38 @@ public class TrainingSessionController {
         }
     }
 
+    @PostMapping("/createMyTrainingSession")
+    public ResponseEntity<MyTrainingSessionResponseDTO> createMyTrainingSession(
+            @RequestHeader HttpHeaders headers,
+            MyTrainingSessionDTO dto
+    ) {
+        try {
+            return ResponseEntity.ok(
+                    trainingSessionService.createMyTrainingSession(
+                            dto, headers
+                    )
+            );
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
+            );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    e.getMessage(),
+                    e
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage(),
+                    e
+            );
+        }
+    }
+
     @PutMapping("/put")
     public ResponseEntity<TrainingSessionResponseDTO> put(
             @RequestParam int id,
@@ -199,8 +252,8 @@ public class TrainingSessionController {
                         + "or equal to zero!"
                 );
             }
-            TrainingSessionResponseDTO updatedTrainingSession = 
-                    trainingSessionService.put(dto, id);
+            TrainingSessionResponseDTO updatedTrainingSession
+                    = trainingSessionService.put(dto, id);
             return new ResponseEntity<>(updatedTrainingSession, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
@@ -222,25 +275,82 @@ public class TrainingSessionController {
             );
         }
     }
-    
+
+    @PutMapping("/updateMySession")
+    public ResponseEntity<MyTrainingSessionResponseDTO> updateMyTrainingSession(
+            @RequestHeader HttpHeaders headers,
+            MyTrainingSessionDTO dto,
+            int id
+    ) {
+        try {
+            return ResponseEntity.ok(
+                    trainingSessionService.updateMyTrainingSession(
+                            dto,
+                            id,
+                            headers)
+            );
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
+            );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    e.getMessage(),
+                    e
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage(),
+                    e
+            );
+        }
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(
             @RequestParam int id
-    ){
+    ) {
         try {
             if (id <= 0) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, 
+                        HttpStatus.BAD_REQUEST,
                         "Id musn't be lesser than 0!"
                 );
             }
             trainingSessionService.delete(id);
             return new ResponseEntity<>(
-                    "Training session with id" 
-                            + " " + id
-                            + " " + "deleted",
+                    "Training session with id"
+                    + " " + id
+                    + " " + "deleted",
                     HttpStatus.OK
             );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+
+    @DeleteMapping("/deleteMyTrainingSession")
+    public ResponseEntity<String> deleteMyTrainingSession(
+            @RequestHeader HttpHeaders headers,
+            int id
+    ) {
+        try {
+            return ResponseEntity.ok(trainingSessionService.deleteMyTrainingSession(
+                    id,
+                    headers
+            ));
         } catch (NoResultException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (IllegalArgumentException e) {
