@@ -160,6 +160,60 @@ public class UserService extends MainService {
         }
     }
     
+    public UserResponseDTO updateMyProfile(HttpHeaders headers, UserDTO o) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token, 
+                    claims -> claims.get("UserId", Integer.class));
+            Users userProfile = (Users) session.get(Users.class, userId);
+            if (userProfile == null) {
+                throw new NoResultException(
+                        "User with id" 
+                                + " " + userId + " " 
+                                        + "doesn't exist!"
+                );
+            }
+            
+            updateEntityFromDto(userProfile, o);
+            
+            session.beginTransaction();
+            session.merge(userProfile);
+            session.getTransaction().commit();
+            
+            return convertToResponseDTO(userProfile);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon updating user"
+                    + "profile:" + " " + e.getMessage(), e);
+        }
+    }
+    
+    public String deleteMyProfile(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token, 
+                    claims -> claims.get("UserId", Integer.class));
+            Users userProfile = (Users) session.get(Users.class, userId);
+            if (userProfile == null) {
+                throw new NoResultException(
+                        "User with id" 
+                                + " " + userId + " " 
+                                        + "doesn't exist!"
+                );
+            }
+            
+            session.beginTransaction();
+            session.remove(userProfile);
+            session.getTransaction().commit();
+            return "User with" + " " + userId + " " + "has been deleted!";
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error deleting user profile" 
+                            + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
     public UserResponseDTO getById(int id) {
         Users user = session.get(Users.class, id);
         return convertToResponseDTO(user);

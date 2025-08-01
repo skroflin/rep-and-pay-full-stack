@@ -69,6 +69,31 @@ public class UserController {
         }
     }
     
+    @PutMapping("/updateMyProfile")
+    public ResponseEntity<UserResponseDTO> updateMyProfile(
+            @RequestHeader
+            HttpHeaders headers,
+            @RequestBody(required = true)
+            UserDTO dto
+    ){
+        try {
+            UserResponseDTO updatedUser = userService.updateMyProfile(headers, dto);
+            return ResponseEntity.ok(updatedUser);
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon updating user" + " "
+                            + dto.username() + " " 
+                            + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
     @PutMapping("/put")
     public ResponseEntity<UserResponseDTO> put(
             @RequestParam int id,
