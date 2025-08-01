@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,8 @@ import org.springframework.web.server.ResponseStatusException;
  *
  * @author skroflin
  */
+
+@Tag(name = "User", description = "Available endpoints for the entity 'Users'")
 @RestController
 @RequestMapping("/api/fina/skroflin/users")
 public class UserController {
@@ -75,7 +78,7 @@ public class UserController {
     }
     
     @Operation(
-            summary = "Retrieves user data of the user in the session", tags = {"get", "user"},
+            summary = "Retrieves user data of the user in the session", tags = {"get", "user", "getMyProfile"},
             description = "Retrieves data of the current authentiacted user with information about"
                     + " " + "their first name, last name, email, username, password, role, have"
                     + " " + "they paid for their membership or not, membership month, list of"
