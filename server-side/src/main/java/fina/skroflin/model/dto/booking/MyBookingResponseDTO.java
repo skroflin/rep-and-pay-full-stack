@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * @author skroflin
  */
 public record MyBookingResponseDTO(
+        Integer id,
         Integer trainingSessionId,
         LocalDateTime reservationTime,
         LocalDateTime endOfReservationTime

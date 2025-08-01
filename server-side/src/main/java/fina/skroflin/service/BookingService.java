@@ -14,7 +14,6 @@ import fina.skroflin.model.dto.booking.MyBookingResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -287,6 +286,67 @@ public class BookingService extends MainService {
             session.merge(existingBooking);
             session.getTransaction().commit();
             return convertToResponseDTO(existingBooking);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon updating booking with id"
+                    + " " + id + " " + e.getMessage(), e);
+        }
+    }
+    
+    public MyBookingResponseDTO updateMyBooking(
+            MyBookingDTO o,
+            int id,
+            HttpHeaders headers
+    ){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            Booking existingBooking
+                    = (Booking) session.get(Booking.class, id);
+            if (existingBooking == null) {
+                throw new NoResultException("Booking with id" + " "
+                        + id + " " + "doesn't exist!");
+            }
+            
+            if (!existingBooking.getUser().getId().equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "update this booking!");
+            }
+            
+            Long count = session.createQuery(
+                    "select count(b) from Booking b "
+                    + "where b.userId = :userId "
+                    + "and b.id != :currentId "
+                    + "and :start < b.endOfReservationTime "
+                    + "and :end > b.reservationTime", Long.class)
+                    .setParameter("userId", userId)
+                    .setParameter("start", o.reservationTime())
+                    .setParameter("end", o.endOfReservationTime())
+                    .setParameter("currentId", id)
+                    .uniqueResult();
+            
+            if (count > 0) {
+                throw new IllegalArgumentException("You already have a booking"
+                        + " " + "that overlaps with this time!");
+            }
+            
+            TrainingSession trainingSession
+                    = (TrainingSession) session.get(TrainingSession.class, o.trainingSessionId());
+            if (trainingSession == null) {
+                throw new NoResultException("Training session with id" + " "
+                        + o.trainingSessionId() + " " + "doesn't exist!");
+            }
+            
+            existingBooking.setTrainingSession(trainingSession);
+            existingBooking.setReservationTime(o.reservationTime());
+            existingBooking.setEndOfReservation(o.endOfReservationTime());
+            
+            session.beginTransaction();
+            session.merge(existingBooking);
+            session.getTransaction().commit();
+            
+            return convertToMyResponseDTO(existingBooking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating booking with id"
                     + " " + id + " " + e.getMessage(), e);

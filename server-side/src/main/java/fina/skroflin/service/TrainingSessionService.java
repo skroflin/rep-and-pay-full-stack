@@ -6,12 +6,16 @@ package fina.skroflin.service;
 
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.Users;
+import fina.skroflin.model.dto.training.MyTrainingSessionDTO;
+import fina.skroflin.model.dto.training.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +25,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrainingSessionService extends MainService {
 
+    private final JwtTokenUtil jwtTokenUtil;
+
+    public TrainingSessionService(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
+    
     @Transactional
     public TrainingSessionResponseDTO convertToResponseDTO(
             TrainingSession trainingSession) {
@@ -38,6 +48,22 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getDateTime(),
                 trainingSession.getTrainingType(),
                 trainingSession.getTrainingLevel(),
+                trainingSession.getCapacity()
+        );
+    }
+    
+    @Transactional
+    public MyTrainingSessionResponseDTO converToMyResponseDTO(
+            TrainingSession trainingSession
+    ) {
+        if (trainingSession == null) {
+            return null;
+        }
+        return new MyTrainingSessionResponseDTO(
+                trainingSession.getId(), 
+                trainingSession.getDateTime(), 
+                trainingSession.getTrainingType(), 
+                trainingSession.getTrainingLevel(), 
                 trainingSession.getCapacity()
         );
     }
@@ -127,6 +153,21 @@ public class TrainingSessionService extends MainService {
                         + o.trainerId() + " "
                         + "doesn't exist or is not a trainer!");
             }
+            
+            Long count = session.createQuery(
+                    "select count(ts) from TrainingSession ts"
+                            + "where ts.trainer.id = :trainerId"
+                            + "and ts.dateTime = :reservation",
+                    Long.class)
+                    .setParameter("trainerId", o.trainerId())
+                    .setParameter("reservation", o.dateTime())
+                    .uniqueResult();
+            
+            if (count > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + o.trainerId() + " " + "already has a session"
+                                + " " + "at that time!");
+            }
 
             TrainingSession ts = convertToEntity(o);
             session.beginTransaction();
@@ -137,6 +178,108 @@ public class TrainingSessionService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException("Error upon training session "
                     + "booking:" + e.getMessage(), e);
+        }
+    }
+    
+    public MyTrainingSessionResponseDTO createMyTrainingSession(
+            MyTrainingSessionDTO o,
+            HttpHeaders headers
+    ){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            Users trainerProfile = (Users) session.get(Users.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+            
+            Long count = session.createQuery(
+                    "select count(ts) from TrainingSession ts"
+                            + "where ts.trainer.id = :trainerId"
+                            + "and ts.dateTime = :reservation",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .setParameter(":reservation", o.dateTime())
+                    .uniqueResult();
+            
+            if (count > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + userId + " " + "already has a session"
+                                + " " + "at that time!");
+            }
+            
+            TrainingSession trainingSession = new TrainingSession(
+                    trainerProfile, 
+                    o.dateTime(),
+                    o.trainingType(), 
+                    o.trainingLevel(), 
+                    o.capacity()
+            );
+            
+            session.beginTransaction();
+            session.persist(trainingSession);
+            session.getTransaction().commit();
+            
+            return converToMyResponseDTO(trainingSession);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon creating training session:"
+                    + e.getMessage(), e);
+        }
+    }
+    
+    public MyTrainingSessionResponseDTO updateMyTrainingSession(
+            MyTrainingSessionDTO o,
+            int id,
+            HttpHeaders headers
+    ){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            TrainingSession existingSession = session.get(TrainingSession.class, id);
+            if (existingSession == null) {
+                throw new NoResultException("Training session with the id"
+                        + " " + id + " " + "doesn't exist!");
+            }
+            
+            if (!existingSession.getTrainer().equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "update this training sesion!");
+            }
+            
+            Long count = session.createQuery(
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.dateTime = :reservation "
+                            + "and ts.id = :id",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .setParameter("reservation", o.dateTime())
+                    .setParameter("id", id)
+                    .uniqueResult();
+            
+            if (count > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + userId + " " + "already has a session"
+                                + " " + "at that time!");
+            }
+            
+            existingSession.setDateTime(o.dateTime());
+            existingSession.setTrainingType(o.trainingType());
+            existingSession.setTrainingLevel(o.trainingLevel());
+            existingSession.setCapacity(o.capacity());
+            
+            session.beginTransaction();
+            session.persist(existingSession);
+            session.getTransaction().commit();
+            
+            return converToMyResponseDTO(existingSession);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon creating training session:"
+                    + e.getMessage(), e);
         }
     }
 
