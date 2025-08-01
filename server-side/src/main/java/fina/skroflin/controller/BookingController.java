@@ -6,11 +6,14 @@ package fina.skroflin.controller;
 
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.user.UserService;
 import jakarta.persistence.NoResultException;
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,6 +88,22 @@ public class BookingController {
             );
         }
     }
+    
+    @GetMapping("/getMyBookings")
+    public ResponseEntity<List<MyBookingResponseDTO>> getMyBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        try {
+            return ResponseEntity.ok(bookingService.getMyBookings(headers));
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
 
     @PostMapping("/post")
     public ResponseEntity<BookingResponseDTO> post(
@@ -145,6 +165,24 @@ public class BookingController {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @PostMapping("/createMyBooking")
+    public ResponseEntity<MyBookingResponseDTO> createMyBooking(
+            @RequestHeader
+            HttpHeaders headers,
+            @RequestBody(required = true)
+            MyBookingDTO dto
+    ){
+        try {
+            return ResponseEntity.ok(bookingService.createMyBooking(dto, headers));
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon creating booking" + " " + e.getMessage(),
                     e
             );
         }
@@ -216,6 +254,41 @@ public class BookingController {
         }
     }
     
+    @PostMapping("/updateMyBooking")
+    public ResponseEntity<MyBookingResponseDTO> updateMyBooking(
+            @RequestHeader
+            HttpHeaders headers,
+            @RequestBody(required = true)
+            MyBookingDTO dto,
+            int id
+    ){
+        try {
+            return ResponseEntity.ok(
+                    bookingService.updateMyBooking(
+                            dto, id, headers
+                    )
+            );
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
+            );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    e.getMessage(),
+                    e
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage(),
+                    e
+            );
+        }
+    }
+    
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(
             @RequestParam int id
@@ -233,6 +306,31 @@ public class BookingController {
                             + " " + id 
                             + " " + "deleted", 
                     HttpStatus.OK
+            );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @DeleteMapping("/deleteMyBooking")
+    public ResponseEntity<String> deleteMyBooking(
+            int id,
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        try {
+            return ResponseEntity.ok(
+                    bookingService.deleteMyBooking(
+                            id, headers
+                    )
             );
         } catch (NoResultException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
