@@ -28,7 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author skroflin
  */
 @RestController
-@RequestMapping("/api/fina/skroflin/user")
+@RequestMapping("/api/fina/skroflin/users")
 public class UserController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -53,13 +53,13 @@ public class UserController {
         }
     }
     
-    @GetMapping("/getById")
+    @GetMapping("/getMyProfile")
     public ResponseEntity<UserResponseDTO> getByToken(
             @RequestHeader
             HttpHeaders headers
     ){
         try {
-            return ResponseEntity.ok(userService.getById(headers));
+            return ResponseEntity.ok(userService.getMyProfile(headers));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
                     "Invalid or missing token:" 

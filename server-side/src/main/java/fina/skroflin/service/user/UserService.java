@@ -137,7 +137,7 @@ public class UserService extends MainService {
                 .collect(Collectors.toList());
     }
 
-    public UserResponseDTO getById(HttpHeaders headers) {
+    public UserResponseDTO getMyProfile(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token, 
@@ -159,7 +159,12 @@ public class UserService extends MainService {
             );
         }
     }
-
+    
+    public UserResponseDTO getById(int id) {
+        Users user = session.get(Users.class, id);
+        return convertToResponseDTO(user);
+    }
+    
     public UserResponseDTO put(UserDTO o, int id) {
         try {
             Users existingUser = (Users) session.get(Users.class, id);
