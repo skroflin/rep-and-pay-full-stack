@@ -4,10 +4,18 @@
  */
 package fina.skroflin.controller;
 
+import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.service.user.UserService;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +46,19 @@ public class UserController {
         this.jwtTokenUtil = jwtTokenUtil;
     }
     
+    @Operation(
+            summary = "Retrieves all users", tags = {"get", "user"},
+            description = "Retrieves all users (superuser, coach or user) with information about"
+                    + " " + "their first name, last name, email, username, password, role, have"
+                    + " " + "they paid for their membership or not, membership month, list of"
+                    + " " + "training sessions (if they are trainers/coaches) and lists of bookings"
+                    + " " + "(if they are users)."
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Users.class)))),
+                @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
     @GetMapping("/get")
     public ResponseEntity<List<UserResponseDTO>> getAll(){
         try {
@@ -53,6 +74,19 @@ public class UserController {
         }
     }
     
+    @Operation(
+            summary = "Retrieves user data of the user in the session", tags = {"get", "user"},
+            description = "Retrieves data of the current authentiacted user with information about"
+                    + " " + "their first name, last name, email, username, password, role, have"
+                    + " " + "they paid for their membership or not, membership month, list of"
+                    + " " + "training sessions (if they are trainers/coaches) and lists of bookings"
+                    + " " + "(if they are users)."
+    )
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Users.class)))),
+                @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
     @GetMapping("/getMyProfile")
     public ResponseEntity<UserResponseDTO> getByToken(
             @RequestHeader
@@ -69,6 +103,16 @@ public class UserController {
         }
     }
     
+    @Operation(
+            summary = "Updates user profile", tags = {"put", "updateMyProfile", "user"},
+            description = "Updates user profile that is currently logged"
+                    + " " + "in the session."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Updated", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PutMapping("/updateMyProfile")
     public ResponseEntity<UserResponseDTO> updateMyProfile(
             @RequestHeader
@@ -94,6 +138,24 @@ public class UserController {
         }
     }
     
+    @Operation(
+            summary = "Updates user", tags = {"put", "user"},
+            description = "Updates user.",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primary key of the user in the database, must be greater than 0!",
+                        example = "2"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Updated", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", description = "Bad request (id wasn't received or dto object)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @PutMapping("/put")
     public ResponseEntity<UserResponseDTO> put(
             @RequestParam int id,
@@ -170,6 +232,21 @@ public class UserController {
         }
     }
     
+    @Operation(
+            summary = "Deletes user profile", tags = {"delete", "deleteMyProfile", "user"},
+            description = "Deletes user profile of the user that is" + " "
+                    + "currently logged" + " " + "in the session."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                description = "Deleted", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", 
+                description = "Bad request (can't delete because there is no user or some users are in certain training session)", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", 
+                description = "Internal server error", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @DeleteMapping("/deleteMyProfile")
     public ResponseEntity<String> deleteMyProfile(
             @RequestHeader
@@ -193,6 +270,30 @@ public class UserController {
         }
     }
     
+    @Operation(
+            summary = "Deletes user", tags = {"delete", "user"},
+            description = "Deletes user.",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        allowEmptyValue = false,
+                        required = true,
+                        description = "Primary key of the user in the database, must be greater than 0!",
+                        example = "2"
+                )
+            }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                description = "Updated", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "400", 
+                description = "Bad request (can't delete because there is no user or some users are in certain training session)", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+        @ApiResponse(responseCode = "500", 
+                description = "Internal server error", 
+                content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+    })
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(
             @RequestParam int id
