@@ -6,8 +6,8 @@ package fina.skroflin.service;
 
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.Users;
-import fina.skroflin.model.dto.training.MyTrainingSessionDTO;
-import fina.skroflin.model.dto.training.MyTrainingSessionResponseDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
@@ -336,6 +336,36 @@ public class TrainingSessionService extends MainService {
                         + " " + id + " " + "doesn't exist!");
             }
             session.remove(trainingSession);
+            return "Training session with id" + " " + id + " " + "deleted!";
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon deleting training session"
+                    + " with id" + " " + id + " " + e.getMessage(), e);
+        }
+    }
+    
+    public String deleteMyTrainingSession(int id, HttpHeaders headers){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            TrainingSession trainingSession = 
+                    (TrainingSession) session.get(TrainingSession.class, id);
+            
+            if (trainingSession == null) {
+                throw new NoResultException("Training session with the id"
+                        + " " + id + " " + "doesn't exist!");
+            }
+            
+            if (!trainingSession.getTrainer().getId().equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "delete this training session!");
+            }
+            
+            session.beginTransaction();
+            session.remove(trainingSession);
+            session.getTransaction().commit();
+            
             return "Training session with id" + " " + id + " " + "deleted!";
         } catch (Exception e) {
             throw new RuntimeException("Error upon deleting training session"

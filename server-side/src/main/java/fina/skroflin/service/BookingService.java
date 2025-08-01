@@ -9,8 +9,8 @@ import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
-import fina.skroflin.model.dto.booking.MyBookingDTO;
-import fina.skroflin.model.dto.booking.MyBookingResponseDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -365,6 +365,35 @@ public class BookingService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException("Error upon deleting booking with id"
                     + " " + id + " " + e.getMessage(), e);
+        }
+    }
+    
+    public String deleteMyBooking(int id, HttpHeaders headers){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            Booking booking = (Booking) session.get(Booking.class, id);
+            
+            if (booking == null) {
+                throw new NoResultException("Booking with the id"
+                        + " " + id + " " + "doesn't exist!");
+            }
+            
+            if (!booking.getUser().getId().equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "delete this booking!");
+            }
+            
+            session.beginTransaction();
+            session.remove(booking);
+            session.getTransaction().commit();
+            
+            return "Booking with id" + " " + id + " " + "deleted!";
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon deleting booking"
+                    + " with id" + " " + id + " " + e.getMessage(), e);
         }
     }
 }

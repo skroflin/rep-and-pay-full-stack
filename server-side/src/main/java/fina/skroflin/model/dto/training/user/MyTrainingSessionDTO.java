@@ -2,25 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
  */
-package fina.skroflin.model.dto.training;
+package fina.skroflin.model.dto.training.user;
 
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author skroflin
  */
-public record MyTrainingSessionResponseDTO(
-        Integer id,
+public record MyTrainingSessionDTO(
+        @Schema(example = "2025-07-29T20:00:00")
         LocalDateTime dateTime,
-        @Enumerated(EnumType.STRING)
+        @Schema(example = "weightlifting")
         TrainingType trainingType,
-        @Enumerated(EnumType.STRING)
+        @Schema(example = "intermediate")
         TrainingLevel trainingLevel,
+        @Schema(example = "20")
         int capacity
         ) {
 
