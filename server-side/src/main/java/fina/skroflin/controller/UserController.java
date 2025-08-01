@@ -170,6 +170,29 @@ public class UserController {
         }
     }
     
+    @DeleteMapping("/deleteMyProfile")
+    public ResponseEntity<String> deleteMyProfile(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        try {
+            userService.deleteMyProfile(headers);
+            return ResponseEntity.ok(
+                    "Profile sucesfully deleted!"
+                    );
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(
             @RequestParam int id

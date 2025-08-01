@@ -9,10 +9,15 @@ import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.Users;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.booking.MyBookingDTO;
+import fina.skroflin.model.dto.booking.MyBookingResponseDTO;
+import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,15 +26,21 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BookingService extends MainService {
-
+    
+    private final JwtTokenUtil jwtTokenUtil;
+    
+    public BookingService(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
+    
     @Transactional
     public BookingResponseDTO convertToResponseDTO(Booking booking) {
         if (booking == null) {
             return null;
         }
-        Integer userId = (booking.getId() != null) 
+        Integer userId = (booking.getId() != null)
                 ? booking.getUser().getId() : null;
-        Integer trainingSessionId = (booking.getId() != null) 
+        Integer trainingSessionId = (booking.getId() != null)
                 ? booking.getTrainingSession().getId() : null;
         
         return new BookingResponseDTO(
@@ -40,7 +51,22 @@ public class BookingService extends MainService {
                 booking.getEndOfReservation()
         );
     }
-
+    
+    @Transactional
+    public MyBookingResponseDTO convertToMyResponseDTO(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        Integer trainingSessionId = (booking.getId() != null)
+                ? booking.getTrainingSession().getId() : null;
+        return new MyBookingResponseDTO(
+                booking.getId(), 
+                trainingSessionId, 
+                booking.getReservationTime(), 
+                booking.getEndOfReservation()
+        );
+    }
+    
     @Transactional
     private Booking convertToEntity(BookingDTO dto) {
         Booking booking = new Booking();
@@ -57,7 +83,7 @@ public class BookingService extends MainService {
                     TrainingSession.class, dto.trainingSessionId());
             if (trainingSession == null) {
                 throw new IllegalArgumentException("Training session with the id"
-                        + " " + dto.userId() + " " + "doesn't exist!");
+                        + " " + dto.trainingSessionId() + " " + "doesn't exist!");
             }
             booking.setTrainingSession(trainingSession);
         }
@@ -65,7 +91,7 @@ public class BookingService extends MainService {
         booking.setEndOfReservation(dto.endOfReservationTime());
         return booking;
     }
-
+    
     @Transactional
     private void updateEntityFromDto(Booking booking, BookingDTO dto) {
         if (dto.userId() != null) {
@@ -92,7 +118,7 @@ public class BookingService extends MainService {
         booking.setReservationTime(dto.reservationTime());
         booking.setEndOfReservation(dto.endOfReservationTime());
     }
-
+    
     public List<BookingResponseDTO> getAll() {
         try {
             List<Booking> bookings = session.createQuery(
@@ -107,7 +133,7 @@ public class BookingService extends MainService {
                     + " " + e.getMessage(), e);
         }
     }
-
+    
     public BookingResponseDTO getById(int id) {
         try {
             Booking booking = session.createQuery(
@@ -117,12 +143,12 @@ public class BookingService extends MainService {
                     + "where b.id = :id", Booking.class)
                     .setParameter("id", id)
                     .uniqueResult();
-
+            
             if (booking == null) {
                 throw new NoResultException("Booking with id"
                         + " " + id + " " + "doesn't exist!");
             }
-
+            
             return convertToResponseDTO(booking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching "
@@ -130,7 +156,7 @@ public class BookingService extends MainService {
                     + " " + id + ": " + e.getMessage(), e);
         }
     }
-
+    
     public BookingResponseDTO post(BookingDTO o) {
         try {
             Long count = session.createQuery(
@@ -146,19 +172,76 @@ public class BookingService extends MainService {
                 throw new IllegalArgumentException("You already have a booking"
                         + " " + "that overlaps with this time!");
             }
-
+            
             Booking booking = convertToEntity(o);
             session.beginTransaction();
             session.persist(booking);
             session.getTransaction().commit();
-
+            
             return convertToResponseDTO(booking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating booking:"
                     + e.getMessage(), e);
         }
     }
-
+    
+    public MyBookingResponseDTO createMyBooking(
+            MyBookingDTO o, 
+            HttpHeaders headers
+    ) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            Users userProfile = (Users) session.get(Users.class, userId);
+            if (userProfile == null) {
+                throw new NoResultException("User not found!");
+            }
+            
+            TrainingSession ts = (TrainingSession) session.get(
+                    TrainingSession.class, 
+                    o.trainingSessionId()
+            );
+            if (ts == null) {
+               throw new NoResultException(
+                       "Training session with id" 
+                               + " " + o.trainingSessionId()
+                               + "not found!"
+               ); 
+            }
+            Long count = session.createQuery(
+                    "select count(b) from Booking b "
+                    + "where b.user.id = :userId"
+                    + "and :start < b.endOfReservationTime "
+                    + "and :end > b.reservationTime", Long.class)
+                    .setParameter("userId", userId)
+                    .setParameter("start", o.reservationTime())
+                    .setParameter("end", o.endOfReservationTime())
+                    .uniqueResult();
+            if (count > 0) {
+                throw new IllegalArgumentException("You already have a booking"
+                        + " " + "that overlaps with this time!");
+            }
+            
+            Booking booking = new Booking(
+                    userProfile, 
+                    ts, 
+                    o.reservationTime(),
+                    o.endOfReservationTime()
+            );
+            
+            session.beginTransaction();
+            session.persist(booking);
+            session.getTransaction().commit();
+            
+            return convertToMyResponseDTO(booking);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon creating booking:"
+                    + e.getMessage(), e);
+        }
+    }
+    
     public BookingResponseDTO put(BookingDTO o, int id) {
         try {
             Booking existingBooking
@@ -170,10 +253,10 @@ public class BookingService extends MainService {
             
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                            + "where b.userId = :userId "
-                            + "and b.id != :currentId "
-                            + "and :start < b.endOfReservationTime "
-                            + "and :end > b.reservationTime", Long.class)
+                    + "where b.userId = :userId "
+                    + "and b.id != :currentId "
+                    + "and :start < b.endOfReservationTime "
+                    + "and :end > b.reservationTime", Long.class)
                     .setParameter("userId", o.userId())
                     .setParameter("start", o.reservationTime())
                     .setParameter("end", o.endOfReservationTime())
@@ -185,14 +268,14 @@ public class BookingService extends MainService {
                         + " " + "that overlaps with this time!");
             }
             
-            Users user = 
-                    (Users) session.get(Users.class, o.userId());
+            Users user
+                    = (Users) session.get(Users.class, o.userId());
             if (user == null) {
-                throw new NoResultException("User with id" + " " 
+                throw new NoResultException("User with id" + " "
                         + o.userId() + " " + "doesn't exist!");
             }
             
-            TrainingSession trainingSession 
+            TrainingSession trainingSession
                     = (TrainingSession) session.get(TrainingSession.class, o.trainingSessionId());
             if (trainingSession == null) {
                 throw new NoResultException("Training session with id" + " "
@@ -210,11 +293,11 @@ public class BookingService extends MainService {
         }
     }
     
-    public String delete(int id){
+    public String delete(int id) {
         try {
             Booking booking = (Booking) session.get(Booking.class, id);
             if (booking == null) {
-                throw new NoResultException("Booking with id" 
+                throw new NoResultException("Booking with id"
                         + " " + id + " " + "doesn't exist!");
             }
             session.remove(booking);
