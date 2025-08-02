@@ -5,7 +5,7 @@
 package fina.skroflin.service;
 
 import fina.skroflin.model.TrainingSession;
-import fina.skroflin.model.Users;
+import fina.skroflin.model.User;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionDTO;
@@ -72,7 +72,7 @@ public class TrainingSessionService extends MainService {
     private TrainingSession convertToEntity(TrainingSessionDTO dto) {
         TrainingSession trainingSession = new TrainingSession();
         if (dto.trainerId() != null) {
-            Users trainer = (Users) session.get(Users.class, dto.trainerId());
+            User trainer = (User) session.get(User.class, dto.trainerId());
             if (trainer == null) {
                 throw new IllegalArgumentException("Trainer with the id"
                         + " " + dto.trainerId() + " " + "doesn't exist!");
@@ -91,7 +91,7 @@ public class TrainingSessionService extends MainService {
             TrainingSession trainingSession,
             TrainingSessionDTO dto) {
         if (dto.trainerId() != null) {
-            Users trainer = (Users) session.get(Users.class, dto.trainerId());
+            User trainer = (User) session.get(User.class, dto.trainerId());
             if (trainer == null) {
                 throw new IllegalArgumentException("Trainer with the id"
                         + " " + dto.trainerId() + " " + "doesn't exist!");
@@ -168,8 +168,8 @@ public class TrainingSessionService extends MainService {
 
     public TrainingSessionResponseDTO post(TrainingSessionDTO o) {
         try {
-            Users trainer = (Users) 
-                    session.get(Users.class, o.trainerId());
+            User trainer = (User) 
+                    session.get(User.class, o.trainerId());
             if (trainer == null || !"trainer".equals(trainer.getRole())) {
                 throw new IllegalArgumentException(
                         "Trainer with the id" + " "
@@ -213,7 +213,7 @@ public class TrainingSessionService extends MainService {
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
             
-            Users trainerProfile = (Users) session.get(Users.class, userId);
+            User trainerProfile = (User) session.get(User.class, userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
@@ -316,8 +316,8 @@ public class TrainingSessionService extends MainService {
                         + " " + id + " " + "doesn't exist!");
             }
             
-            Users trainer = (Users) 
-                    session.get(Users.class, o.trainerId());
+            User trainer = (User) 
+                    session.get(User.class, o.trainerId());
             if (trainer == null || !"trainer".equals(trainer.getRole())) {
                 throw new NoResultException("Trainer with the id"
                         + " " + id + " " + "doesn't exist!");

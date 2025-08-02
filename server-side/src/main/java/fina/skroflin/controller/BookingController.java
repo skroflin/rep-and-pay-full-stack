@@ -11,7 +11,7 @@ import fina.skroflin.model.dto.booking.user.MyBookingDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.TrainingSessionService;
-import fina.skroflin.service.user.UserService;
+import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

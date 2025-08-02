@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fina.skroflin.service.user;
+package fina.skroflin.service;
 
-import fina.skroflin.model.Users;
+import fina.skroflin.model.User;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.user.LoginDTO;
@@ -52,7 +52,7 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private UserResponseDTO convertToResponseDTO(Users user) {
+    private UserResponseDTO convertToResponseDTO(User user) {
         if (user == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class UserService extends MainService {
     
     @Transactional
     private PasswordResponseDTO convertPassToResponseDTO(
-            Users user
+            User user
     ){
         return new PasswordResponseDTO(
                 user.getId(),
@@ -104,8 +104,8 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private Users convertToEntity(UserDTO dto) {
-        Users user = new Users();
+    private User convertToEntity(UserDTO dto) {
+        User user = new User();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
@@ -116,7 +116,7 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private void updateEntityFromDto(Users user, UserDTO dto) {
+    private void updateEntityFromDto(User user, UserDTO dto) {
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
@@ -126,12 +126,12 @@ public class UserService extends MainService {
     }
     
     @Transactional
-    private void updatePassEntityFromDto(Users user, PasswordDTO dto) {
+    private void updatePassEntityFromDto(User user, PasswordDTO dto) {
         user.setPassword(dto.password());
     }
 
     public List<UserResponseDTO> getAll() {
-        List<Users> users = session.createQuery("from Users u", Users.class).list();
+        List<User> users = session.createQuery("from Users u", User.class).list();
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -142,7 +142,7 @@ public class UserService extends MainService {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token, 
                     claims -> claims.get("UserId", Integer.class));
-            Users users = (Users) session.get(Users.class, userId);
+            User users = (User) session.get(User.class, userId);
             if (users == null) {
                 throw new NoResultException(
                         "User with id" 
@@ -165,7 +165,7 @@ public class UserService extends MainService {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token, 
                     claims -> claims.get("UserId", Integer.class));
-            Users userProfile = (Users) session.get(Users.class, userId);
+            User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException(
                         "User with id" 
@@ -192,7 +192,7 @@ public class UserService extends MainService {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token, 
                     claims -> claims.get("UserId", Integer.class));
-            Users userProfile = (Users) session.get(Users.class, userId);
+            User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException(
                         "User with id" 
@@ -215,13 +215,13 @@ public class UserService extends MainService {
     }
     
     public UserResponseDTO getById(int id) {
-        Users user = session.get(Users.class, id);
+        User user = session.get(User.class, id);
         return convertToResponseDTO(user);
     }
     
     public UserResponseDTO put(UserDTO o, int id) {
         try {
-            Users existingUser = (Users) session.get(Users.class, id);
+            User existingUser = (User) session.get(User.class, id);
             if (existingUser == null) {
                 throw new NoResultException("User with id" + " "
                         + id + " " + "doesn't exist!");
@@ -254,7 +254,7 @@ public class UserService extends MainService {
 
     public String delete(int id) {
         try {
-            Users user = (Users) session.get(Users.class, id);
+            User user = (User) session.get(User.class, id);
             if (user == null) {
                 throw new NoResultException("User with id"
                         + " " + id + " " + "doesn't exist!");
@@ -282,7 +282,7 @@ public class UserService extends MainService {
                         + " " + "with the same username or email!");
             }
             
-            Users newUser = new Users(
+            User newUser = new User(
                     o.firstName(),
                     o.lastName(),
                     o.email(),
@@ -304,8 +304,8 @@ public class UserService extends MainService {
 
     public UserResponseDTO login(LoginDTO o) {
         try {
-            Users user = session.createQuery("from Users u where u.username = :username",
-                    Users.class)
+            User user = session.createQuery("from Users u where u.username = :username",
+                    User.class)
                     .setParameter("username", o.username())
                     .getSingleResult();
             if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
@@ -325,7 +325,7 @@ public class UserService extends MainService {
         try {
             int id = jwtTokenUtil.extractClaim(token, claims -> 
                     claims.get("UserId", Integer.class));
-            Users user = (Users) session.get(Users.class, id);
+            User user = (User) session.get(User.class, id);
             if (user == null) {
                 throw new NoResultException(
                         "User with the id"
@@ -342,6 +342,32 @@ public class UserService extends MainService {
                     + " " + e.getMessage(),
                     e
             );
+        }
+    }
+    
+    public User getUserByEmail(String email){
+        try {
+            return session.createQuery(
+                    "from User u where u.email = :email",
+                    User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (Exception e) {
+            throw new RuntimeException("User with email" + " " 
+                    + email + " " + "doesn't exist!");
+        }
+    }
+    
+    public User getUserByUsername(String username){
+        try {
+            return session.createQuery(
+                    "from User u where u.username = :username",
+                    User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (Exception e) {
+            throw new RuntimeException("User with username" + " "
+                    + username + " " + "doesn't exist!");
         }
     }
 }

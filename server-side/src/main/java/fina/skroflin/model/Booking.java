@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Booking extends MainEntity {
 
     @ManyToOne
-    private Users user;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "training_session_id")
     private TrainingSession trainingSession;
@@ -35,7 +35,7 @@ public class Booking extends MainEntity {
     }
 
     public Booking(
-            Users user, 
+            User user, 
             TrainingSession trainingSession, 
             LocalDateTime reservationTime, 
             LocalDateTime endOfReservation) {
@@ -45,11 +45,11 @@ public class Booking extends MainEntity {
         this.endOfReservation = endOfReservation;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

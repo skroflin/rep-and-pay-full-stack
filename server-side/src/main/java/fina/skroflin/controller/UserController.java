@@ -4,10 +4,10 @@
  */
 package fina.skroflin.controller;
 
-import fina.skroflin.model.Users;
+import fina.skroflin.model.User;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
-import fina.skroflin.service.user.UserService;
+import fina.skroflin.service.UserService;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,7 +59,7 @@ public class UserController {
     )
     @ApiResponses(
             value = {
-                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Users.class)))),
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))),
                 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
             })
     @GetMapping("/get")
@@ -87,7 +87,7 @@ public class UserController {
     )
     @ApiResponses(
             value = {
-                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Users.class)))),
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))),
                 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
             })
     @GetMapping("/getMyProfile")

@@ -12,7 +12,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -20,7 +24,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
-public class Users extends MainEntity {
+public class User extends MainEntity implements UserDetails {
 
     @Column(name = "first_name")
     private String firstName;
@@ -42,10 +46,12 @@ public class Users extends MainEntity {
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
-    public Users() {
+    
+    
+    public User() {
     }
 
-    public Users(
+    public User(
             String firstName, 
             String lastName, 
             String email, 
@@ -61,7 +67,7 @@ public class Users extends MainEntity {
         this.role = role;
     }
 
-    public Users(
+    public User(
             String firstName,
             String lastName,
             String email, 
@@ -163,6 +169,11 @@ public class Users extends MainEntity {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
 }

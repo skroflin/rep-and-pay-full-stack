@@ -11,7 +11,7 @@ import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
-import fina.skroflin.service.user.UserService;
+import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

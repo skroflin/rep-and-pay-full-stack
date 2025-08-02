@@ -6,7 +6,7 @@ package fina.skroflin.service;
 
 import fina.skroflin.model.Booking;
 import fina.skroflin.model.TrainingSession;
-import fina.skroflin.model.Users;
+import fina.skroflin.model.User;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingDTO;
@@ -70,7 +70,7 @@ public class BookingService extends MainService {
     private Booking convertToEntity(BookingDTO dto) {
         Booking booking = new Booking();
         if (dto.userId() != null) {
-            Users user = session.get(Users.class, dto.userId());
+            User user = session.get(User.class, dto.userId());
             if (user == null) {
                 throw new IllegalArgumentException("User with the id"
                         + " " + dto.userId() + " " + "doesn't exist!");
@@ -94,7 +94,7 @@ public class BookingService extends MainService {
     @Transactional
     private void updateEntityFromDto(Booking booking, BookingDTO dto) {
         if (dto.userId() != null) {
-            Users user = session.get(Users.class, dto.userId());
+            User user = session.get(User.class, dto.userId());
             if (user == null) {
                 throw new IllegalArgumentException("User with id"
                         + " " + dto.userId() + " " + "doesn't exist!");
@@ -217,7 +217,7 @@ public class BookingService extends MainService {
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
 
-            Users userProfile = (Users) session.get(Users.class, userId);
+            User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException("User not found!");
             }
@@ -291,8 +291,8 @@ public class BookingService extends MainService {
                         + " " + "that overlaps with this time!");
             }
 
-            Users user
-                    = (Users) session.get(Users.class, o.userId());
+            User user
+                    = (User) session.get(User.class, o.userId());
             if (user == null) {
                 throw new NoResultException("User with id" + " "
                         + o.userId() + " " + "doesn't exist!");

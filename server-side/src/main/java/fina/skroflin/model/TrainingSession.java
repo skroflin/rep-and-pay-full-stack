@@ -27,7 +27,7 @@ public class TrainingSession extends MainEntity {
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")
-    private Users trainer;
+    private User trainer;
     @Column(name = "date_time")
     private LocalDateTime dateTime;
     @Enumerated(EnumType.STRING)
@@ -42,7 +42,7 @@ public class TrainingSession extends MainEntity {
     }
 
     public TrainingSession(
-            Users trainer,
+            User trainer,
             LocalDateTime dateTime,
             TrainingType trainingType,
             TrainingLevel trainingLevel,
@@ -54,11 +54,11 @@ public class TrainingSession extends MainEntity {
         this.capacity = capacity;
     }
 
-    public Users getTrainer() {
+    public User getTrainer() {
         return trainer;
     }
 
-    public void setTrainer(Users trainer) {
+    public void setTrainer(User trainer) {
         this.trainer = trainer;
     }
 

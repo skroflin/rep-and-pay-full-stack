@@ -139,9 +139,10 @@ public class JwtTokenUtil {
                 && !isTokenExpired(token));
     }
 
-    public Boolean isTokenValid(String token) {
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
         try {
-            return !isTokenExpired(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (Exception e) {
             return false;
         }
