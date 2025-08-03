@@ -89,7 +89,7 @@ public class JwtTokenUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails, Long userId) 
+    public String generateToken(UserDetails userDetails, Integer userId) 
     {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()

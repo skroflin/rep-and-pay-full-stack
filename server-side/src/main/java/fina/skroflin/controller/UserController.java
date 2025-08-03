@@ -5,9 +5,12 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.User;
+import fina.skroflin.model.dto.user.LoginDTO;
+import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.service.UserService;
+import fina.skroflin.utils.jwt.JwtResponse;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +25,11 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -43,10 +49,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, JwtTokenUtil jwtTokenUtil) {
+    public UserController(UserService userService,
+            JwtTokenUtil jwtTokenUtil, 
+            AuthenticationManager authenticationManager
+    ) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.authenticationManager = authenticationManager;
     }
     
     @Operation(
@@ -323,6 +334,52 @@ public class UserController {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> register(
+            @RequestBody(required = true)
+            RegistrationDTO dto
+    ){
+        try {
+            UserResponseDTO registeredUser = userService.registration(dto);
+            return new ResponseEntity<>(registeredUser, HttpStatus.OK);
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon registration" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(
+            @RequestBody(required = true)
+            LoginDTO dto
+    ){
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
+            User user = userService.getUserByEmail(dto.username());
+            String jwt = jwtTokenUtil.generateToken(user, user.getId());
+            
+            return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon login" + " " + e.getMessage(),
                     e
             );
         }
