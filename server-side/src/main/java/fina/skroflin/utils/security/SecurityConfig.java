@@ -40,8 +40,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/user/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/user/register").permitAll()
+                        .requestMatchers("/api/fina/skroflin/user/register", "/api/fina/skroflin/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/user/*").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/user").hasAnyAuthority(Role.superuser.name(), Role.coach.name(), Role.user.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/get").hasAnyAuthority(Role.superuser.name())
@@ -52,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/getMyProfile").hasAnyAuthority(Role.user.name(), Role.coach.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/user/updateMyProfile").hasAnyAuthority(Role.user.name(), Role.coach.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/fina/skroflin/user/deleteMyProfile").hasAnyAuthority(Role.superuser.name(), Role.coach.name())
+                        .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/user/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/trainingSession/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/get").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getById").hasAnyAuthority(Role.superuser.name())

@@ -371,11 +371,14 @@ public class UserController {
             LoginDTO dto
     ){
         try {
-            System.out.println("Login request for:" + " " + dto.username());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
-            User user = serviceImpl.getUserByEmail(dto.username());
+            User user = serviceImpl.getUserByUsername(dto.username());
             String jwt = jwtTokenUtil.generateToken(user, user.getId());
+            
+            System.out.println("Login request for:" + " " + user.getUsername());
+            System.out.println("Role" + " " + user.getRole());
+            System.out.println("JWT" + " " + jwt);
             
             return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
         } catch (NoResultException e) {

@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author skroflin
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User extends MainEntity implements UserDetails {
 
     @Column(name = "first_name")
@@ -175,7 +175,7 @@ public class User extends MainEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.name().toLowerCase()));
     }
 
     @Override
