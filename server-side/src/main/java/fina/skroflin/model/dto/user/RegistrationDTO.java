@@ -12,17 +12,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author skroflin
  */
 public record RegistrationDTO(
-        @Schema(name = "Sven")
+        @Schema(example = "Sven")
         String firstName,
-        @Schema(name = "Kroflin")
+        @Schema(example = "Kroflin")
         String lastName,
-        @Schema(name = "skroflin")
+        @Schema(example = "skroflin")
         String username,
-        @Schema(name = "skroflin@fina.hr")
+        @Schema(example = "skroflin@fina.hr")
         String email,
-        @Schema(name = "lozinka123")
+        @Schema(example = "lozinka123")
         String password,
-        @Schema(name = "superuser")
+        @Schema(example = "superuser")
         Role role
         ) {
     

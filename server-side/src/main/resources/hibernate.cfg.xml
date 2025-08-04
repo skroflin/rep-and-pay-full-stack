@@ -19,7 +19,7 @@
         <property name="hbm2ddl.auto">update</property>
     
         <!-- <mapping class="ffos.kolokvij.model.ImeKlase" /> -->
-        <mapping class="fina.skroflin.model.Users" />
+        <mapping class="fina.skroflin.model.User" />
         <mapping class="fina.skroflin.model.Booking" />
         <mapping class="fina.skroflin.model.TrainingSession" />
     

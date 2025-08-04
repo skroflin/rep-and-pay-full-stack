@@ -131,7 +131,7 @@ public class UserService extends MainService {
     }
 
     public List<UserResponseDTO> getAll() {
-        List<User> users = session.createQuery("from Users u", User.class).list();
+        List<User> users = session.createQuery("from User u", User.class).list();
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -227,7 +227,7 @@ public class UserService extends MainService {
                         + id + " " + "doesn't exist!");
             }
             Long count = session.createQuery(
-                    "select count(u) from Users u "
+                    "select count(u) from User u "
                     + "where (u.username = :username "
                     + "or u.email = :email) "
                     + "and u.id = :currentId", Long.class)
@@ -271,7 +271,7 @@ public class UserService extends MainService {
             session.beginTransaction();
             
             Long count = session.createQuery(
-                    "select count(u) from Users u "
+                    "select count(u) from User u "
                     + "where (u.username = :username "
                     + "or u.email = :email) ", Long.class)
                     .setParameter("username", o.username())
@@ -304,7 +304,7 @@ public class UserService extends MainService {
 
     public UserResponseDTO login(LoginDTO o) {
         try {
-            User user = session.createQuery("from Users u where u.username = :username",
+            User user = session.createQuery("from User u where u.username = :username",
                     User.class)
                     .setParameter("username", o.username())
                     .getSingleResult();
@@ -344,7 +344,7 @@ public class UserService extends MainService {
             );
         }
     }
-    
+/*    
     public User getUserByEmail(String email){
         try {
             return session.createQuery(
@@ -370,4 +370,5 @@ public class UserService extends MainService {
                     + username + " " + "doesn't exist!");
         }
     }
+*/
 }

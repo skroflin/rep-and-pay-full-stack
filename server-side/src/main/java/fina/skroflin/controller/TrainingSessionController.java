@@ -376,7 +376,7 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
-    @PutMapping("/updateMySession")
+    @PutMapping("/updateMyTrainingSession")
     public ResponseEntity<MyTrainingSessionResponseDTO> updateMyTrainingSession(
             @RequestHeader HttpHeaders headers,
             MyTrainingSessionDTO dto,

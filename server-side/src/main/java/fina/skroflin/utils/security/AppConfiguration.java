@@ -5,7 +5,7 @@
 package fina.skroflin.utils.security;
 
 import fina.skroflin.model.User;
-import fina.skroflin.service.UserService;
+import fina.skroflin.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +22,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class AppConfiguration {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public AppConfiguration(UserService userService) {
+    public AppConfiguration(UserServiceImpl userService) {
         this.userService = userService;
     }
 

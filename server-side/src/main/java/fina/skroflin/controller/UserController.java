@@ -10,6 +10,7 @@ import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.service.UserService;
+import fina.skroflin.service.UserServiceImpl;
 import fina.skroflin.utils.jwt.JwtResponse;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,17 +46,21 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Tag(name = "User", description = "Available endpoints for the entity 'Users'")
 @RestController
-@RequestMapping("/api/fina/skroflin/users")
+@RequestMapping("/api/fina/skroflin/user")
 public class UserController {
     private final UserService userService;
+    private final UserServiceImpl serviceImpl;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService,
+    public UserController(
+            UserService userService, 
+            UserServiceImpl serviceImpl, 
             JwtTokenUtil jwtTokenUtil, 
             AuthenticationManager authenticationManager
     ) {
         this.userService = userService;
+        this.serviceImpl = serviceImpl;
         this.jwtTokenUtil = jwtTokenUtil;
         this.authenticationManager = authenticationManager;
     }
@@ -368,7 +373,7 @@ public class UserController {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
-            User user = userService.getUserByEmail(dto.username());
+            User user = serviceImpl.getUserByEmail(dto.username());
             String jwt = jwtTokenUtil.generateToken(user, user.getId());
             
             return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
