@@ -44,7 +44,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author skroflin
  */
 
-@Tag(name = "User", description = "Available endpoints for the entity 'Users'")
+@Tag(name = "User", description = "Available endpoints for the entity 'User'")
 @RestController
 @RequestMapping("/api/fina/skroflin/user")
 public class UserController {
