@@ -376,10 +376,6 @@ public class UserController {
             User user = serviceImpl.getUserByUsername(dto.username());
             String jwt = jwtTokenUtil.generateToken(user, user.getId());
             
-            System.out.println("Login request for:" + " " + user.getUsername());
-            System.out.println("Role" + " " + user.getRole());
-            System.out.println("JWT" + " " + jwt);
-            
             return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
         } catch (NoResultException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
