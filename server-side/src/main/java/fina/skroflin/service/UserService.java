@@ -127,7 +127,7 @@ public class UserService extends MainService {
     
     @Transactional
     private void updatePassEntityFromDto(User user, PasswordDTO dto) {
-        user.setPassword(dto.password());
+        user.setPassword(bCryptPasswordEncoder.encode(dto.password()));
     }
 
     public List<UserResponseDTO> getAll() {
@@ -321,21 +321,23 @@ public class UserService extends MainService {
         }
     }
     
-    public PasswordResponseDTO changePassword(PasswordDTO o, String token){
+    public PasswordResponseDTO changeMyPassword(PasswordDTO o, HttpHeaders headers){
         try {
-            int id = jwtTokenUtil.extractClaim(token, claims -> 
-                    claims.get("UserId", Integer.class));
-            User user = (User) session.get(User.class, id);
-            if (user == null) {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token, 
+                    claims -> claims.get("UserId", Integer.class));
+            User userPassword = (User) session.get(User.class, userId);
+            if (userPassword == null) {
                 throw new NoResultException(
-                        "User with the id"
-                        + " " + id + " " + "doesn't exist!"
+                        "User with id" 
+                                + " " + userId + " " 
+                                        + "doesn't exist!"
                 );
             }
+            updatePassEntityFromDto(userPassword, o);
             session.beginTransaction();
-            user.setPassword(bCryptPasswordEncoder.encode(o.password()));
             session.getTransaction().commit();
-            return convertPassToResponseDTO(user);
+            return convertPassToResponseDTO(userPassword);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error changing password"

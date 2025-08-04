@@ -9,6 +9,8 @@ import fina.skroflin.model.dto.user.LoginDTO;
 import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
+import fina.skroflin.model.dto.user.password.PasswordDTO;
+import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
 import fina.skroflin.service.UserService;
 import fina.skroflin.service.UserServiceImpl;
 import fina.skroflin.utils.jwt.JwtResponse;
@@ -22,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
+import java.net.PasswordAuthentication;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -403,4 +406,38 @@ public class UserController {
             );
         }
     }
+    
+    @Operation(
+            summary = "Change password", tags = {"put", "user", "changeMyPassword"},
+            description = "Endpoint used for changing password for the user" 
+                    + " " + "currently logged in (in the session).")
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))),
+                @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
+                @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
+            })
+    @PutMapping("/changeMyPassword")
+    public ResponseEntity<PasswordResponseDTO> changeMyPassword(
+            @RequestHeader HttpHeaders headers,
+            @RequestBody(required = true)
+            PasswordDTO dto
+    ){
+        try {
+            PasswordResponseDTO updatedPassword = userService.changeMyPassword(dto, headers);
+            return ResponseEntity.ok(updatedPassword);
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon updating password" + " "
+                    + e.getMessage(),
+                    e
+            );
+        }
+ 
+   }
 }
