@@ -32,11 +32,13 @@ public class AppConfiguration {
     public UserDetailsService userDetailsService() {
         return username -> {
             User user;
+            System.out.println("Attempting login for user:" + " " + username);
             if (username.contains("@")) {
                 user = userService.getUserByEmail(username);
             } else {
                 user = userService.getUserByUsername(username);
             }
+            System.out.println("Login succesful for user:" + " " + user.getUsername());
             return user;
         };
     }

@@ -371,6 +371,7 @@ public class UserController {
             LoginDTO dto
     ){
         try {
+            System.out.println("Login request for:" + " " + dto.username());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
             User user = serviceImpl.getUserByEmail(dto.username());
