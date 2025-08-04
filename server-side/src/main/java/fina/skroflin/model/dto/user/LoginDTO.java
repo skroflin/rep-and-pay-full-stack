@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record LoginDTO(
         @Schema(example = "skroflin")
         String username,
-        @Schema(example = "pass 123")
+        @Schema(example = "pass123")
         String password
         ) {
     
