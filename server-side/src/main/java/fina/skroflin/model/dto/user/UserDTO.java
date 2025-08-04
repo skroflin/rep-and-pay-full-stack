@@ -4,12 +4,9 @@
  */
 package fina.skroflin.model.dto.user;
 
-import fina.skroflin.model.Booking;
-import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  *
