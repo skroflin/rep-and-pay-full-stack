@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { getAuthToken } from "../utils/helper";
+import { clearAuthToken, getAuthToken } from "../utils/helper";
 import { getUsername } from "../utils/helper";
 import { getRole } from "../utils/helper";
 
@@ -38,5 +38,15 @@ export function UserProvider({ children }: React.PropsWithChildren) {
 }
 
 export function useUser() {
-    return useContext(UserContext)
+    const context = useContext(UserContext)
+    
+    const logout = () => {
+        clearAuthToken()
+        context.setUser?.({isLoggedIn: false})
+    }
+
+    return {
+        ...context,
+        logout
+    }
 }

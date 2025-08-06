@@ -74,13 +74,14 @@ export default function LoginIn() {
 
                     <Form.Item label={null}>
                         <Button
-                            type="primary" htmlType="submit"
+                            type="primary" 
+                            htmlType="submit"
                             onClick={() => signInUser.mutate({ 
                                 username: username, 
                                 password: password 
                             })}
                         >
-                            Submit
+                            Log In
                         </Button>
                     </Form.Item>
                 </Form>

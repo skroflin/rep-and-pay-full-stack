@@ -20,14 +20,14 @@ const routes: RouteElement[] = [
         path: "/sign-up",
         element: <SignUp />,
         onNavBar: false,
-        reqLogin:
+        reqLogin: false
     },
     {
         key: "LogIn",
         path: "/log-in",
         element: <LoginIn />,
         onNavBar: false,
-        reqLogin:
+        reqLogin: false
     }
 ]
 

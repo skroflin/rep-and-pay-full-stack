@@ -6,6 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
+import { Button, Form, Input, Select, Spin } from "antd";
+import { Option } from "antd/es/mentions";
 
 export default function SignUp() {
     const { setUser } = useUser()
@@ -80,6 +82,105 @@ export default function SignUp() {
     }
 
     return <>
+        <Form
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="First name"
+                name="firstName"
+                rules={[{ required: true, message: 'Please input your first name!' }]}
+            >
+                <Input
+                    value={formData.firstName}
+                    onChange={handleChange} />
+            </Form.Item>
 
+            <Form.Item
+                label="Last name"
+                name="lastName"
+                rules={[{ required: true, message: 'Please input your last name/surname!' }]}
+            >
+                <Input
+                    value={formData.lastName}
+                    onChange={handleChange} />
+            </Form.Item>
+
+            <Form.Item
+                label="Username"
+                name="username"
+                rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+                <Input
+                    value={formData.username}
+                    onChange={handleChange} />
+            </Form.Item>
+
+            <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: 'Please input your email!' }]}
+            >
+                <Input
+                    value={formData.email}
+                    onChange={handleChange} />
+            </Form.Item>
+
+            <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+                <Input.Password
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+            </Form.Item>
+
+            <Form.Item
+                label="Confirm password"
+                name="confirmPassword"
+                rules={[{ required: true, message: 'Please confirm your password!' }]}
+            >
+                <Input.Password
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                />
+            </Form.Item>
+
+            <Form.Item name="note" label="Note" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
+                <Select
+                    placeholder="Select a option and change input text above"
+                    allowClear
+                >
+                    <Option value="user">User</Option>
+                    <Option value="coach">Coach</Option>
+                </Select>
+            </Form.Item>
+
+            <Form.Item label={null}>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    onSubmit={handleSubmit}
+                >
+                    Sign Up
+                </Button>
+            </Form.Item>
+        </Form>
+        <Spin
+            spinning={signUpUser.isPending}
+            size="large"
+            tip="Logging in..."
+        />
     </>
 }
