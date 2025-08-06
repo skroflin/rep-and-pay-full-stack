@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Navigate, useNavigate } from "react-router"
-import { useUser } from "../../user/User"
+import { useUser } from "../../user-context/User"
 import { useMutation } from "@tanstack/react-query"
 import { loginUser } from "../../utils/api"
 import { setAuthToken } from "../../utils/helper"

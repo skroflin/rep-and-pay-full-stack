@@ -5,7 +5,7 @@ import App from './App.tsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router'
-import { UserProvider } from './user/User.tsx'
+import { UserProvider } from './user-context/User.tsx'
 
 const queryClient = new QueryClient()
 

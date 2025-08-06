@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import type { RouteElement } from "../../routes";
-import { useUser } from "../../user/User";
+import { useUser } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
