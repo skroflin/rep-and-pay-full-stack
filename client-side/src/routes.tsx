@@ -12,6 +12,7 @@ export interface RouteElement {
     element: React.JSX.Element
     onNavBar: boolean
     reqLogin: boolean
+    reqSuperUser: boolean
 }
 
 const routes: RouteElement[] = [
@@ -20,14 +21,16 @@ const routes: RouteElement[] = [
         path: "/sign-up",
         element: <SignUp />,
         onNavBar: false,
-        reqLogin: false
+        reqLogin: false,
+        reqSuperUser: false
     },
     {
         key: "LogIn",
         path: "/log-in",
         element: <LoginIn />,
         onNavBar: false,
-        reqLogin: false
+        reqLogin: false,
+        reqSuperUser: false
     }
 ]
 

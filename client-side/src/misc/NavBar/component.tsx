@@ -19,7 +19,13 @@ export default function NavBar({ routes }: NavBarProps) {
     }
 
     const shouldBeVisible = (item: RouteElement) => {
-        if (!item.onNavBar) return false;
-        if (!item.reqLogin) return false;
+        if (!item.onNavBar) return false
+        if (!item.reqLogin) return false
+        if (!item.reqSuperUser) return false
+        return true
     }
+
+    return (
+        
+    )
 }
