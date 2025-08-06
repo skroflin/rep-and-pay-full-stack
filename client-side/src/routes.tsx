@@ -1,5 +1,9 @@
-import { Navigate, Outlet } from "react-router"
+import { Navigate, Outlet, Route, Routes } from "react-router"
 import { useUser } from "./user/User"
+import { Layout } from "antd"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoginIn from "./pages/LogInPage/component";
 
 export interface RouteElement {
     key: string
@@ -13,14 +17,14 @@ const routes: RouteElement[] = [
     {
         key: "SignUp",
         path: "/sign-up",
-        element: <SignUp/>,
+        element: <SignUp />,
         onNavBar: false,
         reqLogin:
     },
     {
         key: "LogIn",
         path: "/log-in",
-        element: <LogIn/>,
+        element: <LoginIn />,
         onNavBar: false,
         reqLogin:
     }
@@ -30,9 +34,46 @@ interface PrivateRouteProps {
     reqLogin: boolean
 }
 
-function PrivateRoute({ reqLogin }: PrivateRouteProps){
+function PrivateRoute({ reqLogin }: PrivateRouteProps) {
     const { user } = useUser()
     const isUserLoggedIn = !!user.isLoggedIn
 
     return !reqLogin || isUserLoggedIn ? <Outlet /> : <Navigate to="/login" />
+}
+
+export function AllRoutes() {
+    if (routes.length === 0) return null
+
+    return (
+        <Layout
+            style={{
+                minHeight: 700,
+                padding: "1em 0em",
+                textAlign: "center"
+            }}
+        >
+            <Routes>
+                {routes.map((route) => (
+                    <Route
+                        key={route.key}
+                        element={<PrivateRoute reqLogin={route.reqLogin} />}
+                    >
+                        <Route path={route.path} element={route.element} />
+                    </Route>
+                ))}
+            </Routes>
+            <ToastContainer
+                position="top-left"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
+        </Layout>
+    )
 }
