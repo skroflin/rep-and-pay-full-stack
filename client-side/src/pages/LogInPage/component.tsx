@@ -6,7 +6,7 @@ import { loginUser } from "../../utils/api"
 import { setAuthToken } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
-import { Alert, Button, Form, Input, Spin } from "antd"
+import { Button, Form, Input, Spin } from "antd"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")
@@ -86,7 +86,9 @@ export default function LoginIn() {
                 </Form>
         }
         <Spin
+            spinning={signInUser.isPending}
             size="large"
+            tip="Logging in..."
         />
     </>
 }

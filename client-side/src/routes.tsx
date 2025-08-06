@@ -4,6 +4,7 @@ import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginIn from "./pages/LogInPage/component";
+import SignUp from "./pages/SignUpPage/component";
 
 export interface RouteElement {
     key: string
