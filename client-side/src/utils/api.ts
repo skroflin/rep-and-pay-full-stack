@@ -19,7 +19,7 @@ async function apiGetCall(
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Authorization": `Bearer ${getAuthToken}`
+                "Authorization": `Bearer ${getAuthToken()}`
             }
         }
     )
@@ -36,7 +36,7 @@ async function apiPostCall<Req>(
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Authorization": `Bearer ${getAuthToken}`
+                "Authorization": `Bearer ${getAuthToken()}`
             }
         }
     )
@@ -53,7 +53,7 @@ async function apiPutCall<Req>(
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Authorization": `Bearer ${getAuthToken}`
+                "Authorization": `Bearer ${getAuthToken()}`
             }
         }
     )
@@ -68,7 +68,7 @@ async function apiDeleteCall(
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Authorization": `Bearer ${getAuthToken}`
+                "Authorization": `Bearer ${getAuthToken()}`
             }
         }
     )
