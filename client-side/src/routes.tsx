@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router"
+import { Navigate, Outlet, Route, Routes } from "react-router"
 import { isLoggedIn, useSuperUserRole } from "./user-context/User"
 import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
@@ -64,7 +64,7 @@ const routes: RouteElement[] = [
 
 interface PrivateRouteProps {
     reqLogin: boolean,
-    reqSuperUser: string
+    reqSuperUser: boolean
 }
 
 function PrivateRoute({ reqLogin, reqSuperUser }: PrivateRouteProps) {
@@ -72,12 +72,14 @@ function PrivateRoute({ reqLogin, reqSuperUser }: PrivateRouteProps) {
     const isSuperUser = useSuperUserRole()
 
     if (reqLogin && !isUserLoggedIn) {
-        return <Navigate to="/log-in"/>
+        return <Navigate to="/log-in" />
     }
 
     if (reqSuperUser && !isSuperUser) {
-        return <Navigate to="/"/>
+        return <Navigate to="/" />
     }
+
+    return <Outlet />
 }
 
 export function AllRoutes() {
@@ -98,10 +100,10 @@ export function AllRoutes() {
                 {routes.map((route) => (
                     <Route
                         key={route.key}
-                        element={<PrivateRoute 
-                            reqLogin={route.reqLogin} 
-                            reqSuperUser="superuser" 
-                    />}
+                        element={<PrivateRoute
+                            reqLogin={route.reqLogin}
+                            reqSuperUser={route.reqSuperUser}
+                        />}
                     >
                         <Route path={route.path} element={route.element} />
                     </Route>

@@ -4,7 +4,8 @@ import { Content } from "antd/es/layout/layout";
 export default function HomePage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    } = theme.useToken()
+    
     return (
         <Content
             style={{
