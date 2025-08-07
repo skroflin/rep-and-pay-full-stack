@@ -83,7 +83,7 @@ export function AllRoutes() {
             style={{
                 minHeight: 700,
                 padding: "1em 0em",
-                textAlign: "center"
+                textAlign: "center",
             }}
         >
             {isUserLoggedIn && <NavBar routes={routes} />}

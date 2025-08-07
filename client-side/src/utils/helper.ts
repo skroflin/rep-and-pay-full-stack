@@ -1,8 +1,8 @@
 export const isUserAuthorized = () => {
     const token = !!localStorage.getItem("jwt")
-    const role = !!localStorage.getItem("role")
     const username = !!localStorage.getItem("username")
-    return token && role && username
+    const role = !!localStorage.getItem("role")
+    return token && username && role
 }
 
 export function getAuthToken() {

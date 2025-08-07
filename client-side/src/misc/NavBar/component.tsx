@@ -4,7 +4,7 @@ import { useUser } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
-import { Button, Menu } from "antd";
+import { Button, Divider, Menu } from "antd";
 import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
 
 interface NavBarProps {
@@ -49,10 +49,21 @@ export default function NavBar({ routes }: NavBarProps) {
         >
             <Title
                 level={4}
-                style={{ color: "#fff", margin: 0 }}
+                style={{ 
+                    color: "#fff",
+                    margin: 0
+                }}
             >
                 {!collapsed && "Rep & Pay"}
             </Title>
+            <Divider
+                style={{
+                    fontSize: "10px",
+                    color: "white"
+                }}
+            >
+                {user.username} - {user.role}
+            </Divider>
             <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
