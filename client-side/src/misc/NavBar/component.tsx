@@ -4,8 +4,9 @@ import { useUser } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
-import { Button, Divider, Menu } from "antd";
-import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Menu } from "antd";
+import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
+import { getRole } from "../../utils/helper";
 
 interface NavBarProps {
     routes: RouteElement[]
@@ -15,6 +16,7 @@ export default function NavBar({ routes }: NavBarProps) {
     const navigate = useNavigate()
     const { user, logout } = useUser()
     const [collapsed, setCollapsed] = useState(false)
+    const role = getRole()
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed)
@@ -54,16 +56,9 @@ export default function NavBar({ routes }: NavBarProps) {
                     margin: 0
                 }}
             >
-                {!collapsed && "Rep & Pay"}
+                {!collapsed && "Rep & Pay "}
+                {role === "superuser" && (<ToolOutlined />)}
             </Title>
-            <Divider
-                style={{
-                    fontSize: "10px",
-                    color: "white"
-                }}
-            >
-                {user.username} - {user.role}
-            </Divider>
             <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}

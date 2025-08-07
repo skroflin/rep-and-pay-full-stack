@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { clearAuthToken, getAuthToken } from "../utils/helper";
 import { getUsername } from "../utils/helper";
 import { getRole } from "../utils/helper";
@@ -37,12 +37,39 @@ export function UserProvider({ children }: React.PropsWithChildren) {
     )
 }
 
+export function useUserSetter() {
+    const { setUser } = React.useContext(UserContext)
+    const setter = useCallback(
+        (username: string | undefined, role: string | undefined, loggedIn: boolean) => {
+            if (setUser) setUser({ username: username, role: role, isLoggedIn: loggedIn })
+        },
+        [setUser]
+    )
+
+    return setter
+}
+
+export function useUsername() {
+    const { user } = React.useContext(UserContext)
+    return user.username
+}
+
+export function useRole() {
+    const { user } = useContext(UserContext)
+    return user.role
+}
+
+export function isLoggedIn() {
+    const { user } = React.useContext(UserContext);
+    return !!user.isLoggedIn;
+}
+
 export function useUser() {
     const context = useContext(UserContext)
-    
+
     const logout = () => {
         clearAuthToken()
-        context.setUser?.({isLoggedIn: false})
+        context.setUser?.({ isLoggedIn: false })
     }
 
     return {

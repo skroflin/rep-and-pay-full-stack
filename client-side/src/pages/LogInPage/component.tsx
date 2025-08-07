@@ -18,13 +18,13 @@ export default function LoginIn() {
     const signInUser = useMutation({
         mutationFn: loginUser,
         onSuccess: (response) => {
-            const { jwt, username, role } = response
+            const { jwt, username: usernameFromResponse, role } = response
             toast.error(undefined)
             setAuthToken(jwt)
-            setUsername(username)
+            setUsername(usernameFromResponse)
             setRole(role)
             if (setUser) {
-                setUser({ username, isLoggedIn: true })
+                setUser({ username: usernameFromResponse, isLoggedIn: true })
             }
 
             navigate("/")
