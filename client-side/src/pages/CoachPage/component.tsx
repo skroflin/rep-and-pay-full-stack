@@ -1,7 +1,7 @@
 import { theme } from "antd";
 import { Content } from "antd/es/layout/layout";
 
-export default function HomePage() {
+export default function CoachPage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();

@@ -6,6 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoginIn from "./pages/LogInPage/component";
 import SignUp from "./pages/SignUpPage/component";
 import NavBar from "./misc/NavBar/component";
+import HomePage from "./pages/HomePage/component";
+import CoachPage from "./pages/CoachPage/component";
+import UserPage from "./pages/UserPage/component";
 
 export interface RouteElement {
     key: string
@@ -32,6 +35,30 @@ const routes: RouteElement[] = [
         onNavBar: false,
         reqLogin: false,
         reqSuperUser: false
+    },
+    {
+        key: "Home",
+        path: "/home",
+        element: <HomePage />,
+        onNavBar: true,
+        reqLogin: true,
+        reqSuperUser: true
+    },
+    {
+        key: "Coaches",
+        path: "/coaches",
+        element: <CoachPage />,
+        onNavBar: true,
+        reqLogin: true,
+        reqSuperUser: true
+    },
+    {
+        key: "Users",
+        path: "/users",
+        element: <UserPage />,
+        onNavBar: true,
+        reqLogin: true,
+        reqSuperUser: true
     }
 ]
 
