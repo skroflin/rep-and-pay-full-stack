@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginIn from "./pages/LogInPage/component";
 import SignUp from "./pages/SignUpPage/component";
+import NavBar from "./misc/NavBar/component";
 
 export interface RouteElement {
     key: string
@@ -56,6 +57,7 @@ export function AllRoutes() {
                 textAlign: "center"
             }}
         >
+            <NavBar routes={routes} />
             <Routes>
                 {routes.map((route) => (
                     <Route
