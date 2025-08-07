@@ -1,5 +1,5 @@
-import { Navigate, Outlet, Route, Routes } from "react-router"
-import { isLoggedIn } from "./user-context/User"
+import { Navigate, Route, Routes } from "react-router"
+import { isLoggedIn, useSuperUserRole } from "./user-context/User"
 import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,7 +38,7 @@ const routes: RouteElement[] = [
     },
     {
         key: "Home",
-        path: "/home",
+        path: "/",
         element: <HomePage />,
         onNavBar: true,
         reqLogin: true,
@@ -63,13 +63,21 @@ const routes: RouteElement[] = [
 ]
 
 interface PrivateRouteProps {
-    reqLogin: boolean
+    reqLogin: boolean,
+    reqSuperUser: string
 }
 
-function PrivateRoute({ reqLogin }: PrivateRouteProps) {
+function PrivateRoute({ reqLogin, reqSuperUser }: PrivateRouteProps) {
     const isUserLoggedIn = isLoggedIn()
+    const isSuperUser = useSuperUserRole()
 
-    return !reqLogin || isUserLoggedIn ? <Outlet /> : <Navigate to="/log-in" />
+    if (reqLogin && !isUserLoggedIn) {
+        return <Navigate to="/log-in"/>
+    }
+
+    if (reqSuperUser && !isSuperUser) {
+        return <Navigate to="/"/>
+    }
 }
 
 export function AllRoutes() {
@@ -80,7 +88,7 @@ export function AllRoutes() {
         <Layout
             style={{
                 minHeight: 700,
-                padding: "1em 0em",
+                paddingTop: "1em 0em",
                 textAlign: "center",
             }}
         >
@@ -90,14 +98,17 @@ export function AllRoutes() {
                 {routes.map((route) => (
                     <Route
                         key={route.key}
-                        element={<PrivateRoute reqLogin={route.reqLogin} />}
+                        element={<PrivateRoute 
+                            reqLogin={route.reqLogin} 
+                            reqSuperUser="superuser" 
+                    />}
                     >
                         <Route path={route.path} element={route.element} />
                     </Route>
                 ))}
             </Routes>
             <ToastContainer
-                position="top-left"
+                position="top-right"
                 autoClose={5000}
                 hideProgressBar={false}
                 newestOnTop={false}

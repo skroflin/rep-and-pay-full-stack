@@ -20,7 +20,7 @@ export default function LoginIn() {
         mutationFn: loginUser,
         onSuccess: (response) => {
             const { jwt, username, role } = response
-            toast.error(undefined)
+            toast.success(`${username} welcome back!`)
             setAuthToken(jwt)
             setUser(username, role, true)
             navigate("/")
@@ -41,7 +41,8 @@ export default function LoginIn() {
             isUserLoggedIn ? <Navigate to="/" /> :
                 <Layout
                     style={{
-                        padding: "1em 0em",
+                        paddingTop: "4em",
+                        paddingBottom: "4em",
                         textAlign: "center",
                         alignItems: "center",
                         justifyContent: "center",
@@ -52,7 +53,7 @@ export default function LoginIn() {
                         name="basic"
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
-                        style={{ maxWidth: 600 }}
+                        style={{ maxWidth: 400 }}
                         initialValues={{ remember: true }}
                         autoComplete="off"
                     >

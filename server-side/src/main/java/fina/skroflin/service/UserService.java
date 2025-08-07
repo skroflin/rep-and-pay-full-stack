@@ -42,7 +42,7 @@ public class UserService extends MainService {
     public UserService(
             TrainingSessionService trainingSessionService,
             BookingService bookingService,
-            JwtTokenUtil jwtTokenUtil, 
+            JwtTokenUtil jwtTokenUtil,
             BCryptPasswordEncoder bCryptPasswordEncoder
     ) {
         this.trainingSessionService = trainingSessionService;
@@ -92,11 +92,11 @@ public class UserService extends MainService {
                 bookings
         );
     }
-    
+
     @Transactional
     private PasswordResponseDTO convertPassToResponseDTO(
             User user
-    ){
+    ) {
         return new PasswordResponseDTO(
                 user.getId(),
                 user.getUsername()
@@ -124,7 +124,7 @@ public class UserService extends MainService {
         user.setPassword(dto.password());
         user.setRole(dto.role());
     }
-    
+
     @Transactional
     private void updatePassEntityFromDto(User user, PasswordDTO dto) {
         user.setPassword(bCryptPasswordEncoder.encode(dto.password()));
@@ -137,88 +137,106 @@ public class UserService extends MainService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserResponseDTO> getAllCoaches() {
+        List<User> users = session.createQuery(
+                "from User u where u.role = coach",
+                User.class).list();
+        return users.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = session.createQuery(
+                "from User u where u.role = user",
+                User.class).list();
+        return users.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     public UserResponseDTO getMyProfile(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token, 
+            Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
             User users = (User) session.get(User.class, userId);
             if (users == null) {
                 throw new NoResultException(
-                        "User with id" 
-                                + " " + userId + " " 
-                                        + "doesn't exist!"
+                        "User with id"
+                        + " " + userId + " "
+                        + "doesn't exist!"
                 );
             }
             return convertToResponseDTO(users);
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Error retrieving user from token" 
-                            + " " + e.getMessage(),
+                    "Error retrieving user from token"
+                    + " " + e.getMessage(),
                     e
             );
         }
     }
-    
+
     public UserResponseDTO updateMyProfile(HttpHeaders headers, UserDTO o) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token, 
+            Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
             User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException(
-                        "User with id" 
-                                + " " + userId + " " 
-                                        + "doesn't exist!"
+                        "User with id"
+                        + " " + userId + " "
+                        + "doesn't exist!"
                 );
             }
-            
+
             updateEntityFromDto(userProfile, o);
-            
+
             session.beginTransaction();
             session.merge(userProfile);
             session.getTransaction().commit();
-            
+
             return convertToResponseDTO(userProfile);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating user"
                     + "profile:" + " " + e.getMessage(), e);
         }
     }
-    
+
     public String deleteMyProfile(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token, 
+            Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
             User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException(
-                        "User with id" 
-                                + " " + userId + " " 
-                                        + "doesn't exist!"
+                        "User with id"
+                        + " " + userId + " "
+                        + "doesn't exist!"
                 );
             }
-            
+
             session.beginTransaction();
             session.remove(userProfile);
             session.getTransaction().commit();
             return "User with" + " " + userId + " " + "has been deleted!";
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Error deleting user profile" 
-                            + " " + e.getMessage(),
+                    "Error deleting user profile"
+                    + " " + e.getMessage(),
                     e
             );
         }
     }
-    
+
     public UserResponseDTO getById(int id) {
         User user = session.get(User.class, id);
         return convertToResponseDTO(user);
     }
-    
+
     public UserResponseDTO put(UserDTO o, int id) {
         try {
             User existingUser = (User) session.get(User.class, id);
@@ -269,7 +287,7 @@ public class UserService extends MainService {
     public UserResponseDTO registration(RegistrationDTO o) {
         try {
             session.beginTransaction();
-            
+
             Long count = session.createQuery(
                     "select count(u) from User u "
                     + "where (u.username = :username "
@@ -281,7 +299,7 @@ public class UserService extends MainService {
                 throw new IllegalArgumentException("There is already a user"
                         + " " + "with the same username or email!");
             }
-            
+
             User newUser = new User(
                     o.firstName(),
                     o.lastName(),
@@ -320,18 +338,18 @@ public class UserService extends MainService {
             );
         }
     }
-    
-    public PasswordResponseDTO changeMyPassword(PasswordDTO o, HttpHeaders headers){
+
+    public PasswordResponseDTO changeMyPassword(PasswordDTO o, HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token, 
+            Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
             User userPassword = (User) session.get(User.class, userId);
             if (userPassword == null) {
                 throw new NoResultException(
-                        "User with id" 
-                                + " " + userId + " " 
-                                        + "doesn't exist!"
+                        "User with id"
+                        + " " + userId + " "
+                        + "doesn't exist!"
                 );
             }
             updatePassEntityFromDto(userPassword, o);
@@ -346,7 +364,7 @@ public class UserService extends MainService {
             );
         }
     }
-/*    
+    /*    
     public User getUserByEmail(String email){
         try {
             return session.createQuery(
@@ -372,5 +390,5 @@ public class UserService extends MainService {
                     + username + " " + "doesn't exist!");
         }
     }
-*/
+     */
 }

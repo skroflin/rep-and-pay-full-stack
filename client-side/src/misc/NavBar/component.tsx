@@ -4,13 +4,13 @@ import { isLoggedIn, useRole, useUserSetter } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
-import { Button, Menu } from "antd";
-import { 
-    LogoutOutlined, 
-    MenuFoldOutlined, 
-    MenuUnfoldOutlined, 
-    ToolOutlined, 
-    UserOutlined 
+import { Button, Divider, Menu } from "antd";
+import {
+    LogoutOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    ToolOutlined,
+    UserOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
 
@@ -57,16 +57,19 @@ export default function NavBar({ routes }: NavBarProps) {
             collapsed={collapsed}
             trigger={null}
             theme="dark"
+            style={{
+                padding: "6em 0em"
+            }}
         >
             <Title
                 level={4}
-                style={{ 
+                style={{
                     color: "#fff",
                     margin: 0
                 }}
             >
                 {!collapsed && "Rep & Pay "}
-                {role === "superuser" && (<ToolOutlined />)}
+                {role === "superuser" && (<ToolOutlined />) || (<ToolOutlined />)}
             </Title>
             <Button
                 type="text"
@@ -75,7 +78,7 @@ export default function NavBar({ routes }: NavBarProps) {
                 style={{ color: "white" }}
             />
 
-            <Menu 
+            <Menu
                 theme="dark"
                 mode="inline"
                 selectedKeys={[location.pathname]}
@@ -84,15 +87,20 @@ export default function NavBar({ routes }: NavBarProps) {
             />
 
             {isUserLoggedIn && (
-                <Button
-                    icon={<LogoutOutlined/>}
-                    type="primary"
-                    danger
-                    block
-                    onClick={onSignOut}
+                <Divider
+                    style={{
+                        color: "white"
+                    }}
                 >
-                    {!collapsed && "Sign out"}
-                </Button>
+                    <Button
+                        icon={<LogoutOutlined />}
+                        type="primary"
+                        danger
+                        onClick={onSignOut}
+                    >
+                        {!collapsed && "Sign Out!"}
+                    </Button>
+                </Divider>
             )}
         </Sider>
     )

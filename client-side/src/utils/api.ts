@@ -77,6 +77,8 @@ async function apiDeleteCall(
 
 //user methods
 export const getUsers = () => apiGetCall("user/get")
+export const getCoaches = () => apiGetCall("user/getCoaches")
+export const getRegularUsers = () => apiGetCall("user/getUsers")
 export const getUserById = (userId: string) => apiGetCall(`user/getById?id=${userId}`)
 export const registerUser = (req: RegistrationUserRequest) => apiPostCall<RegistrationUserRequest>("user/register", req)
 export const loginUser = (req: LoginUserRequest) => apiPostCall<LoginUserRequest>("user/login", req)

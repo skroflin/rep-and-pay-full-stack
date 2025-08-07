@@ -95,6 +95,36 @@ public class UserController {
             );
         }
     }
+    
+    @GetMapping("/getCoaches")
+    public ResponseEntity<List<UserResponseDTO>> getAllCoaches() {
+        try {
+            return new ResponseEntity<>(
+                    userService.getAllCoaches(), HttpStatus.OK
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        try {
+            return new ResponseEntity<>(
+                    userService.getAllUsers(), HttpStatus.OK
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
 
     @Operation(
             summary = "Retrieves user data of the user in the session", tags = {"get", "user", "getMyProfile"},

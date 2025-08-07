@@ -34,7 +34,7 @@ export default function SignUp() {
     const signUpUser = useMutation({
         mutationFn: registerUser,
         onSuccess: (response) => {
-            toast.error(undefined)
+            toast.success(`${formData.username} welcome!`)
             setAuthToken(response.token)
             setUser(formData.username, formData.role, true)
             setTimeout(() => navigate("/"), 1500)
@@ -161,13 +161,11 @@ export default function SignUp() {
                     />
                 </Form.Item>
 
-                <Form.Item name="note" label="Note" rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
+                <Form.Item name="role" label="Role" rules={[{ required: true }]}>
                     <Select
                         placeholder="Select a option and change input text above"
                         allowClear
+                        onChange={handleChange}
                     >
                         <Option value="user">User</Option>
                         <Option value="coach">Coach</Option>
