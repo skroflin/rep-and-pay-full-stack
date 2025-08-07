@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { useUser } from "../../user-context/User";
+import { useUserSetter } from "../../user-context/User";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
@@ -10,7 +10,7 @@ import { Button, Form, Input, Layout, Select, Spin } from "antd";
 import { Option } from "antd/es/mentions";
 
 export default function SignUp() {
-    const { setUser } = useUser()
+    const setUser = useUserSetter()
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
         firstName: "",
@@ -36,9 +36,7 @@ export default function SignUp() {
         onSuccess: (response) => {
             toast.error(undefined)
             setAuthToken(response.token)
-            if (setUser) {
-                setUser(formData)
-            }
+            setUser(formData.username, formData.role, true)
             setTimeout(() => navigate("/"), 1500)
         },
         onError: (error: AxiosError, _variables, _context) => {

@@ -1,12 +1,18 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import type { RouteElement } from "../../routes";
-import { useUser } from "../../user-context/User";
+import { isLoggedIn, useRole, useUserSetter } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
 import { Button, Menu } from "antd";
-import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
-import { getRole } from "../../utils/helper";
+import { 
+    LogoutOutlined, 
+    MenuFoldOutlined, 
+    MenuUnfoldOutlined, 
+    ToolOutlined, 
+    UserOutlined 
+} from "@ant-design/icons";
+import { clearAuthToken } from "../../utils/helper";
 
 interface NavBarProps {
     routes: RouteElement[]
@@ -14,23 +20,26 @@ interface NavBarProps {
 
 export default function NavBar({ routes }: NavBarProps) {
     const navigate = useNavigate()
-    const { user, logout } = useUser()
+    const isUserLoggedIn = isLoggedIn()
+    const location = useLocation()
+    const setUser = useUserSetter()
+    const role = useRole()
     const [collapsed, setCollapsed] = useState(false)
-    const role = getRole()
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed)
     }
 
     const onSignOut = () => {
-        logout()
-        navigate("/log-in")
+        setUser(undefined, undefined, false)
+        clearAuthToken()
+        navigate("/")
     }
 
     const shouldBeVisible = (item: RouteElement) => {
         if (!item.onNavBar) return false
-        if (!item.reqLogin && !user.isLoggedIn) return false
-        if (!item.reqSuperUser && user.role !== "superuser") return false
+        if (!item.reqLogin) return false
+        if (!item.reqSuperUser && role !== "superuser") return false
         return true
     }
 
@@ -74,7 +83,7 @@ export default function NavBar({ routes }: NavBarProps) {
                 items={menuItems}
             />
 
-            {user.isLoggedIn && (
+            {isUserLoggedIn && (
                 <Button
                     icon={<LogoutOutlined/>}
                     type="primary"

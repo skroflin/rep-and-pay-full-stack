@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Navigate, useNavigate } from "react-router"
-import { useUser } from "../../user-context/User"
+import { useUsername, useUserSetter } from "../../user-context/User"
 import { useMutation } from "@tanstack/react-query"
 import { loginUser } from "../../utils/api"
-import { setAuthToken, setRole } from "../../utils/helper"
+import { setAuthToken } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
 import { Button, Form, Input, Layout, Spin } from "antd"
@@ -13,20 +13,16 @@ export default function LoginIn() {
     const [password, setPassword] = useState<string>("")
 
     const navigate = useNavigate()
-    const { user, setUser } = useUser()
+    const setUser = useUserSetter()
+    const isUserLoggedIn = useUsername()
 
     const signInUser = useMutation({
         mutationFn: loginUser,
         onSuccess: (response) => {
-            const { jwt, username: usernameFromResponse, role } = response
+            const { jwt, username, role } = response
             toast.error(undefined)
             setAuthToken(jwt)
-            setUsername(usernameFromResponse)
-            setRole(role)
-            if (setUser) {
-                setUser({ username: usernameFromResponse, isLoggedIn: true })
-            }
-
+            setUser(username, role, true)
             navigate("/")
         },
         onError: (error) => {
@@ -42,7 +38,7 @@ export default function LoginIn() {
 
     return <>
         {
-            user.isLoggedIn ? <Navigate to="/" /> :
+            isUserLoggedIn ? <Navigate to="/" /> :
                 <Layout
                     style={{
                         padding: "1em 0em",

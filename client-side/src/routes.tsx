@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from "react-router"
-import { useUser } from "./user-context/User"
+import { isLoggedIn } from "./user-context/User"
 import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -67,16 +67,14 @@ interface PrivateRouteProps {
 }
 
 function PrivateRoute({ reqLogin }: PrivateRouteProps) {
-    const { user } = useUser()
-    const isUserLoggedIn = !!user.isLoggedIn
+    const isUserLoggedIn = isLoggedIn()
 
     return !reqLogin || isUserLoggedIn ? <Outlet /> : <Navigate to="/log-in" />
 }
 
 export function AllRoutes() {
     if (routes.length === 0) return null
-    const { user } = useUser();
-    const isUserLoggedIn = !!user?.isLoggedIn
+    const isUserLoggedIn = isLoggedIn()
 
     return (
         <Layout
