@@ -84,6 +84,9 @@ export default function LoginIn() {
                             Log In
                         </Button>
                     </Form.Item>
+                    <Button type="link" onClick={() => navigate("/sign-up")}>
+                        Don't have an account? Sign up!
+                    </Button>
                 </Form>
         }
         <Spin

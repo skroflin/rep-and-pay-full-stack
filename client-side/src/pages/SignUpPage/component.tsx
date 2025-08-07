@@ -176,6 +176,10 @@ export default function SignUp() {
                     Sign Up
                 </Button>
             </Form.Item>
+
+            <Button type="link" onClick={() => navigate("/log-in")}>
+                Already have an account? Log in!
+            </Button>
         </Form>
         <Spin
             spinning={signUpUser.isPending}
