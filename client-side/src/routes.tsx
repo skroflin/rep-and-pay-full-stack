@@ -75,6 +75,8 @@ function PrivateRoute({ reqLogin }: PrivateRouteProps) {
 
 export function AllRoutes() {
     if (routes.length === 0) return null
+    const { user } = useUser();
+    const isUserLoggedIn = !!user?.isLoggedIn
 
     return (
         <Layout
@@ -84,9 +86,9 @@ export function AllRoutes() {
                 textAlign: "center"
             }}
         >
-            <NavBar routes={routes} />
+            {isUserLoggedIn && <NavBar routes={routes} />}
             <Routes>
-                <Route path="/" element={<Navigate to="/log-in" replace />} />
+                {/* <Route path="/" element={<Navigate to="/log-in" replace />} /> */}
                 {routes.map((route) => (
                     <Route
                         key={route.key}
@@ -95,7 +97,6 @@ export function AllRoutes() {
                         <Route path={route.path} element={route.element} />
                     </Route>
                 ))}
-                <Route path="*" element={<Navigate to="/log-in" replace />} />
             </Routes>
             <ToastContainer
                 position="top-left"
