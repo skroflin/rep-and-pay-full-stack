@@ -72,6 +72,8 @@ public class SecurityConfig {
                         //  .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/user/*").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/user").hasAnyAuthority(Role.superuser.name(), Role.coach.name(), Role.user.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/get").hasAnyAuthority(Role.superuser.name())
+                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/getCoaches").hasAnyAuthority(Role.superuser.name(), Role.user.name())
+                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/getUsers").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/user/getById").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/user/post").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/user/put").hasAnyAuthority(Role.superuser.name())
