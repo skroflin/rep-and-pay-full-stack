@@ -24,6 +24,7 @@ import {
     TeamOutlined,
     UserOutlined 
 } from "@ant-design/icons";
+import TrainingSessionPage from "./pages/TrainingSessionPage/component";
 
 export interface RouteElement {
     key: string
@@ -37,7 +38,7 @@ export interface RouteElement {
 
 const routes: RouteElement[] = [
     {
-        key: "SignUp",
+        key: "Sign Up",
         path: "/sign-up",
         element: <SignUp />,
         onNavBar: false,
@@ -45,7 +46,7 @@ const routes: RouteElement[] = [
         allowedRoles: ["user", "superuser", "coach"]
     },
     {
-        key: "LogIn",
+        key: "Log In",
         path: "/log-in",
         element: <LoginIn />,
         onNavBar: false,
@@ -87,6 +88,15 @@ const routes: RouteElement[] = [
         reqLogin: true,
         allowedRoles: ["user"],
         icon: <CalendarOutlined />
+    },
+    {
+       key: "Training Session",
+        path: "/training-sessions",
+        element: <TrainingSessionPage />,
+        onNavBar: true,
+        reqLogin: true,
+        allowedRoles: ["coach"],
+        icon: <CalendarOutlined /> 
     }
 ]
 

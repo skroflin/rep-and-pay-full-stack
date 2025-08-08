@@ -38,7 +38,11 @@ export default function NavBar({ routes }: NavBarProps) {
     const shouldBeVisible = (item: RouteElement) => {
         if (!item.onNavBar) return false
         if (item.reqLogin && !isUserLoggedIn) return false
-        if (item.allowedRoles.length > 0 && item.allowedRoles.includes(role || "")) {
+
+        const currentRole = (role || "").toLowerCase()
+        const allowedRoles = item.allowedRoles.map(r => r.toLowerCase())
+
+        if (allowedRoles.length > 0 && !allowedRoles.includes(currentRole)) {
             return false
         }
         return true
@@ -70,7 +74,6 @@ export default function NavBar({ routes }: NavBarProps) {
                 }}
             >
                 {!collapsed && "Rep & Pay "}
-                {role === "superuser" && (<ToolOutlined />) || (<ToolOutlined />)}
             </Title>
             <Button
                 type="text"
