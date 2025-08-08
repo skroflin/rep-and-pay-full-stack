@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router"
 import { useUsername, useUserSetter } from "../../user-context/User"
 import { useMutation } from "@tanstack/react-query"
 import { loginUser } from "../../utils/api"
-import { setAuthToken } from "../../utils/helper"
+import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
 import { Button, Form, Input, Layout, Spin } from "antd"
@@ -22,6 +22,7 @@ export default function LoginIn() {
             const { jwt, username, role } = response
             toast.success(`${username} welcome back!`)
             setAuthToken(jwt)
+            setRole(role)
             setUser(username, role, true)
             navigate("/")
         },

@@ -39,8 +39,8 @@ export default function NavBar({ routes }: NavBarProps) {
     const shouldBeVisible = (item: RouteElement) => {
         if (!item.onNavBar) return false
         if (!item.reqLogin) return false
-        if (!item.reqSuperUser && role !== "superuser") return false
-        return true
+        if (!item.allowedRoles) return true
+        return item.allowedRoles.includes(role || "")
     }
 
     const menuItems = routes

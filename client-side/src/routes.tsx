@@ -2,6 +2,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router"
 import { 
     isLoggedIn, 
     useCoachRole, 
+    useRole, 
     useSuperUserRole, 
     useUserRole 
 } from "./user-context/User"
@@ -21,10 +22,8 @@ export interface RouteElement {
     path: string
     element: React.JSX.Element
     onNavBar: boolean
-    reqLogin: boolean
-    reqSuperUser: boolean,
-    reqCoach: boolean,
-    reqUser: boolean
+    reqLogin: boolean,
+    allowedRoles: string[]
 }
 
 const routes: RouteElement[] = [
@@ -34,9 +33,7 @@ const routes: RouteElement[] = [
         element: <SignUp />,
         onNavBar: false,
         reqLogin: false,
-        reqSuperUser: false,
-        reqCoach: false,
-        reqUser: false
+        allowedRoles: ["user", "superuser", "coach"]
     },
     {
         key: "LogIn",
@@ -44,9 +41,7 @@ const routes: RouteElement[] = [
         element: <LoginIn />,
         onNavBar: false,
         reqLogin: false,
-        reqSuperUser: false,
-        reqCoach: false,
-        reqUser: false
+        allowedRoles: ["user", "superuser", "coach"]
     },
     {
         key: "Home",
@@ -54,9 +49,7 @@ const routes: RouteElement[] = [
         element: <HomePage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true,
-        reqCoach: true,
-        reqUser: true
+        allowedRoles: ["user", "superuser", "coach"]
     },
     {
         key: "Coaches",
@@ -64,9 +57,7 @@ const routes: RouteElement[] = [
         element: <CoachPage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true,
-        reqCoach: false,
-        reqUser: false
+        allowedRoles: ["superuser"]
     },
     {
         key: "Users",
@@ -74,9 +65,7 @@ const routes: RouteElement[] = [
         element: <UserPage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true,
-        reqCoach: false,
-        reqUser: false
+        allowedRoles: ["superuser"]
     },
     {
         key: "Bookings",
@@ -84,39 +73,25 @@ const routes: RouteElement[] = [
         element: <BookingPage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: false,
-        reqCoach: false,
-        reqUser: true
+        allowedRoles: ["user"]
     }
 ]
 
 interface PrivateRouteProps {
     reqLogin: boolean,
-    reqSuperUser: boolean,
-    reqCoach: boolean,
-    reqUser: boolean
+    allowedRoles: string[]
 }
 
-function PrivateRoute({ reqLogin, reqSuperUser, reqCoach, reqUser }: PrivateRouteProps) {
+function PrivateRoute({ reqLogin, allowedRoles }: PrivateRouteProps) {
     const isUserLoggedIn = isLoggedIn()
-    const isSuperUser = useSuperUserRole()
-    const isCoach = useCoachRole()
-    const isUser = useUserRole()
+    const role = useRole()
 
     if (reqLogin && !isUserLoggedIn) {
         return <Navigate to="/log-in" />
     }
 
-    if (reqSuperUser && !isSuperUser) {
-        return <Navigate to="/" />
-    }
-
-    if (reqCoach && !isCoach) {
-        return <Navigate to="/" />
-    }
-
-    if (reqUser && !isUser) {
-        return <Navigate to="/" />
+    if(allowedRoles.length > 0 && !allowedRoles.includes(role || "")) {
+        return <Navigate to="/"/>
     }
 
     return <Outlet />
@@ -141,9 +116,7 @@ export function AllRoutes() {
                         key={route.key}
                         element={<PrivateRoute
                             reqLogin={route.reqLogin}
-                            reqSuperUser={route.reqSuperUser}
-                            reqCoach={route.reqCoach}
-                            reqUser={route.reqUser}
+                            allowedRoles={route.allowedRoles}
                         />}
                     >
                         <Route path={route.path} element={route.element} />
