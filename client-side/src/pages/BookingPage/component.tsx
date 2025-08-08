@@ -1,53 +1,79 @@
-import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar } from "antd";
-import { use, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, Calendar, List, Spin } from "antd";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { createMyBooking, getCoaches } from "../../utils/api";
+import { createMyBooking, getAvailableTrainingSessions } from "../../utils/api";
+import dayjs, { Dayjs } from "dayjs";
+import type { BookingRequest } from "../../utils/types/Booking";
 
 export default function BookingPage() {
-    const [coaches, setCoaches] = useState([])
-    const [selectedDate, setSelectedDate] = useState<any>(null)
-    const [selectedCoach, setSelectedCoach] = useState<string | null>(null)
-    const [startTime, setStartTime] = useState<any>(null)
-    const [endTime, setEndTime] = useState<any>(null)
-    const [modalOpen, setModalOpen] = useState(false)
-
     const queryClient = useQueryClient()
+    const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("DD.MM.YYYY"))
 
-    const createBookingMutation = useMutation({
-        mutationFn: (req: any) => createMyBooking(req),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["myBookings"] })
-            toast.success("Booking request sent!")
-            setModalOpen(false)
-        },
-        onError: () => {
-            toast.error("Error upon sending request!")
-        }
+    const { data: sessions, isLoading } = useQuery({
+        queryKey: ["available-sessions", selectedDate],
+        queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
-    useEffect(() => {
-        getCoaches().then(setCoaches)
-    }, [])
+    const bookingMutation = useMutation({
+        mutationFn: (req: BookingRequest) => createMyBooking(req),
+        onSuccess: () => {
+            toast.success("Booking request sent!")
+            queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate ]})
+        },
+        onError: () => toast.error("Failed to create a booking!"),
+    })
 
-    const handleDateSelect = (value: any) => {
-        setSelectedDate(value)
-        setModalOpen(true)
+    const handleDataChange = (value: Dayjs) => {
+        const dateStr = value.format("DD.MM.YYYY")
+        setSelectedDate(dateStr)
+        toast.info(`Date selected: ${dateStr}!`)
     }
 
     return (
         <div
             style={{
                 display: "block",
-                width: 700,
-                padding: 30
+                maxWidth: 800,
+                padding: 20,
+                margin: "0 auto"
             }}
         >
             <Calendar
-                onChange={(value) => {
-                    toast.success(`You selected ${value.format('DD.MM.YYYY')}`)
-                }} 
+                fullscreen={false}
+                onChange={handleDataChange} 
             />
+            <h2>Available sessions for {selectedDate}</h2>
+
+            {isLoading ? (
+                <Spin/>
+            ): (
+                <List
+                    bordered
+                    dataSource={sessions || []}
+                    renderItem={(session: any) => (
+                        <List.Item
+                            actions={[
+                                <Button
+                                    type="primary"
+                                    onClick={() => 
+                                        bookingMutation.mutate({ trainingSessionId })
+                                    }
+                                    loading={bookingMutation.isPending}
+                                >
+                                    Book
+                                </Button>
+                            ]}
+                        >
+                            <List.Item.Meta
+                                title={`${session.startTime} - ${session.endTime}`}
+                            />
+                        </List.Item>
+                    )}
+                >
+
+                </List>
+            )}
         </div>
     )
 }

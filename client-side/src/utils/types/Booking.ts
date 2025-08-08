@@ -3,4 +3,5 @@ export interface BookingRequest {
     trainingSessionId: number
     reservationTime: Date
     endOfReservationTime: Date
+    bookingStatus: string
 }
