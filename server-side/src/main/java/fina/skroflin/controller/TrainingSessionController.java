@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -499,6 +500,25 @@ public class TrainingSessionController {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @GetMapping("/getAvailableTrainingSessionsByDate")
+    public ResponseEntity<List<TrainingSessionResponseDTO>> getAvailableSessions(
+            @RequestParam LocalDateTime date
+    ){
+        try {
+            return ResponseEntity.ok(trainingSessionService.getAvailableTrainingSessionsByDate(date));
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon fetching available sessions" + " " + e.getMessage(),
                     e
             );
         }

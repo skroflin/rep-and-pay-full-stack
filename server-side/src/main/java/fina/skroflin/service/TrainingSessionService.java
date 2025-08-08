@@ -13,6 +13,7 @@ import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -393,6 +394,26 @@ public class TrainingSessionService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException("Error upon deleting training session"
                     + " with id" + " " + id + " " + e.getMessage(), e);
+        }
+    }
+    
+    public List<TrainingSessionResponseDTO> getAvailableTrainingSessionsByDate(
+            LocalDateTime date
+    ) {
+        try {
+            List<TrainingSession> trainingSessions = session.createQuery(
+                    "select ts from TrainingSession ts "
+                            + "left join fetch ts.trainer "
+                            + "where date(ts.dateTime) = :date", 
+                    TrainingSession.class)
+                    .setParameter("date", date)
+                    .list();
+            return trainingSessions.stream()
+                    .map(this::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching training sessions:"
+                    + " " + e.getMessage(), e);
         }
     }
 }
