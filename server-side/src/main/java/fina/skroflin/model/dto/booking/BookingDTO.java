@@ -4,13 +4,16 @@
  */
 package fina.skroflin.model.dto.booking;
 
+import fina.skroflin.model.enums.BookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import lombok.Builder;
 
 /**
  *
  * @author skroflin
  */
+@Builder
 public record BookingDTO(
         @Schema(example = "1")
         Integer userId,
@@ -19,7 +22,9 @@ public record BookingDTO(
         @Schema(example = "2025-07-29T20:00:00")
         LocalDateTime reservationTime,
         @Schema(example = "2025-07-29T21:30:00")
-        LocalDateTime endOfReservationTime
+        LocalDateTime endOfReservationTime,
+        @Schema(example = "pending")
+        BookingStatus bookingStatus
         ) {
 
 }

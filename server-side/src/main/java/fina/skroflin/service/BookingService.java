@@ -11,6 +11,7 @@ import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
+import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -47,7 +48,8 @@ public class BookingService extends MainService {
                 userId,
                 trainingSessionId,
                 booking.getReservationTime(),
-                booking.getEndOfReservation()
+                booking.getEndOfReservation(),
+                booking.getBookingStatus()
         );
     }
 
@@ -62,7 +64,8 @@ public class BookingService extends MainService {
                 booking.getId(),
                 trainingSessionId,
                 booking.getReservationTime(),
-                booking.getEndOfReservation()
+                booking.getEndOfReservation(),
+                booking.getBookingStatus()
         );
     }
 
@@ -85,6 +88,11 @@ public class BookingService extends MainService {
                         + " " + dto.trainingSessionId() + " " + "doesn't exist!");
             }
             booking.setTrainingSession(trainingSession);
+        }
+        if (dto.bookingStatus() != null) {
+            booking.setBookingStatus(dto.bookingStatus());
+        } else {
+            booking.setBookingStatus(BookingStatus.pending);
         }
         booking.setReservationTime(dto.reservationTime());
         booking.setEndOfReservation(dto.endOfReservationTime());
@@ -113,6 +121,11 @@ public class BookingService extends MainService {
             booking.setTrainingSession(trainingSession);
         } else {
             booking.setTrainingSession(null);
+        }
+        if (dto.bookingStatus() != null) {
+            booking.setBookingStatus(dto.bookingStatus());
+        } else {
+            booking.setBookingStatus(BookingStatus.pending);
         }
         booking.setReservationTime(dto.reservationTime());
         booking.setEndOfReservation(dto.endOfReservationTime());
@@ -251,7 +264,8 @@ public class BookingService extends MainService {
                     userProfile,
                     ts,
                     o.reservationTime(),
-                    o.endOfReservationTime()
+                    o.endOfReservationTime(),
+                    o.bookingStatus()
             );
 
             session.beginTransaction();

@@ -4,6 +4,7 @@
  */
 package fina.skroflin.model.dto.booking;
 
+import fina.skroflin.model.enums.BookingStatus;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,8 @@ public record BookingResponseDTO(
         Integer userId,
         Integer trainingSessionId,
         LocalDateTime reservationTime,
-        LocalDateTime endOfReservationTime
+        LocalDateTime endOfReservationTime,
+        BookingStatus bookingStatus
         ) {
 
 }

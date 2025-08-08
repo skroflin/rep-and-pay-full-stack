@@ -4,6 +4,7 @@
  */
 package fina.skroflin.model;
 
+import fina.skroflin.model.enums.BookingStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,11 +12,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  *
  * @author skroflin
  */
+@Data
 @Entity
 @Table(name = "booking")
 @AttributeOverride(name = "id", column = @Column(name = "booking_id"))
@@ -30,6 +33,8 @@ public class Booking extends MainEntity {
     private LocalDateTime reservationTime;
     @Column(name = "end_of_reservation_time")
     private LocalDateTime endOfReservation;
+    @Column(name = "booking_status")
+    private BookingStatus bookingStatus;
 
     public Booking() {
     }
@@ -38,11 +43,14 @@ public class Booking extends MainEntity {
             User user, 
             TrainingSession trainingSession, 
             LocalDateTime reservationTime, 
-            LocalDateTime endOfReservation) {
+            LocalDateTime endOfReservation, 
+            BookingStatus bookingStatus
+    ) {
         this.user = user;
         this.trainingSession = trainingSession;
         this.reservationTime = reservationTime;
         this.endOfReservation = endOfReservation;
+        this.bookingStatus = bookingStatus;
     }
 
     public User getUser() {
@@ -75,5 +83,13 @@ public class Booking extends MainEntity {
 
     public void setEndOfReservation(LocalDateTime endOfReservation) {
         this.endOfReservation = endOfReservation;
+    }
+
+    public BookingStatus getBookingStatus() {
+        return bookingStatus;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
     }
 }
