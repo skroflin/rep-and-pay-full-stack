@@ -434,4 +434,39 @@ public class BookingService extends MainService {
                     + " with id" + " " + id + " " + e.getMessage(), e);
         }
     }
+
+    public BookingResponseDTO updateBookingStatus(
+            int id,
+            BookingStatus newBookingStatus,
+            HttpHeaders headers
+    ) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            Booking booking = (Booking) session.get(Booking.class, id);
+
+            if (booking == null) {
+                throw new NoResultException("Booking with the id"
+                        + " " + id + " " + "doesn't exist!");
+            }
+
+            Integer trainerId = booking.getTrainingSession().getTrainer().getId();
+            if (!trainerId.equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "delete this booking!");
+            }
+
+            booking.setBookingStatus(newBookingStatus);
+            session.beginTransaction();
+            session.merge(booking);
+            session.getTransaction().commit();
+
+            return convertToResponseDTO(booking);
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon updating booking"
+                    + " with id" + " " + id + " " + e.getMessage(), e);
+        }
+    }
 }

@@ -7,8 +7,10 @@ package fina.skroflin.controller;
 import fina.skroflin.model.Booking;
 import fina.skroflin.model.dto.booking.BookingDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.booking.UpdateBookingStatusDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
+import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.UserService;
@@ -487,6 +489,32 @@ public class BookingController {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error upon deletion" + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    @PutMapping("/updateBookingStatus")
+    public ResponseEntity<BookingResponseDTO> updateBookingStatus(
+            @RequestParam
+            int id,
+            @RequestBody
+            UpdateBookingStatusDTO dto,
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        try {
+            BookingResponseDTO updateBookingResponse = 
+                    bookingService.updateBookingStatus(id, dto.bookingStatus(), headers);
+            return ResponseEntity.ok(updateBookingResponse);
+        } catch (NoResultException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error upon updating booking request status" + " " + e.getMessage(),
                     e
             );
         }
