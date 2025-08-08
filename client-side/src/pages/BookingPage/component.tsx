@@ -12,7 +12,7 @@ export default function BookingPage() {
         >
             <Calendar
                 onChange={(value) => {
-                    toast.success(`You selected ${value.format('dd.MM.yyyy')}`)
+                    toast.success(`You selected ${value.format('DD.MM.YYYY')}`)
                 }} 
             />
         </div>

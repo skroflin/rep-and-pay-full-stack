@@ -9,8 +9,7 @@ import {
     LogoutOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    ToolOutlined,
-    UserOutlined
+    ToolOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
 
@@ -38,9 +37,11 @@ export default function NavBar({ routes }: NavBarProps) {
 
     const shouldBeVisible = (item: RouteElement) => {
         if (!item.onNavBar) return false
-        if (!item.reqLogin) return false
-        if (!item.allowedRoles) return true
-        return item.allowedRoles.includes(role || "")
+        if (item.reqLogin && !isUserLoggedIn) return false
+        if (item.allowedRoles.length > 0 && item.allowedRoles.includes(role || "")) {
+            return false
+        }
+        return true
     }
 
     const menuItems = routes
@@ -48,7 +49,7 @@ export default function NavBar({ routes }: NavBarProps) {
         .map((item) => ({
             key: item.path,
             label: item.key,
-            icon: <UserOutlined />
+            icon: item.icon
         }))
 
     return (

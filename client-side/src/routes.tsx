@@ -1,10 +1,12 @@
-import { Navigate, Outlet, Route, Routes } from "react-router"
 import { 
-    isLoggedIn, 
-    useCoachRole, 
-    useRole, 
-    useSuperUserRole, 
-    useUserRole 
+    Navigate,
+    Outlet, 
+    Route, 
+    Routes
+} from "react-router"
+import { 
+    isLoggedIn,
+    useRole
 } from "./user-context/User"
 import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
@@ -16,6 +18,12 @@ import HomePage from "./pages/HomePage/component";
 import CoachPage from "./pages/CoachPage/component";
 import UserPage from "./pages/UserPage/component";
 import BookingPage from "./pages/BookingPage/component";
+import { 
+    CalendarOutlined,
+    HomeOutlined,
+    TeamOutlined,
+    UserOutlined 
+} from "@ant-design/icons";
 
 export interface RouteElement {
     key: string
@@ -23,7 +31,8 @@ export interface RouteElement {
     element: React.JSX.Element
     onNavBar: boolean
     reqLogin: boolean,
-    allowedRoles: string[]
+    allowedRoles: string[],
+    icon?: React.ReactNode
 }
 
 const routes: RouteElement[] = [
@@ -49,7 +58,8 @@ const routes: RouteElement[] = [
         element: <HomePage />,
         onNavBar: true,
         reqLogin: true,
-        allowedRoles: ["user", "superuser", "coach"]
+        allowedRoles: ["user", "superuser", "coach"],
+        icon: <HomeOutlined />
     },
     {
         key: "Coaches",
@@ -57,7 +67,8 @@ const routes: RouteElement[] = [
         element: <CoachPage />,
         onNavBar: true,
         reqLogin: true,
-        allowedRoles: ["superuser"]
+        allowedRoles: ["superuser"],
+        icon: <TeamOutlined />
     },
     {
         key: "Users",
@@ -65,7 +76,8 @@ const routes: RouteElement[] = [
         element: <UserPage />,
         onNavBar: true,
         reqLogin: true,
-        allowedRoles: ["superuser"]
+        allowedRoles: ["superuser"],
+        icon: <UserOutlined />
     },
     {
         key: "Bookings",
@@ -73,7 +85,8 @@ const routes: RouteElement[] = [
         element: <BookingPage />,
         onNavBar: true,
         reqLogin: true,
-        allowedRoles: ["user"]
+        allowedRoles: ["user"],
+        icon: <CalendarOutlined />
     }
 ]
 
@@ -90,7 +103,10 @@ function PrivateRoute({ reqLogin, allowedRoles }: PrivateRouteProps) {
         return <Navigate to="/log-in" />
     }
 
-    if(allowedRoles.length > 0 && !allowedRoles.includes(role || "")) {
+    if(
+        isUserLoggedIn && allowedRoles.length > 0 
+        && !allowedRoles.includes(role || "")
+    ) {
         return <Navigate to="/"/>
     }
 
