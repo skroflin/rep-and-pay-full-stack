@@ -102,6 +102,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/booking/createMyBookings").hasAnyAuthority(Role.user.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/updateMyBooking").hasAnyAuthority(Role.user.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/deleteMyBookings").hasAnyAuthority(Role.user.name())
+                        .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/updateBookingStatus").hasAnyAuthority(Role.coach.name())
                         .requestMatchers("/api/fina/skroflin/user").hasAuthority(Role.superuser.toString()).anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
