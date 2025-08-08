@@ -1,5 +1,10 @@
 import { Navigate, Outlet, Route, Routes } from "react-router"
-import { isLoggedIn, useSuperUserRole } from "./user-context/User"
+import { 
+    isLoggedIn, 
+    useCoachRole, 
+    useSuperUserRole, 
+    useUserRole 
+} from "./user-context/User"
 import { Layout } from "antd"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +14,7 @@ import NavBar from "./misc/NavBar/component";
 import HomePage from "./pages/HomePage/component";
 import CoachPage from "./pages/CoachPage/component";
 import UserPage from "./pages/UserPage/component";
+import BookingPage from "./pages/BookingPage/component";
 
 export interface RouteElement {
     key: string
@@ -16,7 +22,9 @@ export interface RouteElement {
     element: React.JSX.Element
     onNavBar: boolean
     reqLogin: boolean
-    reqSuperUser: boolean
+    reqSuperUser: boolean,
+    reqCoach: boolean,
+    reqUser: boolean
 }
 
 const routes: RouteElement[] = [
@@ -26,7 +34,9 @@ const routes: RouteElement[] = [
         element: <SignUp />,
         onNavBar: false,
         reqLogin: false,
-        reqSuperUser: false
+        reqSuperUser: false,
+        reqCoach: false,
+        reqUser: false
     },
     {
         key: "LogIn",
@@ -34,7 +44,9 @@ const routes: RouteElement[] = [
         element: <LoginIn />,
         onNavBar: false,
         reqLogin: false,
-        reqSuperUser: false
+        reqSuperUser: false,
+        reqCoach: false,
+        reqUser: false
     },
     {
         key: "Home",
@@ -42,7 +54,9 @@ const routes: RouteElement[] = [
         element: <HomePage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true
+        reqSuperUser: true,
+        reqCoach: true,
+        reqUser: true
     },
     {
         key: "Coaches",
@@ -50,7 +64,9 @@ const routes: RouteElement[] = [
         element: <CoachPage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true
+        reqSuperUser: true,
+        reqCoach: false,
+        reqUser: false
     },
     {
         key: "Users",
@@ -58,24 +74,48 @@ const routes: RouteElement[] = [
         element: <UserPage />,
         onNavBar: true,
         reqLogin: true,
-        reqSuperUser: true
+        reqSuperUser: true,
+        reqCoach: false,
+        reqUser: false
+    },
+    {
+        key: "Bookings",
+        path: "/bookings",
+        element: <BookingPage />,
+        onNavBar: true,
+        reqLogin: true,
+        reqSuperUser: false,
+        reqCoach: false,
+        reqUser: true
     }
 ]
 
 interface PrivateRouteProps {
     reqLogin: boolean,
-    reqSuperUser: boolean
+    reqSuperUser: boolean,
+    reqCoach: boolean,
+    reqUser: boolean
 }
 
-function PrivateRoute({ reqLogin, reqSuperUser }: PrivateRouteProps) {
+function PrivateRoute({ reqLogin, reqSuperUser, reqCoach, reqUser }: PrivateRouteProps) {
     const isUserLoggedIn = isLoggedIn()
     const isSuperUser = useSuperUserRole()
+    const isCoach = useCoachRole()
+    const isUser = useUserRole()
 
     if (reqLogin && !isUserLoggedIn) {
         return <Navigate to="/log-in" />
     }
 
     if (reqSuperUser && !isSuperUser) {
+        return <Navigate to="/" />
+    }
+
+    if (reqCoach && !isCoach) {
+        return <Navigate to="/" />
+    }
+
+    if (reqUser && !isUser) {
         return <Navigate to="/" />
     }
 
@@ -96,13 +136,14 @@ export function AllRoutes() {
         >
             {isUserLoggedIn && <NavBar routes={routes} />}
             <Routes>
-                {/* <Route path="/" element={<Navigate to="/log-in" replace />} /> */}
                 {routes.map((route) => (
                     <Route
                         key={route.key}
                         element={<PrivateRoute
                             reqLogin={route.reqLogin}
                             reqSuperUser={route.reqSuperUser}
+                            reqCoach={route.reqCoach}
+                            reqUser={route.reqUser}
                         />}
                     >
                         <Route path={route.path} element={route.element} />

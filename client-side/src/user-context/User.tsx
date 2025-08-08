@@ -64,6 +64,16 @@ export function useSuperUserRole() {
     return user.role === "superuser"
 }
 
+export function useCoachRole() {
+    const { user } = React.useContext(UserContext)
+    return user.role === "coach"
+}
+
+export function useUserRole() {
+    const { user } = React.useContext(UserContext)
+    return user.role === "user"
+}
+
 export function isLoggedIn() {
     const { user } = React.useContext(UserContext);
     return !!user.isLoggedIn;

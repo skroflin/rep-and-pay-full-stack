@@ -1,22 +1,20 @@
-import { theme } from "antd";
-import { Content } from "antd/es/layout/layout";
+import { Calendar } from "antd";
+import { toast } from "react-toastify";
 
-export default function BookingPage() {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken()
-    
+export default function BookingPage() {    
     return (
-        <Content
+        <div
             style={{
-                margin: '24px 16px',
-                padding: 24,
-                minHeight: 280,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
+                display: "block",
+                width: 700,
+                padding: 30
             }}
         >
-            Content
-        </Content>
+            <Calendar
+                onChange={(value) => {
+                    toast.success(`You selected ${value.format('dd.MM.yyyy')}`)
+                }} 
+            />
+        </div>
     )
 }
