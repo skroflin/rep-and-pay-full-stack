@@ -15,6 +15,7 @@ import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -401,7 +402,7 @@ public class TrainingSessionService extends MainService {
     }
     
     public List<TrainingSessionResponseDTO> getAvailableTrainingSessionsByDate(
-            LocalDateTime date
+            LocalDate date
     ) {
         try {
             List<TrainingSession> trainingSessions = session.createQuery(

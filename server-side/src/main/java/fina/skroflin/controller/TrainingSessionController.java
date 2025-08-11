@@ -20,8 +20,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -364,7 +365,9 @@ public class TrainingSessionController {
     
     @GetMapping("/getAvailableTrainingSessionsByDate")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAvailableSessions(
-            @RequestParam LocalDateTime date
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)        
+            LocalDate date
     ){
         return ResponseEntity.ok(
                 trainingSessionService.getAvailableTrainingSessionsByDate(date)
