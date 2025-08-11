@@ -14,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -29,7 +30,7 @@ public class TrainingSession extends MainEntity {
     @JoinColumn(name = "trainer_id")
     private User trainer;
     @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
     @Enumerated(EnumType.STRING)
     @Column(name = "training_type")
     private TrainingType trainingType;
@@ -40,12 +41,7 @@ public class TrainingSession extends MainEntity {
     public TrainingSession() {
     }
 
-    public TrainingSession(
-            User trainer,
-            LocalDateTime dateTime,
-            TrainingType trainingType,
-            TrainingLevel trainingLevel
-    ) {
+    public TrainingSession(User trainer, LocalDate dateTime, TrainingType trainingType, TrainingLevel trainingLevel) {
         this.trainer = trainer;
         this.dateTime = dateTime;
         this.trainingType = trainingType;
@@ -60,11 +56,11 @@ public class TrainingSession extends MainEntity {
         this.trainer = trainer;
     }
 
-    public LocalDateTime getDateTime() {
+    public LocalDate getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(LocalDate dateTime) {
         this.dateTime = dateTime;
     }
 
@@ -83,5 +79,6 @@ public class TrainingSession extends MainEntity {
     public void setTrainingLevel(TrainingLevel trainingLevel) {
         this.trainingLevel = trainingLevel;
     }
+    
     
 }

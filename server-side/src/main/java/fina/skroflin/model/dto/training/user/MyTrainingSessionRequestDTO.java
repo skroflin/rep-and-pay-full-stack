@@ -7,15 +7,15 @@ package fina.skroflin.model.dto.training.user;
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  *
  * @author skroflin
  */
 public record MyTrainingSessionRequestDTO(
-        @Schema(example = "2025-07-29T20:00:00")
-        LocalDateTime dateTime,
+        @Schema(example = "2025-07-29")
+        LocalDate dateTime,
         @Schema(example = "weightlifting")
         TrainingType trainingType,
         @Schema(example = "intermediate")

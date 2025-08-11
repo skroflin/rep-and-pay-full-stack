@@ -8,7 +8,7 @@ import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  *
@@ -18,7 +18,7 @@ public record TrainingSessionResponseDTO(
         Integer id,
         String trainerFirstName,
         String trainerLastName,
-        LocalDateTime dateTime,
+        LocalDate dateTime,
         @Enumerated(EnumType.STRING)
         TrainingType trainingType,
         @Enumerated(EnumType.STRING)
