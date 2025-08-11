@@ -4,19 +4,20 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { createMyBooking, getAvailableTrainingSessions } from "../../utils/api";
 import dayjs, { Dayjs } from "dayjs";
-import type { BookingRequest } from "../../utils/types/Booking";
+import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
+import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
     const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("DD.MM.YYYY"))
 
-    const { data: sessions, isLoading } = useQuery({
+    const { data: sessions, isLoading } = useQuery<TrainingSessionResponse>({
         queryKey: ["available-sessions", selectedDate],
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
     const bookingMutation = useMutation({
-        mutationFn: (req: BookingRequest) => createMyBooking(req),
+        mutationFn: (req: MyBookingRequest) => createMyBooking(req),
         onSuccess: () => {
             toast.success("Booking request sent!")
             queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate ]})
@@ -51,13 +52,13 @@ export default function BookingPage() {
                 <List
                     bordered
                     dataSource={sessions || []}
-                    renderItem={(session: any) => (
+                    renderItem={(session) => (
                         <List.Item
                             actions={[
                                 <Button
                                     type="primary"
                                     onClick={() => 
-                                        bookingMutation.mutate({ trainingSessionId })
+                                        bookingMutation.mutate({ trainingSessionId: session. })
                                     }
                                     loading={bookingMutation.isPending}
                                 >
@@ -66,7 +67,7 @@ export default function BookingPage() {
                             ]}
                         >
                             <List.Item.Meta
-                                title={`${session.startTime} - ${session.endTime}`}
+                                title={`${session.} - ${session.endTime}`}
                             />
                         </List.Item>
                     )}
