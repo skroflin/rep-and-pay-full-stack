@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author skroflin
  */
-public record UserDTO(
+public record UserRequestDTO(
         @Schema(example = "Sven")
         String firstName,
         @Schema(example = "Kroflin")

@@ -7,9 +7,9 @@ package fina.skroflin.service;
 import fina.skroflin.model.Booking;
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
-import fina.skroflin.model.dto.booking.BookingDTO;
+import fina.skroflin.model.dto.booking.BookingRequestDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
-import fina.skroflin.model.dto.booking.user.MyBookingDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
@@ -69,7 +69,7 @@ public class BookingService extends MainService {
     }
 
     @Transactional
-    private Booking convertToEntity(BookingDTO dto) {
+    private Booking convertToEntity(BookingRequestDTO dto) {
         Booking booking = new Booking();
         if (dto.userId() != null) {
             User user = session.get(User.class, dto.userId());
@@ -99,7 +99,7 @@ public class BookingService extends MainService {
     }
 
     @Transactional
-    private void updateEntityFromDto(Booking booking, BookingDTO dto) {
+    private void updateEntityFromDto(Booking booking, BookingRequestDTO dto) {
         if (dto.userId() != null) {
             User user = session.get(User.class, dto.userId());
             if (user == null) {
@@ -194,7 +194,7 @@ public class BookingService extends MainService {
         }
     }
 
-    public void post(BookingDTO o) {
+    public void post(BookingRequestDTO o) {
         try {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
@@ -222,7 +222,7 @@ public class BookingService extends MainService {
     }
 
     public void createMyBooking(
-            MyBookingDTO o,
+            MyBookingRequestDTO o,
             HttpHeaders headers
     ) {
         try {
@@ -278,7 +278,7 @@ public class BookingService extends MainService {
         }
     }
 
-    public void put(BookingDTO o, int id) {
+    public void put(BookingRequestDTO o, int id) {
         try {
             Booking existingBooking
                     = (Booking) session.get(Booking.class, id);
@@ -329,7 +329,7 @@ public class BookingService extends MainService {
     }
 
     public void updateMyBooking(
-            MyBookingDTO o,
+            MyBookingRequestDTO o,
             int id,
             HttpHeaders headers
     ) {

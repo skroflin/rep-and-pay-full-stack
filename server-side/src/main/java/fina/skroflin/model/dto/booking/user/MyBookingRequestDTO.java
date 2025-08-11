@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author skroflin
  */
-public record MyBookingDTO(
+public record MyBookingRequestDTO(
         @Schema(example = "1")
         Integer trainingSessionId,
         @Schema(example = "2025-07-29T20:00:00")

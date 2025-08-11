@@ -6,9 +6,9 @@ package fina.skroflin.controller;
 
 import fina.skroflin.model.Booking;
 import fina.skroflin.model.TrainingSession;
-import fina.skroflin.model.dto.training.TrainingSessionDTO;
+import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
-import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.UserService;
@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.NoResultException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -70,17 +69,9 @@ public class TrainingSessionController {
             })
     @GetMapping("/get")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAll() {
-        try {
-            return new ResponseEntity<>(
-                    trainingSessionService.getAll(), HttpStatus.OK
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon fetching" + " " + e.getMessage(),
-                    e
-            );
-        }
+        return new ResponseEntity<>(
+                trainingSessionService.getAll(), HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -107,31 +98,22 @@ public class TrainingSessionController {
     public ResponseEntity<TrainingSessionResponseDTO> getById(
             @RequestParam int id
     ) {
-        try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            TrainingSessionResponseDTO trainingSession
-                    = trainingSessionService.getById(id);
-            if (trainingSession == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Training session with id" + " "
-                        + id + " " + "doesn't exist!"
-                );
-            }
-            return new ResponseEntity<>(trainingSession, HttpStatus.OK);
-        } catch (Exception e) {
+        if (id <= 0) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon fetching training session with id"
-                    + " " + id + " " + e.getMessage(),
-                    e
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0!"
             );
         }
+        TrainingSessionResponseDTO trainingSession
+                = trainingSessionService.getById(id);
+        if (trainingSession == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Training session with id" + " "
+                    + id + " " + "doesn't exist!"
+            );
+        }
+        return new ResponseEntity<>(trainingSession, HttpStatus.OK);
     }
 
     @Operation(
@@ -148,17 +130,9 @@ public class TrainingSessionController {
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
             @RequestHeader HttpHeaders headers
     ) {
-        try {
-            return ResponseEntity.ok(
-                    trainingSessionService.getMyTrainingSessions(headers)
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon fetching" + " " + e.getMessage(),
-                    e
-            );
-        }
+        return ResponseEntity.ok(
+                trainingSessionService.getMyTrainingSessions(headers)
+        );
     }
     
     @Operation(
@@ -172,77 +146,58 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PostMapping("/post")
-    public ResponseEntity<TrainingSessionResponseDTO> post(
-            @RequestBody(required = true) TrainingSessionDTO dto
+    public ResponseEntity<String> post(
+            @RequestBody(required = true) TrainingSessionRequestDTO dto
     ) {
-        try {
-            if (dto == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "The necessary data wasn't inserted!"
-                );
-            }
-            if (dto.trainerId() != null) {
-                try {
-                    trainerService.getById(dto.trainerId());
-                } catch (Exception e) {
-                    throw new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Error trainer with it"
-                            + " " + dto.trainerId()
-                            + " " + "doesn't exist!"
-                    );
-                }
-            }
-            if (dto.dateTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Date time is necessary!"
-                );
-            }
-            if (dto.trainingLevel() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Training level is necessary!"
-                );
-            }
-            if (dto.trainingType() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Training type is necessary!"
-                );
-            }
-            if (dto.capacity() <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Capacity is necessary and it "
-                        + "cannot be lesser than "
-                        + "or equal to zero!"
-                );
-            }
-
-            TrainingSessionResponseDTO createdTrainingSession
-                    = trainingSessionService.post(dto);
-            return new ResponseEntity<>(createdTrainingSession, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        if (dto == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    e.getMessage(),
-                    e
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    e.getMessage(),
-                    e
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    e.getMessage(),
-                    e
+                    "The necessary data wasn't inserted!"
             );
         }
+        if (dto.trainerId() != null) {
+            try {
+                trainerService.getById(dto.trainerId());
+            } catch (Exception e) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Error trainer with it"
+                        + " " + dto.trainerId()
+                        + " " + "doesn't exist!"
+                );
+            }
+        }
+        if (dto.dateTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Date time is necessary!"
+            );
+        }
+        if (dto.trainingLevel() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Training level is necessary!"
+            );
+        }
+        if (dto.trainingType() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Training type is necessary!"
+            );
+        }
+        if (dto.capacity() <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Capacity is necessary and it "
+                    + "cannot be lesser than "
+                    + "or equal to zero!"
+            );
+        }
+        trainingSessionService.post(dto);
+        return new ResponseEntity<>(
+                "Training session created!",
+                HttpStatus.CREATED
+        );
     }
 
     @Operation(
@@ -256,35 +211,12 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PostMapping("/createMyTrainingSession")
-    public ResponseEntity<MyTrainingSessionResponseDTO> createMyTrainingSession(
+    public ResponseEntity<String> createMyTrainingSession(
             @RequestHeader HttpHeaders headers,
-            MyTrainingSessionDTO dto
+            MyTrainingSessionRequestDTO dto
     ) {
-        try {
-            return ResponseEntity.ok(
-                    trainingSessionService.createMyTrainingSession(
-                            dto, headers
-                    )
-            );
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage(),
-                    e
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    e.getMessage(),
-                    e
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    e.getMessage(),
-                    e
-            );
-        }
+        trainingSessionService.createMyTrainingSession(dto, headers);
+        return new ResponseEntity<>("New session created!", HttpStatus.CREATED);
     }
 
     @Operation(
@@ -306,65 +238,48 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PutMapping("/put")
-    public ResponseEntity<TrainingSessionResponseDTO> put(
+    public ResponseEntity<String> put(
             @RequestParam int id,
-            @RequestBody(required = true) TrainingSessionDTO dto
+            @RequestBody(required = true) TrainingSessionRequestDTO dto
     ) {
-        try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            if (dto.dateTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Date time is necessary!"
-                );
-            }
-            if (dto.trainingLevel() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Training level is necessary!"
-                );
-            }
-            if (dto.trainingType() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Training type is necessary!"
-                );
-            }
-            if (dto.capacity() <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Capacity is necessary and it "
-                        + "cannot be lesser than "
-                        + "or equal to zero!"
-                );
-            }
-            TrainingSessionResponseDTO updatedTrainingSession
-                    = trainingSessionService.put(dto, id);
-            return new ResponseEntity<>(updatedTrainingSession, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        if (id <= 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    e.getMessage(),
-                    e
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    e.getMessage(),
-                    e
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    e.getMessage(),
-                    e
+                    "Id musn't be lesser than 0!"
             );
         }
+        if (dto.dateTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Date time is necessary!"
+            );
+        }
+        if (dto.trainingLevel() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Training level is necessary!"
+            );
+        }
+        if (dto.trainingType() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Training type is necessary!"
+            );
+        }
+        if (dto.capacity() <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Capacity is necessary and it "
+                    + "cannot be lesser than "
+                    + "or equal to zero!"
+            );
+        }
+        trainingSessionService.put(dto, id);
+        return new ResponseEntity<>(
+                "Training session with the id" 
+                        + " " + id + " " + "updated!",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -378,37 +293,17 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PutMapping("/updateMyTrainingSession")
-    public ResponseEntity<MyTrainingSessionResponseDTO> updateMyTrainingSession(
+    public ResponseEntity<String> updateMyTrainingSession(
             @RequestHeader HttpHeaders headers,
-            MyTrainingSessionDTO dto,
+            MyTrainingSessionRequestDTO dto,
             int id
     ) {
-        try {
-            return ResponseEntity.ok(
-                    trainingSessionService.updateMyTrainingSession(
-                            dto,
-                            id,
-                            headers)
-            );
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage(),
-                    e
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    e.getMessage(),
-                    e
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    e.getMessage(),
-                    e
-            );
-        }
+        trainingSessionService.updateMyTrainingSession(dto, id, headers);
+        return new ResponseEntity<>(
+                "My training session with id" 
+                        + " " + id + " " + "updated!", 
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -439,31 +334,19 @@ public class TrainingSessionController {
     public ResponseEntity<String> delete(
             @RequestParam int id
     ) {
-        try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            trainingSessionService.delete(id);
-            return new ResponseEntity<>(
-                    "Training session with id"
-                    + " " + id
-                    + " " + "deleted",
-                    HttpStatus.OK
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
+        if (id <= 0) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon deletion" + " " + e.getMessage(),
-                    e
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0!"
             );
         }
+        trainingSessionService.delete(id);
+        return new ResponseEntity<>(
+                "Training session with id"
+                + " " + id
+                + " " + "deleted",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -487,40 +370,20 @@ public class TrainingSessionController {
             @RequestHeader HttpHeaders headers,
             int id
     ) {
-        try {
-            return ResponseEntity.ok(trainingSessionService.deleteMyTrainingSession(
-                    id,
-                    headers
-            ));
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon deletion" + " " + e.getMessage(),
-                    e
-            );
-        }
+        trainingSessionService.deleteMyTrainingSession(id, headers);
+        return new ResponseEntity<>(
+                "My training session with id" 
+                        + " " + id + " " + "deleted!", 
+                HttpStatus.OK
+        );
     }
     
     @GetMapping("/getAvailableTrainingSessionsByDate")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAvailableSessions(
             @RequestParam LocalDateTime date
     ){
-        try {
-            return ResponseEntity.ok(trainingSessionService.getAvailableTrainingSessionsByDate(date));
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon fetching available sessions" + " " + e.getMessage(),
-                    e
-            );
-        }
+        return ResponseEntity.ok(
+                trainingSessionService.getAvailableTrainingSessionsByDate(date)
+        );
     }
 }

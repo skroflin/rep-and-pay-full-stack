@@ -14,7 +14,7 @@ import lombok.Builder;
  * @author skroflin
  */
 @Builder
-public record BookingDTO(
+public record BookingRequestDTO(
         @Schema(example = "1")
         Integer userId,
         @Schema(example = "1")

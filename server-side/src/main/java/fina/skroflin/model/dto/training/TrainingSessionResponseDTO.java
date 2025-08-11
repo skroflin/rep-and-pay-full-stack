@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
  */
 public record TrainingSessionResponseDTO(
         Integer id,
-        Integer trainerId,
+        String trainerFirstName,
+        String trainerLastName,
         LocalDateTime dateTime,
         @Enumerated(EnumType.STRING)
         TrainingType trainingType,

@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *
  * @author skroflin
  */
-public record UpdateBookingStatusDTO(
+public record UpdateBookingStatusRequestDTO(
         @Schema(example = "accepted")
         BookingStatus bookingStatus
         ) {

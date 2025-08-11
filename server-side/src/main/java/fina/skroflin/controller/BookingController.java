@@ -5,10 +5,10 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.Booking;
-import fina.skroflin.model.dto.booking.BookingDTO;
+import fina.skroflin.model.dto.booking.BookingRequestDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
-import fina.skroflin.model.dto.booking.UpdateBookingStatusDTO;
-import fina.skroflin.model.dto.booking.user.MyBookingDTO;
+import fina.skroflin.model.dto.booking.UpdateBookingStatusRequestDTO;
+import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.service.BookingService;
@@ -145,7 +145,7 @@ public class BookingController {
     })
     @PostMapping("/post")
     public ResponseEntity<String> post(
-            @RequestBody(required = true) BookingDTO dto
+            @RequestBody(required = true) BookingRequestDTO dto
     ) {
         if (dto == null) {
             throw new ResponseStatusException(
@@ -207,7 +207,7 @@ public class BookingController {
     @PostMapping("/createMyBooking")
     public ResponseEntity<String> createMyBooking(
             @RequestHeader HttpHeaders headers,
-            @RequestBody(required = true) MyBookingDTO dto
+            @RequestBody(required = true) MyBookingRequestDTO dto
     ) {
         bookingService.createMyBooking(dto, headers);
         return new ResponseEntity<>("Created new booking!", HttpStatus.CREATED);
@@ -234,55 +234,55 @@ public class BookingController {
     @PutMapping("/put")
     public ResponseEntity<String> put(
             @RequestParam int id,
-            @RequestBody(required = true) BookingDTO dto
+            @RequestBody(required = true) BookingRequestDTO dto
     ) {
         if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0"
-                );
-            }
-            if (dto.userId() != null) {
-                try {
-                    userService.getById(dto.userId());
-                } catch (Exception e) {
-                    throw new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Error user with id"
-                            + " " + dto.userId()
-                            + " " + "doesn't exist"
-                    );
-                }
-            }
-            if (dto.trainingSessionId() != null) {
-                try {
-                    trainingSessionService.getById(dto.trainingSessionId());
-                } catch (Exception e) {
-                    throw new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Error training session with id"
-                            + " " + dto.userId()
-                            + " " + "doesn't exist"
-                    );
-                }
-            }
-            if (dto.reservationTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Reservation time is necessary!"
-                );
-            }
-            if (dto.endOfReservationTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "End of reservation time is necessary!"
-                );
-            }
-            bookingService.put(dto, id);
-            return new ResponseEntity<>(
-                    "Booking with id" + " " + id + " " + "changed!",
-                    HttpStatus.OK
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0"
             );
+        }
+        if (dto.userId() != null) {
+            try {
+                userService.getById(dto.userId());
+            } catch (Exception e) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Error user with id"
+                        + " " + dto.userId()
+                        + " " + "doesn't exist"
+                );
+            }
+        }
+        if (dto.trainingSessionId() != null) {
+            try {
+                trainingSessionService.getById(dto.trainingSessionId());
+            } catch (Exception e) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Error training session with id"
+                        + " " + dto.userId()
+                        + " " + "doesn't exist"
+                );
+            }
+        }
+        if (dto.reservationTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Reservation time is necessary!"
+            );
+        }
+        if (dto.endOfReservationTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "End of reservation time is necessary!"
+            );
+        }
+        bookingService.put(dto, id);
+        return new ResponseEntity<>(
+                "Booking with id" + " " + id + " " + "changed!",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -298,32 +298,32 @@ public class BookingController {
     @PostMapping("/updateMyBooking")
     public ResponseEntity<String> updateMyBooking(
             @RequestHeader HttpHeaders headers,
-            @RequestBody(required = true) MyBookingDTO dto,
+            @RequestBody(required = true) MyBookingRequestDTO dto,
             int id
     ) {
         if (dto == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "DTO data wasn't inserted!"
-                );
-            }
-            if (dto.reservationTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Reservation time is necessary!"
-                );
-            }
-            if (dto.endOfReservationTime() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "End of reservation time is necessary!"
-                );
-            }
-            bookingService.updateMyBooking(dto, id, headers);
-            return new ResponseEntity<>(
-                    "Booking with id" + " " + id + " " + "changed!",
-                    HttpStatus.OK
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "DTO data wasn't inserted!"
             );
+        }
+        if (dto.reservationTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Reservation time is necessary!"
+            );
+        }
+        if (dto.endOfReservationTime() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "End of reservation time is necessary!"
+            );
+        }
+        bookingService.updateMyBooking(dto, id, headers);
+        return new ResponseEntity<>(
+                "Booking with id" + " " + id + " " + "changed!",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -355,18 +355,18 @@ public class BookingController {
             @RequestParam int id
     ) {
         if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            bookingService.delete(id);
-            return new ResponseEntity<>(
-                    "Booking with id"
-                    + " " + id
-                    + " " + "deleted",
-                    HttpStatus.OK
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0!"
             );
+        }
+        bookingService.delete(id);
+        return new ResponseEntity<>(
+                "Booking with id"
+                + " " + id
+                + " " + "deleted",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -391,19 +391,19 @@ public class BookingController {
             @RequestHeader HttpHeaders headers
     ) {
         return ResponseEntity.ok(
-                    bookingService.deleteMyBooking(
-                            id, headers
-                    )
-            );
+                bookingService.deleteMyBooking(
+                        id, headers
+                )
+        );
     }
 
     @PutMapping("/updateBookingStatus")
     public ResponseEntity<String> updateBookingStatus(
             @RequestParam int id,
-            @RequestBody UpdateBookingStatusDTO o,
+            @RequestBody UpdateBookingStatusRequestDTO o,
             @RequestHeader HttpHeaders headers
     ) {
         bookingService.updateBookingStatus(id, BookingStatus.pending, headers);
-            return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "changed!", HttpStatus.OK);
+        return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "changed!", HttpStatus.OK);
     }
 }

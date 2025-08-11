@@ -9,7 +9,7 @@ import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.user.LoginDTO;
 import fina.skroflin.model.dto.user.RegistrationDTO;
-import fina.skroflin.model.dto.user.UserDTO;
+import fina.skroflin.model.dto.user.UserRequestDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.model.dto.user.password.PasswordDTO;
 import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
@@ -104,7 +104,7 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private User convertToEntity(UserDTO dto) {
+    private User convertToEntity(UserRequestDTO dto) {
         User user = new User();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
@@ -116,7 +116,7 @@ public class UserService extends MainService {
     }
 
     @Transactional
-    private void updateEntityFromDto(User user, UserDTO dto) {
+    private void updateEntityFromDto(User user, UserRequestDTO dto) {
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
@@ -178,7 +178,7 @@ public class UserService extends MainService {
         }
     }
 
-    public UserResponseDTO updateMyProfile(HttpHeaders headers, UserDTO o) {
+    public UserResponseDTO updateMyProfile(HttpHeaders headers, UserRequestDTO o) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
@@ -237,7 +237,7 @@ public class UserService extends MainService {
         return convertToResponseDTO(user);
     }
 
-    public UserResponseDTO put(UserDTO o, int id) {
+    public UserResponseDTO put(UserRequestDTO o, int id) {
         try {
             User existingUser = (User) session.get(User.class, id);
             if (existingUser == null) {

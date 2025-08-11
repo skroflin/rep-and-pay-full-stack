@@ -1,8 +1,8 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fina.skroflin.model.dto.training.user;
+package fina.skroflin.model.dto.training;
 
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
  *
  * @author skroflin
  */
-public record MyTrainingSessionDTO(
+public record TrainingSessionRequestDTO(
+        @Schema(example = "1")
+        Integer trainerId,
         @Schema(example = "2025-07-29T20:00:00")
         LocalDateTime dateTime,
         @Schema(example = "weightlifting")
@@ -23,5 +25,5 @@ public record MyTrainingSessionDTO(
         @Schema(example = "20")
         int capacity
         ) {
-
+    
 }

@@ -6,9 +6,9 @@ package fina.skroflin.service;
 
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
-import fina.skroflin.model.dto.training.user.MyTrainingSessionDTO;
+import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
-import fina.skroflin.model.dto.training.TrainingSessionDTO;
+import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
@@ -45,7 +45,8 @@ public class TrainingSessionService extends MainService {
 
         return new TrainingSessionResponseDTO(
                 trainingSession.getId(),
-                trainerId,
+                trainingSession.getTrainer().getFirstName(),
+                trainingSession.getTrainer().getLastName(),
                 trainingSession.getDateTime(),
                 trainingSession.getTrainingType(),
                 trainingSession.getTrainingLevel(),
@@ -70,7 +71,7 @@ public class TrainingSessionService extends MainService {
     }
 
     @Transactional
-    private TrainingSession convertToEntity(TrainingSessionDTO dto) {
+    private TrainingSession convertToEntity(TrainingSessionRequestDTO dto) {
         TrainingSession trainingSession = new TrainingSession();
         if (dto.trainerId() != null) {
             User trainer = (User) session.get(User.class, dto.trainerId());
@@ -90,7 +91,7 @@ public class TrainingSessionService extends MainService {
     @Transactional
     private void updateEntityFromDto(
             TrainingSession trainingSession,
-            TrainingSessionDTO dto) {
+            TrainingSessionRequestDTO dto) {
         if (dto.trainerId() != null) {
             User trainer = (User) session.get(User.class, dto.trainerId());
             if (trainer == null) {
@@ -167,7 +168,7 @@ public class TrainingSessionService extends MainService {
         }
     }
 
-    public TrainingSessionResponseDTO post(TrainingSessionDTO o) {
+    public void post(TrainingSessionRequestDTO o) {
         try {
             User trainer = (User) 
                     session.get(User.class, o.trainerId());
@@ -198,15 +199,14 @@ public class TrainingSessionService extends MainService {
             session.persist(ts);
             session.getTransaction().commit();
 
-            return convertToResponseDTO(ts);
         } catch (Exception e) {
             throw new RuntimeException("Error upon training session "
                     + "booking:" + e.getMessage(), e);
         }
     }
     
-    public MyTrainingSessionResponseDTO createMyTrainingSession(
-            MyTrainingSessionDTO o,
+    public void createMyTrainingSession(
+            MyTrainingSessionRequestDTO o,
             HttpHeaders headers
     ){
         try {
@@ -246,15 +246,14 @@ public class TrainingSessionService extends MainService {
             session.persist(trainingSession);
             session.getTransaction().commit();
             
-            return converToMyResponseDTO(trainingSession);
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating training session:"
                     + e.getMessage(), e);
         }
     }
     
-    public MyTrainingSessionResponseDTO updateMyTrainingSession(
-            MyTrainingSessionDTO o,
+    public void updateMyTrainingSession(
+            MyTrainingSessionRequestDTO o,
             int id,
             HttpHeaders headers
     ){
@@ -300,14 +299,13 @@ public class TrainingSessionService extends MainService {
             session.persist(existingSession);
             session.getTransaction().commit();
             
-            return converToMyResponseDTO(existingSession);
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating training session:"
                     + e.getMessage(), e);
         }
     }
 
-    public TrainingSessionResponseDTO put(TrainingSessionDTO o, int id) {
+    public void put(TrainingSessionRequestDTO o, int id) {
         try {
             TrainingSession existingSession
                     = (TrainingSession) session.get(TrainingSession.class, id);
@@ -344,7 +342,7 @@ public class TrainingSessionService extends MainService {
             session.beginTransaction();
             session.merge(existingSession);
             session.getTransaction().commit();
-            return convertToResponseDTO(existingSession);
+            
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating training session"
                     + " with id" + " " + id + " " + e.getMessage(), e);

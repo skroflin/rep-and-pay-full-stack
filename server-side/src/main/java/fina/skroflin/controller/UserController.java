@@ -7,7 +7,7 @@ package fina.skroflin.controller;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.user.LoginDTO;
 import fina.skroflin.model.dto.user.RegistrationDTO;
-import fina.skroflin.model.dto.user.UserDTO;
+import fina.skroflin.model.dto.user.UserRequestDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.model.dto.user.password.PasswordDTO;
 import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
@@ -167,7 +167,7 @@ public class UserController {
     @PutMapping("/updateMyProfile")
     public ResponseEntity<UserResponseDTO> updateMyProfile(
             @RequestHeader HttpHeaders headers,
-            @RequestBody(required = true) UserDTO dto
+            @RequestBody(required = true) UserRequestDTO dto
     ) {
         try {
             UserResponseDTO updatedUser = userService.updateMyProfile(headers, dto);
@@ -208,7 +208,7 @@ public class UserController {
     @PutMapping("/put")
     public ResponseEntity<UserResponseDTO> put(
             @RequestParam int id,
-            @RequestBody(required = true) UserDTO dto
+            @RequestBody(required = true) UserRequestDTO dto
     ) {
         try {
             if (id <= 0) {
