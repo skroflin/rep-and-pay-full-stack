@@ -38,14 +38,13 @@ public class BookingService extends MainService {
         if (booking == null) {
             return null;
         }
-        Integer userId = (booking.getId() != null)
-                ? booking.getUser().getId() : null;
         Integer trainingSessionId = (booking.getId() != null)
                 ? booking.getTrainingSession().getId() : null;
 
         return new BookingResponseDTO(
                 booking.getId(),
-                userId,
+                booking.getUser().getFirstName(),
+                booking.getUser().getLastName(),
                 trainingSessionId,
                 booking.getReservationTime(),
                 booking.getEndOfReservation(),
@@ -136,7 +135,8 @@ public class BookingService extends MainService {
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
                     + "left join fetch b.user "
-                    + "left join fetch b.trainingSession", Booking.class).list();
+                    + "left join fetch b.trainingSession", 
+                    Booking.class).list();
             return bookings.stream()
                     .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
@@ -152,6 +152,7 @@ public class BookingService extends MainService {
                     "select b from Booking b "
                     + "left join fetch b.user "
                     + "left join fetch b.trainingSession "
+                    + ""
                     + "where b.id = :id", Booking.class)
                     .setParameter("id", id)
                     .uniqueResult();
@@ -193,7 +194,7 @@ public class BookingService extends MainService {
         }
     }
 
-    public BookingResponseDTO post(BookingDTO o) {
+    public void post(BookingDTO o) {
         try {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
@@ -214,14 +215,13 @@ public class BookingService extends MainService {
             session.persist(booking);
             session.getTransaction().commit();
 
-            return convertToResponseDTO(booking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating booking:"
                     + e.getMessage(), e);
         }
     }
 
-    public MyBookingResponseDTO createMyBooking(
+    public void createMyBooking(
             MyBookingDTO o,
             HttpHeaders headers
     ) {
@@ -272,14 +272,13 @@ public class BookingService extends MainService {
             session.persist(booking);
             session.getTransaction().commit();
 
-            return convertToMyResponseDTO(booking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating booking:"
                     + e.getMessage(), e);
         }
     }
 
-    public BookingResponseDTO put(BookingDTO o, int id) {
+    public void put(BookingDTO o, int id) {
         try {
             Booking existingBooking
                     = (Booking) session.get(Booking.class, id);
@@ -323,14 +322,13 @@ public class BookingService extends MainService {
             session.beginTransaction();
             session.merge(existingBooking);
             session.getTransaction().commit();
-            return convertToResponseDTO(existingBooking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating booking with id"
                     + " " + id + " " + e.getMessage(), e);
         }
     }
 
-    public MyBookingResponseDTO updateMyBooking(
+    public void updateMyBooking(
             MyBookingDTO o,
             int id,
             HttpHeaders headers
@@ -384,7 +382,6 @@ public class BookingService extends MainService {
             session.merge(existingBooking);
             session.getTransaction().commit();
 
-            return convertToMyResponseDTO(existingBooking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating booking with id"
                     + " " + id + " " + e.getMessage(), e);
@@ -435,7 +432,7 @@ public class BookingService extends MainService {
         }
     }
 
-    public BookingResponseDTO updateBookingStatus(
+    public void updateBookingStatus(
             int id,
             BookingStatus newBookingStatus,
             HttpHeaders headers
@@ -463,7 +460,6 @@ public class BookingService extends MainService {
             session.merge(booking);
             session.getTransaction().commit();
 
-            return convertToResponseDTO(booking);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating booking"
                     + " with id" + " " + id + " " + e.getMessage(), e);

@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
  */
 public record BookingResponseDTO(
         Integer id,
-        Integer userId,
+        String userFirstName,
+        String userLastName,
         Integer trainingSessionId,
         LocalDateTime reservationTime,
         LocalDateTime endOfReservationTime,
