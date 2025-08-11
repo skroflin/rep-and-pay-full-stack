@@ -1,9 +1,9 @@
 export interface BookingRequest {
-    userId: number
-    trainingSessionId: number
-    reservationTime: Date
-    endOfReservationTime: Date
-    bookingStatus: string
+    userId: number,
+    trainingSessionId: number,
+    reservationTime: Date | string,
+    endOfReservationTime: Date | string,
+    bookingStatus: string,
 }
 
 export interface BookingResponse {
@@ -11,7 +11,7 @@ export interface BookingResponse {
     userFirstName: string,
     userLastName: string,
     trainingSessionId: number,
-    reservationTime: Date,
-    endOfReservationTime: Date,
+    reservationTime: Date | string,
+    endOfReservationTime: Date | string,
     bookingStatus: string
 }

@@ -6,5 +6,5 @@ export interface UserRequest {
     password: string
     role: string
     isMembershipPaid: boolean
-    membershipMonth: Date
+    membershipMonth: Date | string
 }

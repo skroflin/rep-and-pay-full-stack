@@ -1,5 +1,5 @@
 export interface MyBookingRequest {
     trainingSessionId: number
-    reservationTime: Date
-    endOfReservationTime: Date
+    reservationTime: Date | string
+    endOfReservationTime: Date | string
 }

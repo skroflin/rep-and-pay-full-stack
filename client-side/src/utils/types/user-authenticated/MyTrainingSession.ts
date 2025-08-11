@@ -1,5 +1,5 @@
 export interface MyTrainingSessionRequest {
-    dateTime: Date
+    dateTime: Date | string
     trainingType: string
     trainingLevel: string
     capacity: number

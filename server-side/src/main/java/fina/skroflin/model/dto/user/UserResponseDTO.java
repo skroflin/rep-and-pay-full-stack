@@ -7,7 +7,7 @@ package fina.skroflin.model.dto.user;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.enums.Role;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public record UserResponseDTO(
         String password,
         Role role,
         boolean isMembershipPaid,
-        LocalDateTime membershipMonth,
+        LocalDate membershipMonth,
         List<TrainingSessionResponseDTO> trainingSessions,
         List<BookingResponseDTO> bookings
         ) {

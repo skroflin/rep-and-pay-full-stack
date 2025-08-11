@@ -6,7 +6,7 @@ package fina.skroflin.model.dto.user;
 
 import fina.skroflin.model.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  *
@@ -28,6 +28,6 @@ public record UserRequestDTO(
         @Schema(example = "false")
         boolean isMembershipPaid,
         @Schema(example = "2025-07-30")
-        LocalDateTime membershipMonth
+        LocalDate membershipMonth
         ) {
 }

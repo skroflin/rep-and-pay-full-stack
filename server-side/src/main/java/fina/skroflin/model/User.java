@@ -11,7 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,7 +40,7 @@ public class User extends MainEntity implements UserDetails {
     @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
     @Column(name = "membership_month")
-    private LocalDateTime membershipMonth;
+    private LocalDate membershipMonth;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
     @OneToMany(mappedBy = "user")
@@ -51,14 +51,7 @@ public class User extends MainEntity implements UserDetails {
     public User() {
     }
 
-    public User(
-            String firstName, 
-            String lastName, 
-            String email, 
-            String username, 
-            String password, 
-            Role role
-    ) {
+    public User(String firstName, String lastName, String email, String username, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -67,18 +60,7 @@ public class User extends MainEntity implements UserDetails {
         this.role = role;
     }
 
-    public User(
-            String firstName,
-            String lastName,
-            String email, 
-            String username, 
-            String password, 
-            Role role, 
-            boolean isMembershipPaid, 
-            LocalDateTime membershipMonth, 
-            List<TrainingSession> trainingSessions, 
-            List<Booking> bookings
-    ) {
+    public User(String firstName, String lastName, String email, String username, String password, Role role, boolean isMembershipPaid, LocalDate membershipMonth, List<TrainingSession> trainingSessions, List<Booking> bookings) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -123,7 +105,7 @@ public class User extends MainEntity implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     @Override
     public String getPassword() {
         return password;
@@ -149,12 +131,12 @@ public class User extends MainEntity implements UserDetails {
         this.isMembershipPaid = isMembershipPaid;
     }
 
-    public LocalDateTime getMembershipMonth() {
+    public LocalDate getMembershipMonth() {
         return membershipMonth;
     }
 
-    public void setMembershipMonth(LocalDateTime memberShipMonth) {
-        this.membershipMonth = memberShipMonth;
+    public void setMembershipMonth(LocalDate membershipMonth) {
+        this.membershipMonth = membershipMonth;
     }
 
     public List<TrainingSession> getTrainingSessions() {
@@ -178,23 +160,5 @@ public class User extends MainEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name().toLowerCase()));
     }
 
-    @Override
-    public boolean isAccountNonExpired(){
-        return true;
-    }
     
-    @Override
-    public boolean isAccountNonLocked(){
-        return true;
-    }
-    
-    @Override
-    public boolean isCredentialsNonExpired(){
-        return true;
-    }
-    
-    @Override
-    public boolean isEnabled(){
-        return true;
-    }
 }
