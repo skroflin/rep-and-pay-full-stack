@@ -185,14 +185,6 @@ public class TrainingSessionController {
                     "Training type is necessary!"
             );
         }
-        if (dto.capacity() <= 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Capacity is necessary and it "
-                    + "cannot be lesser than "
-                    + "or equal to zero!"
-            );
-        }
         trainingSessionService.post(dto);
         return new ResponseEntity<>(
                 "Training session created!",
@@ -264,14 +256,6 @@ public class TrainingSessionController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Training type is necessary!"
-            );
-        }
-        if (dto.capacity() <= 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Capacity is necessary and it "
-                    + "cannot be lesser than "
-                    + "or equal to zero!"
             );
         }
         trainingSessionService.put(dto, id);

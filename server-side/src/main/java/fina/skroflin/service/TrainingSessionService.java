@@ -10,6 +10,8 @@ import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.model.enums.TrainingLevel;
+import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -49,8 +51,7 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getTrainer().getLastName(),
                 trainingSession.getDateTime(),
                 trainingSession.getTrainingType(),
-                trainingSession.getTrainingLevel(),
-                trainingSession.getCapacity()
+                trainingSession.getTrainingLevel()
         );
     }
     
@@ -65,8 +66,7 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getId(), 
                 trainingSession.getDateTime(), 
                 trainingSession.getTrainingType(), 
-                trainingSession.getTrainingLevel(), 
-                trainingSession.getCapacity()
+                trainingSession.getTrainingLevel()
         );
     }
 
@@ -84,7 +84,6 @@ public class TrainingSessionService extends MainService {
         trainingSession.setDateTime(dto.dateTime());
         trainingSession.setTrainingType(dto.trainingType());
         trainingSession.setTrainingLevel(dto.trainingLevel());
-        trainingSession.setCapacity(dto.capacity());
         return trainingSession;
     }
 
@@ -105,7 +104,6 @@ public class TrainingSessionService extends MainService {
         trainingSession.setDateTime(dto.dateTime());
         trainingSession.setTrainingType(dto.trainingType());
         trainingSession.setTrainingLevel(dto.trainingLevel());
-        trainingSession.setCapacity(dto.capacity());
     }
 
     public List<TrainingSessionResponseDTO> getAll() {
@@ -194,7 +192,12 @@ public class TrainingSessionService extends MainService {
                                 + " " + "at that time!");
             }
 
-            TrainingSession ts = convertToEntity(o);
+            TrainingSession ts = new TrainingSession(
+                    trainer, 
+                    o.dateTime(),
+                    o.trainingType(),
+                    o.trainingLevel()
+            );
             session.beginTransaction();
             session.persist(ts);
             session.getTransaction().commit();
@@ -238,8 +241,7 @@ public class TrainingSessionService extends MainService {
                     trainerProfile, 
                     o.dateTime(),
                     o.trainingType(), 
-                    o.trainingLevel(), 
-                    o.capacity()
+                    o.trainingLevel()
             );
             
             session.beginTransaction();
@@ -293,7 +295,6 @@ public class TrainingSessionService extends MainService {
             existingSession.setDateTime(o.dateTime());
             existingSession.setTrainingType(o.trainingType());
             existingSession.setTrainingLevel(o.trainingLevel());
-            existingSession.setCapacity(o.capacity());
             
             session.beginTransaction();
             session.persist(existingSession);
@@ -338,7 +339,11 @@ public class TrainingSessionService extends MainService {
                                 + " " + "at that time!");
             }
             
-            updateEntityFromDto(existingSession, o);
+            existingSession.setTrainer(trainer);
+            existingSession.setDateTime(o.dateTime());
+            existingSession.setTrainingType(o.trainingType());
+            existingSession.setTrainingLevel(o.trainingLevel());
+            
             session.beginTransaction();
             session.merge(existingSession);
             session.getTransaction().commit();

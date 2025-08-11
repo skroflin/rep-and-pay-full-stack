@@ -36,7 +36,6 @@ public class TrainingSession extends MainEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "training_level")
     private TrainingLevel trainingLevel;
-    private int capacity;
 
     public TrainingSession() {
     }
@@ -45,13 +44,12 @@ public class TrainingSession extends MainEntity {
             User trainer,
             LocalDateTime dateTime,
             TrainingType trainingType,
-            TrainingLevel trainingLevel,
-            int capacity) {
+            TrainingLevel trainingLevel
+    ) {
         this.trainer = trainer;
         this.dateTime = dateTime;
         this.trainingType = trainingType;
         this.trainingLevel = trainingLevel;
-        this.capacity = capacity;
     }
 
     public User getTrainer() {
@@ -85,13 +83,5 @@ public class TrainingSession extends MainEntity {
     public void setTrainingLevel(TrainingLevel trainingLevel) {
         this.trainingLevel = trainingLevel;
     }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
+    
 }

@@ -68,68 +68,6 @@ public class BookingService extends MainService {
         );
     }
 
-    @Transactional
-    private Booking convertToEntity(BookingRequestDTO dto) {
-        Booking booking = new Booking();
-        if (dto.userId() != null) {
-            User user = session.get(User.class, dto.userId());
-            if (user == null) {
-                throw new IllegalArgumentException("User with the id"
-                        + " " + dto.userId() + " " + "doesn't exist!");
-            }
-            booking.setUser(user);
-        }
-        if (dto.trainingSessionId() != null) {
-            TrainingSession trainingSession = session.get(
-                    TrainingSession.class, dto.trainingSessionId());
-            if (trainingSession == null) {
-                throw new IllegalArgumentException("Training session with the id"
-                        + " " + dto.trainingSessionId() + " " + "doesn't exist!");
-            }
-            booking.setTrainingSession(trainingSession);
-        }
-        if (dto.bookingStatus() != null) {
-            booking.setBookingStatus(dto.bookingStatus());
-        } else {
-            booking.setBookingStatus(BookingStatus.pending);
-        }
-        booking.setReservationTime(dto.reservationTime());
-        booking.setEndOfReservation(dto.endOfReservationTime());
-        return booking;
-    }
-
-    @Transactional
-    private void updateEntityFromDto(Booking booking, BookingRequestDTO dto) {
-        if (dto.userId() != null) {
-            User user = session.get(User.class, dto.userId());
-            if (user == null) {
-                throw new IllegalArgumentException("User with id"
-                        + " " + dto.userId() + " " + "doesn't exist!");
-            }
-            booking.setUser(user);
-        } else {
-            booking.setUser(null);
-        }
-        if (dto.trainingSessionId() != null) {
-            TrainingSession trainingSession = session.get(
-                    TrainingSession.class, dto.trainingSessionId());
-            if (trainingSession == null) {
-                throw new IllegalArgumentException("Training session with id"
-                        + " " + dto.trainingSessionId() + " " + "doesn't exist");
-            }
-            booking.setTrainingSession(trainingSession);
-        } else {
-            booking.setTrainingSession(null);
-        }
-        if (dto.bookingStatus() != null) {
-            booking.setBookingStatus(dto.bookingStatus());
-        } else {
-            booking.setBookingStatus(BookingStatus.pending);
-        }
-        booking.setReservationTime(dto.reservationTime());
-        booking.setEndOfReservation(dto.endOfReservationTime());
-    }
-
     public List<BookingResponseDTO> getAll() {
         try {
             List<Booking> bookings = session.createQuery(
@@ -209,8 +147,18 @@ public class BookingService extends MainService {
                 throw new IllegalArgumentException("You already have a booking"
                         + " " + "that overlaps with this time!");
             }
+            
+            User user = session.get(User.class, o.userId());
+            TrainingSession trainingSession = 
+                    session.get(TrainingSession.class, o.trainingSessionId());
 
-            Booking booking = convertToEntity(o);
+            Booking booking = new Booking(
+                    user,
+                    trainingSession,
+                    o.reservationTime(),
+                    o.endOfReservationTime(),
+                    o.bookingStatus()
+            );
             session.beginTransaction();
             session.persist(booking);
             session.getTransaction().commit();
@@ -318,7 +266,12 @@ public class BookingService extends MainService {
                         + o.trainingSessionId() + " " + "doesn't exist!");
             }
 
-            updateEntityFromDto(existingBooking, o);
+            existingBooking.setUser(user);
+            existingBooking.setTrainingSession(trainingSession);
+            existingBooking.setReservationTime(o.reservationTime());
+            existingBooking.setEndOfReservation(o.endOfReservationTime());
+            existingBooking.setBookingStatus(o.bookingStatus());
+           
             session.beginTransaction();
             session.merge(existingBooking);
             session.getTransaction().commit();

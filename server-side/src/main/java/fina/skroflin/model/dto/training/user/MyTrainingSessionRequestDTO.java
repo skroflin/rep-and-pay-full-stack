@@ -19,9 +19,7 @@ public record MyTrainingSessionRequestDTO(
         @Schema(example = "weightlifting")
         TrainingType trainingType,
         @Schema(example = "intermediate")
-        TrainingLevel trainingLevel,
-        @Schema(example = "20")
-        int capacity
+        TrainingLevel trainingLevel
         ) {
 
 }

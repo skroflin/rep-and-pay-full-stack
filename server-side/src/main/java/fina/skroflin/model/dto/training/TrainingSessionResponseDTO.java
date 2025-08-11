@@ -22,8 +22,7 @@ public record TrainingSessionResponseDTO(
         @Enumerated(EnumType.STRING)
         TrainingType trainingType,
         @Enumerated(EnumType.STRING)
-        TrainingLevel trainingLevel,
-        int capacity
+        TrainingLevel trainingLevel
         ) {
 
 }
