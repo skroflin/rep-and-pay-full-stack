@@ -178,7 +178,7 @@ public class UserService extends MainService {
         }
     }
 
-    public UserResponseDTO updateMyProfile(HttpHeaders headers, UserRequestDTO o) {
+    public void updateMyProfile(HttpHeaders headers, UserRequestDTO o) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
@@ -191,14 +191,34 @@ public class UserService extends MainService {
                         + "doesn't exist!"
                 );
             }
+            
+            Long count = session.createQuery(
+                    "select count(u) from User u "
+                    + "where (u.username = :username "
+                    + "or u.email = :email) "
+                    + "and u.id = :currentId", Long.class)
+                    .setParameter("username", o.username())
+                    .setParameter("email", o.email())
+                    .setParameter("currentId", userId)
+                    .uniqueResult();
 
-            updateEntityFromDto(userProfile, o);
+            if (count > 0) {
+                throw new IllegalArgumentException("There is already a user"
+                        + " " + "with the same username or email!");
+            }
+
+            userProfile.setFirstName(o.firstName());
+            userProfile.setLastName(o.lastName());
+            userProfile.setEmail(o.email());
+            userProfile.setUsername(o.username());
+            userProfile.setPassword(bCryptPasswordEncoder.encode(o.password()));
+            userProfile.setRole(o.role());
+            userProfile.setIsMembershipPaid(o.isMembershipPaid());
+            userProfile.setMembershipMonth(o.membershipMonth());
 
             session.beginTransaction();
             session.merge(userProfile);
             session.getTransaction().commit();
-
-            return convertToResponseDTO(userProfile);
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating user"
                     + "profile:" + " " + e.getMessage(), e);
@@ -258,6 +278,15 @@ public class UserService extends MainService {
                 throw new IllegalArgumentException("There is already a user"
                         + " " + "with the same username or email!");
             }
+            
+            existingUser.setFirstName(o.firstName());
+            existingUser.setLastName(o.lastName());
+            existingUser.setEmail(o.email());
+            existingUser.setUsername(o.username());
+            existingUser.setPassword(bCryptPasswordEncoder.encode(o.password()));
+            existingUser.setRole(o.role());
+            existingUser.setIsMembershipPaid(o.isMembershipPaid());
+            existingUser.setMembershipMonth(o.membershipMonth());
 
             updateEntityFromDto(existingUser, o);
             session.beginTransaction();
@@ -284,7 +313,7 @@ public class UserService extends MainService {
         }
     }
 
-    public UserResponseDTO registration(RegistrationDTO o) {
+    public void registration(RegistrationDTO o) {
         try {
             session.beginTransaction();
 
@@ -310,7 +339,6 @@ public class UserService extends MainService {
             );
             session.persist(newUser);
             session.getTransaction().commit();
-            return convertToResponseDTO(newUser);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error upon registration"
@@ -320,7 +348,7 @@ public class UserService extends MainService {
         }
     }
 
-    public UserResponseDTO login(LoginDTO o) {
+    public void login(LoginDTO o) {
         try {
             User user = session.createQuery("from User u where u.username = :username",
                     User.class)
@@ -329,7 +357,6 @@ public class UserService extends MainService {
             if (!bCryptPasswordEncoder.matches(o.password(), user.getPassword())) {
                 throw new IllegalArgumentException("Wrong password");
             }
-            return convertToResponseDTO(user);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error upon logging in"
@@ -339,7 +366,7 @@ public class UserService extends MainService {
         }
     }
 
-    public PasswordResponseDTO changeMyPassword(PasswordDTO o, HttpHeaders headers) {
+    public void changeMyPassword(PasswordDTO o, HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
@@ -352,10 +379,9 @@ public class UserService extends MainService {
                         + "doesn't exist!"
                 );
             }
-            updatePassEntityFromDto(userPassword, o);
+            userPassword.setPassword(bCryptPasswordEncoder.encode(o.password()));
             session.beginTransaction();
             session.getTransaction().commit();
-            return convertPassToResponseDTO(userPassword);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error changing password"

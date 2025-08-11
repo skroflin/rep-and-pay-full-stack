@@ -143,15 +143,10 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getByToken(
             @RequestHeader HttpHeaders headers
     ) {
-        try {
-            return ResponseEntity.ok(userService.getMyProfile(headers));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Invalid or missing token:"
-                    + " " + e.getMessage(),
-                    e
-            );
-        }
+        return new ResponseEntity<>(
+                userService.getMyProfile(headers),
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -165,26 +160,12 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PutMapping("/updateMyProfile")
-    public ResponseEntity<UserResponseDTO> updateMyProfile(
+    public ResponseEntity<String> updateMyProfile(
             @RequestHeader HttpHeaders headers,
             @RequestBody(required = true) UserRequestDTO dto
     ) {
-        try {
-            UserResponseDTO updatedUser = userService.updateMyProfile(headers, dto);
-            return ResponseEntity.ok(updatedUser);
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon updating user" + " "
-                    + dto.username() + " "
-                    + e.getMessage(),
-                    e
-            );
-        }
+        userService.updateMyProfile(headers, dto);
+        return new ResponseEntity<>("Your user profile updated sucessfully", HttpStatus.OK);
     }
 
     @Operation(
@@ -206,78 +187,68 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PutMapping("/put")
-    public ResponseEntity<UserResponseDTO> put(
+    public ResponseEntity<String> put(
             @RequestParam int id,
             @RequestBody(required = true) UserRequestDTO dto
     ) {
-        try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            if (dto.firstName() == null
-                    || dto.firstName().isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "First name is necessary!"
-                );
-            }
-            if (dto.lastName() == null
-                    || dto.lastName().isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Last name is necessary!"
-                );
-            }
-            if (dto.email() == null
-                    || dto.email().isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Email is necessary!"
-                );
-            }
-            if (dto.username() == null
-                    || dto.username().isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Username is necessary!"
-                );
-            }
-            if (dto.password() == null || dto.password().isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Password is necessary!"
-                );
-            }
-            if (dto.role() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Role is necessary!"
-                );
-            }
-            if (dto.membershipMonth() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Membership month is necessary!"
-                );
-            }
-
-            UserResponseDTO updatedUser = userService.put(dto, id);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
+        if (id <= 0) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon updating user with id"
-                    + " " + id + " " + e.getMessage(),
-                    e
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0!"
             );
         }
+        if (dto.firstName() == null
+                || dto.firstName().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "First name is necessary!"
+            );
+        }
+        if (dto.lastName() == null
+                || dto.lastName().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Last name is necessary!"
+            );
+        }
+        if (dto.email() == null
+                || dto.email().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email is necessary!"
+            );
+        }
+        if (dto.username() == null
+                || dto.username().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Username is necessary!"
+            );
+        }
+        if (dto.password() == null || dto.password().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Password is necessary!"
+            );
+        }
+        if (dto.role() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Role is necessary!"
+            );
+        }
+        if (dto.membershipMonth() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Membership month is necessary!"
+            );
+        }
+
+        userService.put(dto, id);
+        return new ResponseEntity<>(
+                "User with id" + " " + id + " " + "updated!",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -299,22 +270,10 @@ public class UserController {
     public ResponseEntity<String> deleteMyProfile(
             @RequestHeader HttpHeaders headers
     ) {
-        try {
-            userService.deleteMyProfile(headers);
-            return ResponseEntity.ok(
-                    "Profile sucesfully deleted!"
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon deletion" + " " + e.getMessage(),
-                    e
-            );
-        }
+        userService.deleteMyProfile(headers);
+        return ResponseEntity.ok(
+                "Profile sucesfully deleted!"
+        );
     }
 
     @Operation(
@@ -345,31 +304,19 @@ public class UserController {
     public ResponseEntity<String> delete(
             @RequestParam int id
     ) {
-        try {
-            if (id <= 0) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Id musn't be lesser than 0!"
-                );
-            }
-            userService.delete(id);
-            return new ResponseEntity<>(
-                    "User with id"
-                    + " " + id
-                    + " " + "deleted",
-                    HttpStatus.OK
-            );
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
+        if (id <= 0) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon deletion" + " " + e.getMessage(),
-                    e
+                    HttpStatus.BAD_REQUEST,
+                    "Id musn't be lesser than 0!"
             );
         }
+        userService.delete(id);
+        return new ResponseEntity<>(
+                "User with id"
+                + " " + id
+                + " " + "deleted",
+                HttpStatus.OK
+        );
     }
 
     @Operation(
@@ -384,23 +331,11 @@ public class UserController {
                 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
             })
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(
+    public ResponseEntity<String> register(
             @RequestBody(required = true) RegistrationDTO dto
     ) {
-        try {
-            UserResponseDTO registeredUser = userService.registration(dto);
-            return new ResponseEntity<>(registeredUser, HttpStatus.OK);
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon registration" + " " + e.getMessage(),
-                    e
-            );
-        }
+        userService.registration(dto);
+        return new ResponseEntity<>("Registration sucessful!", HttpStatus.OK);
     }
 
     @Operation(
@@ -417,24 +352,15 @@ public class UserController {
     public ResponseEntity<JwtResponse> login(
             @RequestBody(required = true) LoginDTO dto
     ) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
-            User user = serviceImpl.getUserByUsername(dto.username());
-            String jwt = jwtTokenUtil.generateToken(user, user.getId());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        dto.username(), dto.password()
+                )
+        );
+        User user = serviceImpl.getUserByUsername(dto.username());
+        String jwt = jwtTokenUtil.generateToken(user, user.getId());
 
-            return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon login" + " " + e.getMessage(),
-                    e
-            );
-        }
+        return ResponseEntity.ok(new JwtResponse(jwt, user.getUsername(), user.getRole()));
     }
     
     @Operation(
@@ -448,26 +374,12 @@ public class UserController {
                 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
             })
     @PutMapping("/changeMyPassword")
-    public ResponseEntity<PasswordResponseDTO> changeMyPassword(
+    public ResponseEntity<String> changeMyPassword(
             @RequestHeader HttpHeaders headers,
             @RequestBody(required = true)
             PasswordDTO dto
     ){
-        try {
-            PasswordResponseDTO updatedPassword = userService.changeMyPassword(dto, headers);
-            return ResponseEntity.ok(updatedPassword);
-        } catch (NoResultException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error upon updating password" + " "
-                    + e.getMessage(),
-                    e
-            );
-        }
- 
+        userService.changeMyPassword(dto, headers);
+        return new ResponseEntity<>("Password succefully changed!", HttpStatus.OK); 
    }
 }
