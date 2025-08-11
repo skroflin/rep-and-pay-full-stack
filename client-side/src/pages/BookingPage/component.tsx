@@ -11,7 +11,7 @@ export default function BookingPage() {
     const queryClient = useQueryClient()
     const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("DD.MM.YYYY"))
 
-    const { data: sessions, isLoading } = useQuery<TrainingSessionResponse>({
+    const { data: sessions, isLoading } = useQuery<TrainingSessionResponse[]>({
         queryKey: ["available-sessions", selectedDate],
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
@@ -29,6 +29,19 @@ export default function BookingPage() {
         const dateStr = value.format("DD.MM.YYYY")
         setSelectedDate(dateStr)
         toast.info(`Date selected: ${dateStr}!`)
+    }
+
+    const handleBooking = (session: TrainingSessionResponse) => {
+        const reservationTime = dayjs(session.dateTime).toDate()
+        const endOfReservationTime = dayjs(session.dateTime).add(1, "hour").toDate()
+
+        const bookingRequest: MyBookingRequest = {
+            trainingSessionId: session.id,
+            reservationTime,
+            endOfReservationTime
+        }
+
+        bookingMutation.mutate(bookingRequest)
     }
 
     return (
@@ -57,9 +70,7 @@ export default function BookingPage() {
                             actions={[
                                 <Button
                                     type="primary"
-                                    onClick={() => 
-                                        bookingMutation.mutate({ trainingSessionId: session. })
-                                    }
+                                    onClick={() => handleBooking(session)}
                                     loading={bookingMutation.isPending}
                                 >
                                     Book
@@ -67,7 +78,11 @@ export default function BookingPage() {
                             ]}
                         >
                             <List.Item.Meta
-                                title={`${session.} - ${session.endTime}`}
+                                title = {`${dayjs(session.dateTime).format("HH:mm")} - ${session.trainingType}`}
+                                description={
+                                    `${session.trainingLevel} by 
+                                    ${session.trainerFirstName} ${session.trainerLastName}`
+                                }
                             />
                         </List.Item>
                     )}

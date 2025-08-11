@@ -3,7 +3,6 @@ export interface TrainingSessionRequest {
     dateTime: Date
     trainingType: string
     trainingLevel: string
-    capacity: number
 }
 
 export interface TrainingSessionResponse {
