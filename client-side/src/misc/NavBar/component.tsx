@@ -8,8 +8,7 @@ import { Button, Divider, Menu } from "antd";
 import {
     LogoutOutlined,
     MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    ToolOutlined
+    MenuUnfoldOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
 
