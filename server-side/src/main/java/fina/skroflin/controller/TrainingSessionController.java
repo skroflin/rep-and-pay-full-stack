@@ -369,6 +369,7 @@ public class TrainingSessionController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)        
             LocalDate date
     ){
+        System.out.println("Received date" + " " + date);
         return ResponseEntity.ok(
                 trainingSessionService.getAvailableTrainingSessionsByDate(date)
         );
