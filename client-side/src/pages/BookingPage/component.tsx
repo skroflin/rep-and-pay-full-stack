@@ -2,7 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Calendar, List, Spin } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { createMyBooking, getAvailableTrainingSessions } from "../../utils/api";
+import { 
+    createMyBooking,
+    getAvailableTrainingSessions
+ } from "../../utils/api";
 import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
