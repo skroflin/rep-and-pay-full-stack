@@ -131,9 +131,9 @@ public class TrainingSessionController {
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
             @RequestHeader HttpHeaders headers
     ) {
-        return ResponseEntity.ok(
-                trainingSessionService.getMyTrainingSessions(headers)
-        );
+        List<MyTrainingSessionResponseDTO> myTrainingSessions = 
+                trainingSessionService.getMyTrainingSessions(headers);
+        return new ResponseEntity<>(myTrainingSessions, HttpStatus.OK);
     }
     
     @Operation(
@@ -369,8 +369,8 @@ public class TrainingSessionController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)        
             LocalDate date
     ){
-        return ResponseEntity.ok(
-                trainingSessionService.getAvailableTrainingSessionsByDate(date)
-        );
+        List<TrainingSessionResponseDTO> availableSessionsByDate
+                = trainingSessionService.getAvailableTrainingSessionsByDate(date);
+        return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);
     }
 }
