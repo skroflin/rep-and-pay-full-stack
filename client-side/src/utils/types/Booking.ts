@@ -1,32 +1,32 @@
 export interface BookingRequest {
-    userId: number,
-    trainingSessionId: number,
+    userId: string,
+    trainingSessionId: string,
     reservationTime: Date | string,
     endOfReservationTime: Date | string,
     bookingStatus: string,
 }
 
 export interface BookingResponse {
-    id: number,
+    id: string,
     userFirstName: string,
     userLastName: string,
-    trainingSessionId: number,
+    trainingSessionId: string,
     reservationTime: Date | string,
     endOfReservationTime: Date | string,
     bookingStatus: string
 }
 
 export interface TrainerBookingResponse {
-    bookingId: number,
-    trainingSessionId: number,
+    bookingId: string,
+    trainingSessionId: string,
     userFirstName: string,
     userLastName: string,
     trainingType: string,
     reservationTime: Date | string,
     endOfReservationTime: Date | string,
-    bookingStatus: string
+    bookingStatus: "APPROVED" | "REJECTED" | "PENDING"
 }
 
 export interface UpdateBookingStatusRequest {
-    bookingStatus: string
+    bookingStatus: "APPROVED" | "REJECTED"
 }

@@ -1,12 +1,12 @@
 export interface TrainingSessionRequest {
-    trainerId: number,
+    trainerId: string,
     dateTime: Date | string,
     trainingType: string,
     trainingLevel: string,
 }
 
 export interface TrainingSessionResponse {
-    id: number,
+    id: string,
     trainerFirstName: string,
     trainerLastName: string,
     dateTime: Date | string,
