@@ -131,8 +131,8 @@ public class TrainingSessionController {
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
             @RequestHeader HttpHeaders headers
     ) {
-        List<MyTrainingSessionResponseDTO> myTrainingSessions = 
-                trainingSessionService.getMyTrainingSessions(headers);
+        List<MyTrainingSessionResponseDTO> myTrainingSessions
+                = trainingSessionService.getMyTrainingSessions(headers);
         return new ResponseEntity<>(myTrainingSessions, HttpStatus.OK);
     }
     

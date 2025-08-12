@@ -15,3 +15,18 @@ export interface BookingResponse {
     endOfReservationTime: Date | string,
     bookingStatus: string
 }
+
+export interface TrainerBookingResponse {
+    bookingId: number,
+    trainingSessionId: number,
+    userFirstName: string,
+    userLastName: string,
+    trainingType: string,
+    reservationTime: Date | string,
+    endOfReservationTime: Date | string,
+    bookingStatus: string
+}
+
+export interface UpdateBookingStatusRequest {
+    bookingStatus: string
+}

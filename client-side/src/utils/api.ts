@@ -3,7 +3,7 @@ import { getAuthToken } from "./helper";
 import type { UserRequest } from "./types/User";
 import type { RegistrationUserRequest } from "./types/Register";
 import type { LoginUserRequest } from "./types/Login";
-import type { BookingRequest } from "./types/Booking";
+import type { BookingRequest, UpdateBookingStatusRequest } from "./types/Booking";
 import type { TrainingSessionRequest } from "./types/TrainingSession";
 import type { PasswordUserRequest } from "./types/Password";
 import type { MyTrainingSessionRequest } from "./types/user-authenticated/MyTrainingSession";
@@ -92,6 +92,8 @@ export const getBookingById = (bookingId: string) => apiGetCall(`booking/getById
 export const createBooking = (req: BookingRequest) => apiPostCall<BookingRequest>("booking/post", req)
 export const updateBooking = (req: BookingRequest, bookingId: string) => apiPutCall<BookingRequest>(`booking/put?=${bookingId}`, req)
 export const deleteBooking = (bookingId: string) => apiDeleteCall(`booking/delete?id=${bookingId}`)
+export const getTrainerBookings = () => apiGetCall("booking/getTrainerBookings")
+export const updateBookingStatus = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/updateBookingStatus?=${bookingId}`, req)
 
 //training session methods
 export const getTrainingSessions = () => apiGetCall("trainingSessions/get")
