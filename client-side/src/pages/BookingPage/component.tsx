@@ -13,7 +13,7 @@ import type { TrainingSessionResponse } from "../../utils/types/TrainingSession"
 export default function BookingPage() {
     const queryClient = useQueryClient()
     const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("YYYY-MM-DD"))
-    const [pendingSession, setPendingSession] = useState<number[]>([])
+    const [pendingSession, setPendingSession] = useState<string[]>([])
 
     const { data: sessions, isLoading } = useQuery<TrainingSessionResponse[]>({
         queryKey: ["available-sessions", selectedDate],
