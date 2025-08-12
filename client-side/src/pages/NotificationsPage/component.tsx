@@ -4,6 +4,7 @@ import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings, updateBookingStatus } from "../../utils/api";
 import dayjs from "dayjs";
 import { Button, Calendar, List, Modal, Space, Spin, Typography } from "antd";
+import { DownCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
 
 export default function NotificationsPage() {
     const { Text } = Typography
@@ -41,7 +42,7 @@ export default function NotificationsPage() {
                 b.bookingStatus === "PENDING" &&
                 dayjs(b.reservationTime).isSame(value, "day")
         )
-        return hasPending ? <div style={{color: "red"}}>-</div> : null
+        return hasPending ? <div style={{color: "red"}}><UpCircleOutlined /></div> : <div style={{color: "green"}}><DownCircleOutlined /></div>
     }
 
     return (

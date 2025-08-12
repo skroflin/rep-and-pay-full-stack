@@ -83,7 +83,6 @@ export default function SignUp() {
         <Layout
             style={{
                 padding: "1em 0em",
-                textAlign: "center",
                 alignItems: "center",
                 justifyContent: "center",
                 display: "flex"
@@ -91,9 +90,9 @@ export default function SignUp() {
         >
             <Form
                 name="basic"
-                labelCol={{ span: 8 }}
+                labelCol={{ span: 9 }}
                 wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
+                style={{ maxWidth: 400 }}
                 initialValues={{ remember: true }}
                 autoComplete="off"
             >
@@ -163,7 +162,7 @@ export default function SignUp() {
 
                 <Form.Item name="role" label="Role" rules={[{ required: true }]}>
                     <Select
-                        placeholder="Select a option and change input text above"
+                        placeholder="Select a role"
                         allowClear
                         onChange={handleChange}
                     >

@@ -13,6 +13,7 @@ import type { TrainingSessionResponse } from "../../utils/types/TrainingSession"
 export default function BookingPage() {
     const queryClient = useQueryClient()
     const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("YYYY-MM-DD"))
+    const [pendingSession, setPendingSession] = useState<number[]>([])
 
     const { data: sessions, isLoading } = useQuery<TrainingSessionResponse[]>({
         queryKey: ["available-sessions", selectedDate],
@@ -43,7 +44,17 @@ export default function BookingPage() {
             endOfReservationTime
         }
 
-        bookingMutation.mutate(bookingRequest)
+        setPendingSession(prev => [...prev, session.id])
+        bookingMutation.mutate({
+            trainingSessionId: session.id,
+            reservationTime: dayjs(session.dateTime).toDate(),
+            endOfReservationTime: dayjs(session.dateTime).add(1, "hour").toDate()
+        },
+        {
+            onError: () => {
+                setPendingSession(prev => prev.filter(id => id !== session.id))
+            }
+        })
     }
 
     return (
@@ -74,13 +85,15 @@ export default function BookingPage() {
                                     type="primary"
                                     onClick={() => handleBooking(session)}
                                     loading={bookingMutation.isPending}
+                                    disabled={pendingSession.includes(session.id)}
                                 >
                                     Book
                                 </Button>
                             ]}
                         >
                             <List.Item.Meta
-                                title = {`${dayjs(session.dateTime).format("HH:mm")} - ${session.trainingType}`}
+                                style={{ textTransform: "capitalize" }}
+                                title = {`${session.trainingType}`}
                                 description={
                                     `${session.trainingLevel} by 
                                     ${session.trainerFirstName} ${session.trainerLastName}`
