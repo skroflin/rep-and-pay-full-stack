@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Calendar, List, Spin } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { 
+import {
     createMyBooking,
     getAvailableTrainingSessions
- } from "../../utils/api";
+} from "../../utils/api";
 import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
@@ -24,7 +24,7 @@ export default function BookingPage() {
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
         onSuccess: () => {
             toast.success("Booking request sent!")
-            queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate ]})
+            queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate] })
         },
         onError: () => toast.error("Failed to create a booking!"),
     })
@@ -35,22 +35,15 @@ export default function BookingPage() {
     }
 
     const handleBooking = (session: TrainingSessionResponse) => {
-        const reservationTime = dayjs(session.dateTime).toDate()
-        const endOfReservationTime = dayjs(session.dateTime).add(1, "hour").toDate()
 
         const bookingRequest: MyBookingRequest = {
             trainingSessionId: session.id,
-            reservationTime,
-            endOfReservationTime
+            reservationTime: dayjs(session.dateTime).toDate(),
+            endOfReservationTime: dayjs(session.dateTime).add(1, "hour").toDate()
         }
 
         setPendingSession(prev => [...prev, session.id])
-        bookingMutation.mutate({
-            trainingSessionId: session.id,
-            reservationTime: dayjs(session.dateTime).toDate(),
-            endOfReservationTime: dayjs(session.dateTime).add(1, "hour").toDate()
-        },
-        {
+        bookingMutation.mutate(bookingRequest, {
             onError: () => {
                 setPendingSession(prev => prev.filter(id => id !== session.id))
             }
@@ -68,13 +61,13 @@ export default function BookingPage() {
         >
             <Calendar
                 fullscreen={false}
-                onChange={handleDataChange} 
+                onChange={handleDataChange}
             />
             <h2>Available sessions for {selectedDate}</h2>
 
             {isLoading ? (
-                <Spin/>
-            ): (
+                <Spin />
+            ) : (
                 <List
                     bordered
                     dataSource={sessions || []}
@@ -93,7 +86,7 @@ export default function BookingPage() {
                         >
                             <List.Item.Meta
                                 style={{ textTransform: "capitalize" }}
-                                title = {`${session.trainingType}`}
+                                title={`${session.trainingType}`}
                                 description={
                                     `${session.trainingLevel} by 
                                     ${session.trainerFirstName} ${session.trainerLastName}`
