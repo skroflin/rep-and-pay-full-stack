@@ -11,10 +11,13 @@ import fina.skroflin.model.dto.booking.BookingRequestDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
+import fina.skroflin.model.dto.booking.user.TrainerBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
+import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -64,6 +67,24 @@ public class BookingService extends MainService {
                 trainingSessionId,
                 booking.getReservationTime(),
                 booking.getEndOfReservation(),
+                booking.getBookingStatus()
+        );
+    }
+    
+    public TrainerBookingResponseDTO convertToTrainerBookingResponse(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        Integer trainingSessionId = (booking.getId() != null)
+                ? booking.getTrainingSession().getId() : null;
+        return new TrainerBookingResponseDTO(
+                booking.getId(), 
+                trainingSessionId, 
+                booking.getUser().getFirstName(), 
+                booking.getUser().getLastName(), 
+                booking.getTrainingSession().getTrainingType(), 
+                booking.getReservationTime(), 
+                booking.getEndOfReservation(), 
                 booking.getBookingStatus()
         );
     }
@@ -416,6 +437,30 @@ public class BookingService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException("Error upon updating booking"
                     + " with id" + " " + id + " " + e.getMessage(), e);
+        }
+    }
+    
+    public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers){
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer trainerId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("TrainerId", Integer.class));
+            
+            List<Booking> bookings = session.createQuery(
+                    "select b from Booking b "
+                            + "left join fetch b.user u "
+                            + "left join fetch b.trainingSession ts "
+                            + "where ts.trainer.id = :trainerId", 
+                    Booking.class)
+                    .setParameter("trainerId", trainerId)
+                    .list();
+            
+            return bookings.stream()
+                    .map(this::convertToTrainerBookingResponse)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching trainer booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
 }

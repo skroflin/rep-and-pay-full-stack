@@ -10,6 +10,7 @@ import fina.skroflin.model.dto.booking.BookingResponseDTO;
 import fina.skroflin.model.dto.booking.UpdateBookingStatusRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
+import fina.skroflin.model.dto.booking.user.TrainerBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.service.BookingService;
 import fina.skroflin.service.TrainingSessionService;
@@ -129,7 +130,8 @@ public class BookingController {
     public ResponseEntity<List<MyBookingResponseDTO>> getMyBookings(
             @RequestHeader HttpHeaders headers
     ) {
-        return ResponseEntity.ok(bookingService.getMyBookings(headers));
+        List<MyBookingResponseDTO> myBookings = bookingService.getMyBookings(headers);
+        return new ResponseEntity<>(myBookings, HttpStatus.OK);
     }
 
     @Operation(
@@ -404,5 +406,14 @@ public class BookingController {
     ) {
         bookingService.updateBookingStatus(id, BookingStatus.pending, headers);
         return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "changed!", HttpStatus.OK);
+    }
+    
+    @GetMapping("/getTrainerBookings")
+    public ResponseEntity<List<TrainerBookingResponseDTO>> getTrainerBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        List<TrainerBookingResponseDTO> trainerBookings = bookingService.getTrainerBookings(headers);
+        return new ResponseEntity<>(trainerBookings, HttpStatus.OK);
     }
 }
