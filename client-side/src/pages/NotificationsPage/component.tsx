@@ -96,8 +96,45 @@ export default function NotificationsPage() {
                 title="Review Booking Request"
                 open={!!selectedBooking}
                 onCancel={() => setSelectedBooking(null)}
+                footer={[
+                    <Button
+                        key="reject"
+                        danger
+                        onClick={() => handleDecision("REJECTED")}
+                        loading={updateStatusMutation.isPending}
+                    >
+                        Reject
+                    </Button>,
+                    <Button
+                        key="approve"
+                        type="primary"
+                        onClick={() => handleDecision("APPROVED")}
+                        loading={updateStatusMutation.isPending}
+                    >
+                        Approve
+                    </Button>
+                ]}
             >
-
+                {selectedBooking && (
+                    <div>
+                        <div>
+                            <Text strong>User:</Text>
+                            <Text>{selectedBooking.userFirstName} {selectedBooking.userLastName}</Text>
+                        </div>
+                        <div>
+                            <Text strong>Training type:</Text>
+                            <Text>{selectedBooking.trainingType}</Text>
+                        </div>
+                        <div>
+                            <Text strong>Session:</Text>
+                            <Text>From: {dayjs(selectedBooking.reservationTime).format("HH:mm")} to: {dayjs(selectedBooking.endOfReservationTime).format("HH:mm")}</Text>
+                        </div>
+                        <div>
+                            <Text strong>Booking status</Text>
+                            <Text>{selectedBooking.bookingStatus}</Text>
+                        </div>
+                    </div>
+                )}
             </Modal>
         </>
     )

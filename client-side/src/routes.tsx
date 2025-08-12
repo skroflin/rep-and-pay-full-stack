@@ -1,10 +1,10 @@
-import { 
+import {
     Navigate,
-    Outlet, 
-    Route, 
+    Outlet,
+    Route,
     Routes
 } from "react-router"
-import { 
+import {
     isLoggedIn,
     useRole
 } from "./user-context/User"
@@ -18,13 +18,15 @@ import HomePage from "./pages/HomePage/component";
 import CoachPage from "./pages/CoachPage/component";
 import UserPage from "./pages/UserPage/component";
 import BookingPage from "./pages/BookingPage/component";
-import { 
+import {
     CalendarOutlined,
     HomeOutlined,
+    NotificationOutlined,
     TeamOutlined,
-    UserOutlined 
+    UserOutlined
 } from "@ant-design/icons";
 import TrainingSessionPage from "./pages/TrainingSessionPage/component";
+import NotificationsPage from "./pages/NotificationsPage/component";
 
 export interface RouteElement {
     key: string
@@ -90,13 +92,22 @@ const routes: RouteElement[] = [
         icon: <CalendarOutlined />
     },
     {
-       key: "Training Session",
+        key: "Training Session",
         path: "/training-sessions",
         element: <TrainingSessionPage />,
         onNavBar: true,
         reqLogin: true,
         allowedRoles: ["coach"],
-        icon: <CalendarOutlined /> 
+        icon: <CalendarOutlined />
+    },
+    {
+        key: "Notifications Page",
+        path: "notifications",
+        element: <NotificationsPage />,
+        onNavBar: true,
+        reqLogin: true,
+        allowedRoles: ["coach"],
+        icon: <NotificationOutlined />
     }
 ]
 
@@ -113,11 +124,11 @@ function PrivateRoute({ reqLogin, allowedRoles }: PrivateRouteProps) {
         return <Navigate to="/log-in" />
     }
 
-    if(
-        isUserLoggedIn && allowedRoles.length > 0 
+    if (
+        isUserLoggedIn && allowedRoles.length > 0
         && !allowedRoles.includes(role || "")
     ) {
-        return <Navigate to="/"/>
+        return <Navigate to="/" />
     }
 
     return <Outlet />
