@@ -129,7 +129,8 @@ public class TrainingSessionController {
             })
     @GetMapping("/getMyTrainingSessions")
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
-            @RequestHeader HttpHeaders headers
+            @RequestHeader
+            HttpHeaders headers
     ) {
         List<MyTrainingSessionResponseDTO> myTrainingSessions
                 = trainingSessionService.getMyTrainingSessions(headers);

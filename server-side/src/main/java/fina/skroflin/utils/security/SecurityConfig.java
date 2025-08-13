@@ -92,8 +92,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getMyTrainingSessions").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/trainingSession/createMyTrainingSession").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/trainingSession/updateMyTrainingSession").hasAnyAuthority(Role.coach.name())
-                        .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/trainingSession/createMyTrainingSession").hasAnyAuthority(Role.coach.name())
-                        .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/trainingSession/updateMyTrainingSession").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/fina/skroflin/trainingSession/deleteMyTrainingSession").hasAnyAuthority(Role.coach.name())
                         //  .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/booking/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/booking/get").hasAnyAuthority(Role.superuser.name())

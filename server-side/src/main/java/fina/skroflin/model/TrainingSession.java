@@ -15,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  *
@@ -41,7 +40,12 @@ public class TrainingSession extends MainEntity {
     public TrainingSession() {
     }
 
-    public TrainingSession(User trainer, LocalDate dateTime, TrainingType trainingType, TrainingLevel trainingLevel) {
+    public TrainingSession(
+            User trainer, 
+            LocalDate dateTime, 
+            TrainingType trainingType, 
+            TrainingLevel trainingLevel
+    ) {
         this.trainer = trainer;
         this.dateTime = dateTime;
         this.trainingType = trainingType;

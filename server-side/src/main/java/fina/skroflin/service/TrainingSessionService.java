@@ -154,7 +154,7 @@ public class TrainingSessionService extends MainService {
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
                     + "left join fetch ts.trainer "
-                    + "where ts.trainerId = :userId", 
+                    + "where ts.trainer.id = :userId", 
                     TrainingSession.class)
                     .setParameter("userId", userId)
                     .list();
@@ -224,12 +224,12 @@ public class TrainingSessionService extends MainService {
             }
             
             Long count = session.createQuery(
-                    "select count(ts) from TrainingSession ts"
-                            + "where ts.trainer.id = :trainerId"
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
                             + "and ts.dateTime = :reservation",
                     Long.class)
                     .setParameter("trainerId", userId)
-                    .setParameter(":reservation", o.dateTime())
+                    .setParameter("reservation", o.dateTime())
                     .uniqueResult();
             
             if (count > 0) {

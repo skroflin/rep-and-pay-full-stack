@@ -13,11 +13,9 @@ import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.TrainerBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
-import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -140,7 +138,7 @@ public class BookingService extends MainService {
                     "select b from Booking b "
                     + "left join fetch b.user "
                     + "left join fetch b.trainingSession "
-                    + "where b.userId = :userId",
+                    + "where b.user.id = :userId",
                     Booking.class)
                     .setParameter("userId", userId)
                     .list();
@@ -258,7 +256,7 @@ public class BookingService extends MainService {
 
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.userId = :userId "
+                    + "where b.user.id = :userId "
                     + "and b.id != :currentId "
                     + "and :start < b.endOfReservationTime "
                     + "and :end > b.reservationTime", Long.class)
@@ -326,7 +324,7 @@ public class BookingService extends MainService {
 
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.userId = :userId "
+                    + "where b.user.id = :userId "
                     + "and b.id != :currentId "
                     + "and :start < b.endOfReservationTime "
                     + "and :end > b.reservationTime", Long.class)
@@ -443,8 +441,13 @@ public class BookingService extends MainService {
     public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers){
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer trainerId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("TrainerId", Integer.class));
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
             
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
@@ -452,7 +455,7 @@ public class BookingService extends MainService {
                             + "left join fetch b.trainingSession ts "
                             + "where ts.trainer.id = :trainerId", 
                     Booking.class)
-                    .setParameter("trainerId", trainerId)
+                    .setParameter("trainerId", userId)
                     .list();
             
             return bookings.stream()
