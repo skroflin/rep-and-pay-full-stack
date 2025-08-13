@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar, Form } from "antd";
+import { Button, Calendar, Form, message, Modal, Select, TimePicker } from "antd";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -54,16 +54,78 @@ export default function TrainingSessionPage() {
     return (
         <div
             style={{
-                display: "block",
-                width: 700,
-                padding: 30
+                maxWidth: 900,
+                margin: "0 auto",
+                padding: 20
             }}
         >
-            <Calendar
-                onChange={(value) => {
-                    toast.success(`You selected ${value.format('DD.MM.YYYY')}`)
-                }}
-            />
+            <h2>
+                Create a training session
+            </h2>
+            <Calendar fullscreen={false} onSelect={handleDateSelect} />
+            <Modal
+                title={`Create session for ${selectedDate?.format("YYYY-MM-DD")}`}
+                open={modalOpen}
+                onCancel={() => setModalOpen(false)}
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={handleSubmit}
+                >
+                    <Form.Item
+                        name="trainingType"
+                        label="Training type"
+                        rules={[{ required: true, message: "Please select training type" }]}
+                    >
+                        <Select
+                            placeholder="Select training type"
+                            options={[
+                                { value: "push", label: "Push" },
+                                { value: "pull", label: "Pull" },
+                                { value: "legs", label: "Legs" },
+                                { value: "crossfit", label: "Crossfit" },
+                                { value: "conditioning", label: "Conditioning" },
+                                { value: "yoga", label: "Yoga" },
+                                { value: "weightlifting", label: "Weightlifting" }
+                            ]}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="trainingLevel"
+                        label="Training level"
+                        rules={[{ required: true, message: "Please select training level" }]}
+                    >
+                        <Select
+                            placeholder="Select training level"
+                            options={[
+                                { value: "beginner", label: "Beginner" },
+                                { value: "intermediate", label: "Intermediate" },
+                                { value: "advanced", label: "Advanced" }
+                            ]}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Time range"
+                        required
+                    >
+                        <TimePicker
+                            format="HH:mm"
+                            minuteStep={15}
+                            onChange={(values) => setTimeRange(values as [Dayjs, Dayjs])}
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={createSessionMutation.isPending}
+                        >
+                            Create session
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     )
 }
