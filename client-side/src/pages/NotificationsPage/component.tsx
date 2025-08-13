@@ -3,11 +3,11 @@ import { useState } from "react";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings, updateBookingStatus } from "../../utils/api";
 import dayjs from "dayjs";
-import { Button, Calendar, List, Modal, Space, Spin, Typography } from "antd";
-import { DownCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import { Badge, Button, Calendar, Drawer, List, Modal, Space, Spin, Typography } from "antd";
+import { CalendarOutlined, DownCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
 
 export default function NotificationsPage() {
-    const { Text } = Typography
+    const { Text, Title } = Typography
     const queryClient = useQueryClient()
     const [selectedBooking, setSelectedBooking] = useState<TrainerBookingResponse | null>(null)
     const [selectedDate, setSelectedDate] = useState(dayjs())
@@ -38,11 +38,29 @@ export default function NotificationsPage() {
 
     const dateCellRender = (value: dayjs.Dayjs) => {
         const hasPending = bookings?.some(
-            (b) => 
-                b.bookingStatus === "PENDING" &&
-                dayjs(b.reservationTime).isSame(value, "day")
+            (b) => dayjs(b.reservationTime).isSame(value, "day")
         )
-        return hasPending ? <div style={{color: "red"}}><UpCircleOutlined /></div> : <div style={{color: "green"}}><DownCircleOutlined /></div>
+        if (hasPending) {
+            return (
+                <div
+                    style={{ textAlign: "center" }}
+                >
+                    <Badge
+                        status="processing"
+                        style={{
+                            marginRight: 4
+                        }}
+                    />
+                    <CalendarOutlined
+                        style={{
+                            color: "#1890ff",
+                            fontSize: "16px"
+                        }}
+                    />
+                </div>
+            )
+        }
+        return null
     }
 
     return (
@@ -93,27 +111,31 @@ export default function NotificationsPage() {
                 </>
             )}
 
-            <Modal
+            <Drawer
+                placement="right"
+                width={400}
                 title="Review Booking Request"
                 open={!!selectedBooking}
-                onCancel={() => setSelectedBooking(null)}
-                footer={[
-                    <Button
-                        key="reject"
-                        danger
-                        onClick={() => handleDecision("REJECTED")}
-                        loading={updateStatusMutation.isPending}
-                    >
-                        Reject
-                    </Button>,
-                    <Button
-                        key="approve"
-                        type="primary"
-                        onClick={() => handleDecision("APPROVED")}
-                        loading={updateStatusMutation.isPending}
-                    >
-                        Approve
-                    </Button>
+                onClose={() => setSelectedBooking(null)}
+                extra={[
+                    <Space>
+                        <Button
+                            key="reject"
+                            danger
+                            onClick={() => handleDecision("REJECTED")}
+                            loading={updateStatusMutation.isPending}
+                        >
+                            Reject
+                        </Button>,
+                        <Button
+                            key="approve"
+                            type="primary"
+                            onClick={() => handleDecision("APPROVED")}
+                            loading={updateStatusMutation.isPending}
+                        >
+                            Approve
+                        </Button>
+                    </Space>
                 ]}
             >
                 {selectedBooking && (
@@ -122,21 +144,21 @@ export default function NotificationsPage() {
                             <Text strong>User:</Text>
                             <Text>{selectedBooking.userFirstName} {selectedBooking.userLastName}</Text>
                         </div>
-                        <div>
+                        <div style={{ marginTop: 8 }}>
                             <Text strong>Training type:</Text>
                             <Text>{selectedBooking.trainingType}</Text>
                         </div>
-                        <div>
+                        <div style={{ marginTop: 8 }}>
                             <Text strong>Session:</Text>
                             <Text>From: {dayjs(selectedBooking.reservationTime).format("HH:mm")} to: {dayjs(selectedBooking.endOfReservationTime).format("HH:mm")}</Text>
                         </div>
-                        <div>
+                        <div style={{ marginTop: 8 }}>
                             <Text strong>Booking status</Text>
                             <Text>{selectedBooking.bookingStatus}</Text>
                         </div>
                     </div>
                 )}
-            </Modal>
+            </Drawer>
         </>
     )
 }
