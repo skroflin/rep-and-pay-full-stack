@@ -1,5 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Calendar, Form, message, Modal, Select, TimePicker } from "antd";
+import { 
+    Button,
+    Calendar,
+    Form,
+    Modal,
+    Select,
+    TimePicker
+} from "antd";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -109,10 +116,16 @@ export default function TrainingSessionPage() {
                         label="Time range"
                         required
                     >
-                        <TimePicker
+                        <TimePicker.RangePicker
                             format="HH:mm"
-                            minuteStep={15}
-                            onChange={(values) => setTimeRange(values as [Dayjs, Dayjs])}
+                            value={timeRange}
+                            onChange={(values) => {
+                                if (values) {
+                                    setTimeRange(values as [Dayjs, Dayjs])
+                                } else {
+                                    setTimeRange(null)
+                                }
+                            }}
                         />
                     </Form.Item>
                     <Form.Item>
