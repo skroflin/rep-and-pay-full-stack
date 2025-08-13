@@ -38,17 +38,11 @@ export default function BookingPage() {
         const reservationTime = dayjs(session.dateTime).toDate()
         const endOfReservationTime = dayjs(session.dateTime).add(1, "hour").toDate()
 
-        const bookingRequest: MyBookingRequest = {
-            trainingSessionId: session.id,
-            reservationTime,
-            endOfReservationTime
-        }
-
         setPendingSession(prev => [...prev, session.id])
         bookingMutation.mutate({
             trainingSessionId: session.id,
-            reservationTime: dayjs(session.dateTime).toDate(),
-            endOfReservationTime: dayjs(session.dateTime).add(1, "hour").toDate()
+            reservationTime: reservationTime,
+            endOfReservationTime: endOfReservationTime
         },
         {
             onError: () => {
