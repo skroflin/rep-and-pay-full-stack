@@ -151,7 +151,7 @@ public class BookingService extends MainService {
         try {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.user.id = :userId"
+                    + "where b.user.id = :userId "
                     + "and b.trainingSession.id = :trainingSessionId ", 
                     Long.class)
                     .setParameter("userId", o.userId())
@@ -206,10 +206,10 @@ public class BookingService extends MainService {
                         + "not found!"
                 );
             }
-            /*
+            
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.user.id = :userId"
+                    + "where b.user.id = :userId "
                     + "and b.trainingSession.id = :trainingSessionId ", 
                     Long.class)
                     .setParameter("userId", userId)
@@ -218,7 +218,7 @@ public class BookingService extends MainService {
             if (count > 0) {
                 throw new IllegalArgumentException("You have already booked this"
                         + " " + "session!");
-            }*/
+            }
 
             Booking booking = new Booking(
                     userProfile,
