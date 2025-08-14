@@ -1,6 +1,6 @@
 export interface MyTrainingSessionRequest {
-    trainingType: string,
-    trainingLevel: string,
-    beginningOfSession: Date | string,
+    trainingType: "PUSH" | "PULL" | "LEGS" | "CROSSFIT" | "CONDITIONING" | "YOGA" | "WEIGHTLIFTING"
+    trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
+    beginningOfSession: Date | string
     endOfSession: Date | string
 }

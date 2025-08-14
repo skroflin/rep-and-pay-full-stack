@@ -47,12 +47,12 @@ export default function TrainingSessionPage() {
         const beginningOfSession = selectedDate
             .hour(startTime.hour())
             .minute(startTime.minute())
-            .toDate()
+            .format("YYYY-MM-DDTHH:mm:ss")
 
         const endOfSession = selectedDate
             .hour(endTime.hour())
             .minute(endTime.minute())
-            .toDate()
+            .format("YYYY-MM-DDTHH:mm:ss")
 
         const request: MyTrainingSessionRequest = {
             trainingType: values.trainingType,
@@ -60,7 +60,7 @@ export default function TrainingSessionPage() {
             beginningOfSession,
             endOfSession
         }
-
+        console.log(request)
         createSessionMutation.mutate(request)
     }
 
@@ -94,13 +94,13 @@ export default function TrainingSessionPage() {
                         <Select
                             placeholder="Select training type"
                             options={[
-                                { value: "push", label: "Push" },
-                                { value: "pull", label: "Pull" },
-                                { value: "legs", label: "Legs" },
-                                { value: "crossfit", label: "Crossfit" },
-                                { value: "conditioning", label: "Conditioning" },
-                                { value: "yoga", label: "Yoga" },
-                                { value: "weightlifting", label: "Weightlifting" }
+                                { value: "PUSH", label: "Push" },
+                                { value: "PULL", label: "Pull" },
+                                { value: "LEGS", label: "Legs" },
+                                { value: "CROSSFIT", label: "Crossfit" },
+                                { value: "CONDITIONING", label: "Conditioning" },
+                                { value: "YOGA", label: "Yoga" },
+                                { value: "WEIGHTLIFTING", label: "Weightlifting" }
                             ]}
                         />
                     </Form.Item>
@@ -112,9 +112,9 @@ export default function TrainingSessionPage() {
                         <Select
                             placeholder="Select training level"
                             options={[
-                                { value: "beginner", label: "Beginner" },
-                                { value: "intermediate", label: "Intermediate" },
-                                { value: "advanced", label: "Advanced" }
+                                { value: "BEGINNER", label: "Beginner" },
+                                { value: "INTERMEDIATE", label: "Intermediate" },
+                                { value: "ADVANCED", label: "Advanced" }
                             ]}
                         />
                     </Form.Item>
