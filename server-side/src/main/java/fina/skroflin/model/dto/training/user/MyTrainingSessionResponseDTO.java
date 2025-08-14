@@ -6,9 +6,11 @@ package fina.skroflin.model.dto.training.user;
 
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -16,11 +18,12 @@ import java.time.LocalDate;
  */
 public record MyTrainingSessionResponseDTO(
         Integer id,
-        LocalDate dateTime,
         @Enumerated(EnumType.STRING)
         TrainingType trainingType,
         @Enumerated(EnumType.STRING)
-        TrainingLevel trainingLevel
+        TrainingLevel trainingLevel,
+        LocalDateTime beginningOfSession,
+        LocalDateTime endOfSession
         ) {
 
 }

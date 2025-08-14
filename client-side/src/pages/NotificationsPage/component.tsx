@@ -3,11 +3,11 @@ import { useState } from "react";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings, updateBookingStatus } from "../../utils/api";
 import dayjs from "dayjs";
-import { Badge, Button, Calendar, Drawer, List, Modal, Space, Spin, Typography } from "antd";
-import { CalendarOutlined, DownCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import { Badge, Button, Calendar, Drawer, List, Space, Spin, Typography } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
 
 export default function NotificationsPage() {
-    const { Text, Title } = Typography
+    const { Text } = Typography
     const queryClient = useQueryClient()
     const [selectedBooking, setSelectedBooking] = useState<TrainerBookingResponse | null>(null)
     const [selectedDate, setSelectedDate] = useState(dayjs())

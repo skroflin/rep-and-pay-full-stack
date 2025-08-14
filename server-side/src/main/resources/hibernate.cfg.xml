@@ -6,19 +6,20 @@
 <hibernate-configuration>
     <session-factory>
         <property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
-        <!-- Prvo kreirati bazu 
-        create database rep_pay_db; -->
-        <property name="connection.url">jdbc:mariadb://localhost/rep_pay_db</property>
+        <!-- Database creation 
+        create database rep_pay_db;
+        create database rep_pay_db_test; -->
+        <property name="connection.url">jdbc:mariadb://localhost/rep_pay_db_test</property>
         <property name="dialect">org.hibernate.dialect.MariaDBDialect</property>
-        <property name="connection.username">svenk</property>
-        <property name="connection.password">svenk</property>
+        <property name="connection.username">skroflin</property>
+        <property name="connection.password">skroflin</property>
         <property name="connection.pool_size">3</property>
         <property name="current_session_context_class">thread</property>
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
     
-        <!-- <mapping class="ffos.kolokvij.model.ImeKlase" /> -->
+        <!-- <mapping class="fina.username.model.ClassName" /> -->
         <mapping class="fina.skroflin.model.User" />
         <mapping class="fina.skroflin.model.Booking" />
         <mapping class="fina.skroflin.model.TrainingSession" />

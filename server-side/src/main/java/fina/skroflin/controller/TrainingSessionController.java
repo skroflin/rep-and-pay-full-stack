@@ -60,8 +60,8 @@ public class TrainingSessionController {
     @Operation(
             summary = "Retrieves all training sessions", tags = {"get", "trainingSessions"},
             description = "Retrieves all bookings with information about"
-                    + " " + "their respectful users, date time"
-                    + " " + "training type, training level and capacity of the session."
+            + " " + "their respectful users, date time"
+            + " " + "training type, training level and capacity of the session."
     )
     @ApiResponses(
             value = {
@@ -78,7 +78,7 @@ public class TrainingSessionController {
     @Operation(
             summary = "Retrieves training session by id",
             description = "Retrieves training session by id with its whole respectful data."
-                    + " " + "If there is no id for the given training session, no result is retrieved.",
+            + " " + "If there is no id for the given training session, no result is retrieved.",
             tags = {"trainingSession", "getBy"},
             parameters = {
                 @Parameter(
@@ -86,7 +86,7 @@ public class TrainingSessionController {
                         allowEmptyValue = false,
                         required = true,
                         description = "Primary key of training session in the database."
-                                + " " + "Must be greater than 0!",
+                        + " " + "Must be greater than 0!",
                         example = "1"
                 )})
     @ApiResponses({
@@ -120,7 +120,7 @@ public class TrainingSessionController {
     @Operation(
             summary = "Retrieves training session data of the user in the session", tags = {"get", "trainingSession", "getMyTrainingSession"},
             description = "Retrieves data of the current authentiacted user with information about"
-                    + " " + "their trainer, date time, training type, training level and capacity."
+            + " " + "their trainer, date time, training type, training level and capacity."
     )
     @ApiResponses(
             value = {
@@ -129,19 +129,18 @@ public class TrainingSessionController {
             })
     @GetMapping("/getMyTrainingSessions")
     public ResponseEntity<List<MyTrainingSessionResponseDTO>> getMyTrainingSessions(
-            @RequestHeader
-            HttpHeaders headers
+            @RequestHeader HttpHeaders headers
     ) {
         List<MyTrainingSessionResponseDTO> myTrainingSessions
                 = trainingSessionService.getMyTrainingSessions(headers);
         return new ResponseEntity<>(myTrainingSessions, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Create new training session",
             tags = {"post", "trainingSesion"},
             description = "Create new training session. User id, date time,"
-                    + " " + "training type, training level and capacity is necessary!")
+            + " " + "training type, training level and capacity is necessary!")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
         @ApiResponse(responseCode = "400", description = "Bad request (dto object wasn't received)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
@@ -169,22 +168,22 @@ public class TrainingSessionController {
                 );
             }
         }
-        if (dto.dateTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Date time is necessary!"
-            );
-        }
         if (dto.trainingLevel() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Training level is necessary!"
             );
         }
-        if (dto.trainingType() == null) {
+        if (dto.beginningOfSession() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Training type is necessary!"
+                    "Beginning of training is necessary!"
+            );
+        }
+        if (dto.endOfSession() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "End of training is necessary!"
             );
         }
         trainingSessionService.post(dto);
@@ -198,7 +197,7 @@ public class TrainingSessionController {
             summary = "Create new booking for the authenticated user",
             tags = {"post", "createMyBooking"},
             description = "Create new booking for the user that is authenticated and"
-                    + " " + "currently in the session.")
+            + " " + "currently in the session.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = Booking.class), mediaType = "application/json")),
         @ApiResponse(responseCode = "400", description = "Bad request (dto object wasn't received)", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
@@ -242,12 +241,6 @@ public class TrainingSessionController {
                     "Id musn't be lesser than 0!"
             );
         }
-        if (dto.dateTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Date time is necessary!"
-            );
-        }
         if (dto.trainingLevel() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -260,10 +253,22 @@ public class TrainingSessionController {
                     "Training type is necessary!"
             );
         }
+        if (dto.beginningOfSession() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Beginning of training is necessary!"
+            );
+        }
+        if (dto.endOfSession() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "End of training is necessary!"
+            );
+        }
         trainingSessionService.put(dto, id);
         return new ResponseEntity<>(
-                "Training session with the id" 
-                        + " " + id + " " + "updated!",
+                "Training session with the id"
+                + " " + id + " " + "updated!",
                 HttpStatus.OK
         );
     }
@@ -271,7 +276,7 @@ public class TrainingSessionController {
     @Operation(
             summary = "Updates training session for authenticated user", tags = {"put", "updateMyBooking", "trainingSession"},
             description = "Updates training session for user that is currently logged"
-                    + " " + "in the session."
+            + " " + "in the session."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Updated", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
@@ -286,8 +291,8 @@ public class TrainingSessionController {
     ) {
         trainingSessionService.updateMyTrainingSession(dto, id, headers);
         return new ResponseEntity<>(
-                "My training session with id" 
-                        + " " + id + " " + "updated!", 
+                "My training session with id"
+                + " " + id + " " + "updated!",
                 HttpStatus.OK
         );
     }
@@ -306,14 +311,14 @@ public class TrainingSessionController {
             }
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", 
-                description = "Updated", 
+        @ApiResponse(responseCode = "200",
+                description = "Updated",
                 content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
-        @ApiResponse(responseCode = "400", 
-                description = "Bad request (can't delete because there is no booking)", 
+        @ApiResponse(responseCode = "400",
+                description = "Bad request (can't delete because there is no booking)",
                 content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
-        @ApiResponse(responseCode = "500", 
-                description = "Internal server error", 
+        @ApiResponse(responseCode = "500",
+                description = "Internal server error",
                 content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @DeleteMapping("/delete")
@@ -336,19 +341,19 @@ public class TrainingSessionController {
     }
 
     @Operation(
-            summary = "Deletes training session of user in session", 
+            summary = "Deletes training session of user in session",
             tags = {"delete", "deleteMyBooking", "trainingSession"},
             description = "Deletes trainingSession for user that is" + " "
-                    + "currently logged" + " " + "in the session."
+            + "currently logged" + " " + "in the session."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", 
+        @ApiResponse(responseCode = "200",
                 description = "Deleted", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
-        @ApiResponse(responseCode = "400", 
-                description = "Bad request (can't delete because there is no trainingSession)", 
+        @ApiResponse(responseCode = "400",
+                description = "Bad request (can't delete because there is no trainingSession)",
                 content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html")),
-        @ApiResponse(responseCode = "500", 
-                description = "Internal server error", 
+        @ApiResponse(responseCode = "500",
+                description = "Internal server error",
                 content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @DeleteMapping("/deleteMyTrainingSession")
@@ -358,18 +363,17 @@ public class TrainingSessionController {
     ) {
         trainingSessionService.deleteMyTrainingSession(id, headers);
         return new ResponseEntity<>(
-                "My training session with id" 
-                        + " " + id + " " + "deleted!", 
+                "My training session with id"
+                + " " + id + " " + "deleted!",
                 HttpStatus.OK
         );
     }
-    
+
     @GetMapping("/getAvailableTrainingSessionsByDate")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAvailableSessions(
             @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)        
-            LocalDate date
-    ){
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
         List<TrainingSessionResponseDTO> availableSessionsByDate
                 = trainingSessionService.getAvailableTrainingSessionsByDate(date);
         return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);

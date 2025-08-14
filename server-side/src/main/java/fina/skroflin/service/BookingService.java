@@ -81,8 +81,8 @@ public class BookingService extends MainService {
                 booking.getUser().getFirstName(), 
                 booking.getUser().getLastName(), 
                 booking.getTrainingSession().getTrainingType(), 
-                booking.getReservationTime(), 
-                booking.getEndOfReservation(), 
+                booking.getTrainingSession().getBeginningOfSession(), 
+                booking.getTrainingSession().getEndOfSession(), 
                 booking.getBookingStatus()
         );
     }

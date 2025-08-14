@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -28,28 +29,32 @@ public class TrainingSession extends MainEntity {
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private User trainer;
-    @Column(name = "date_time")
-    private LocalDate dateTime;
     @Enumerated(EnumType.STRING)
     @Column(name = "training_type")
     private TrainingType trainingType;
     @Enumerated(EnumType.STRING)
     @Column(name = "training_level")
     private TrainingLevel trainingLevel;
+    @Column(name = "beginning_of_session")
+    private LocalDateTime beginningOfSession;
+    @Column(name = "end_of_session")
+    private LocalDateTime endOfSession;
 
     public TrainingSession() {
     }
 
     public TrainingSession(
             User trainer, 
-            LocalDate dateTime, 
             TrainingType trainingType, 
-            TrainingLevel trainingLevel
+            TrainingLevel trainingLevel, 
+            LocalDateTime beginningOfSession, 
+            LocalDateTime endOfSession
     ) {
         this.trainer = trainer;
-        this.dateTime = dateTime;
         this.trainingType = trainingType;
         this.trainingLevel = trainingLevel;
+        this.beginningOfSession = beginningOfSession;
+        this.endOfSession = endOfSession;
     }
 
     public User getTrainer() {
@@ -58,14 +63,6 @@ public class TrainingSession extends MainEntity {
 
     public void setTrainer(User trainer) {
         this.trainer = trainer;
-    }
-
-    public LocalDate getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDate dateTime) {
-        this.dateTime = dateTime;
     }
 
     public TrainingType getTrainingType() {
@@ -83,6 +80,20 @@ public class TrainingSession extends MainEntity {
     public void setTrainingLevel(TrainingLevel trainingLevel) {
         this.trainingLevel = trainingLevel;
     }
-    
-    
+
+    public LocalDateTime getBeginningOfSession() {
+        return beginningOfSession;
+    }
+
+    public void setBeginningOfSession(LocalDateTime beginningOfSession) {
+        this.beginningOfSession = beginningOfSession;
+    }
+
+    public LocalDateTime getEndOfSession() {
+        return endOfSession;
+    }
+
+    public void setEndOfSession(LocalDateTime endOfSession) {
+        this.endOfSession = endOfSession;
+    }
 }

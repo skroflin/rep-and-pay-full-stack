@@ -18,8 +18,8 @@ public record TrainerBookingResponseDTO(
         String userFirstName,
         String userLastName,
         TrainingType trainingType,
-        LocalDateTime reservationTime,
-        LocalDateTime endOfReservationTime,
+        LocalDateTime startOfSession,
+        LocalDateTime endOfSession,
         BookingStatus bookingStatus
         ) {
 

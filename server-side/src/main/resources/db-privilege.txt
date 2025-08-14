@@ -1,1 +1,3 @@
-grant all privileges on rep_pay_db.* to 'skroflin'@'localhost' identified by 'skroflin'; 
+Database privileges:
+grant all privileges on rep_pay_db.* to 'skroflin'@'localhost' identified by 'skroflin';
+grant all privileges on rep_pay_db_test.* to 'skroflin'@'localhost' identified by 'skroflin';

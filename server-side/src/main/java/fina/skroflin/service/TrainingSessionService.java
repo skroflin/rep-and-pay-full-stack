@@ -16,7 +16,6 @@ import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -50,9 +49,10 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getId(),
                 trainingSession.getTrainer().getFirstName(),
                 trainingSession.getTrainer().getLastName(),
-                trainingSession.getDateTime(),
                 trainingSession.getTrainingType(),
-                trainingSession.getTrainingLevel()
+                trainingSession.getTrainingLevel(),
+                trainingSession.getBeginningOfSession(),
+                trainingSession.getEndOfSession()
         );
     }
     
@@ -65,46 +65,11 @@ public class TrainingSessionService extends MainService {
         }
         return new MyTrainingSessionResponseDTO(
                 trainingSession.getId(), 
-                trainingSession.getDateTime(), 
                 trainingSession.getTrainingType(), 
-                trainingSession.getTrainingLevel()
+                trainingSession.getTrainingLevel(),
+                trainingSession.getBeginningOfSession(),
+                trainingSession.getEndOfSession()
         );
-    }
-
-    @Transactional
-    private TrainingSession convertToEntity(TrainingSessionRequestDTO dto) {
-        TrainingSession trainingSession = new TrainingSession();
-        if (dto.trainerId() != null) {
-            User trainer = (User) session.get(User.class, dto.trainerId());
-            if (trainer == null) {
-                throw new IllegalArgumentException("Trainer with the id"
-                        + " " + dto.trainerId() + " " + "doesn't exist!");
-            }
-            trainingSession.setTrainer(trainer);
-        }
-        trainingSession.setDateTime(dto.dateTime());
-        trainingSession.setTrainingType(dto.trainingType());
-        trainingSession.setTrainingLevel(dto.trainingLevel());
-        return trainingSession;
-    }
-
-    @Transactional
-    private void updateEntityFromDto(
-            TrainingSession trainingSession,
-            TrainingSessionRequestDTO dto) {
-        if (dto.trainerId() != null) {
-            User trainer = (User) session.get(User.class, dto.trainerId());
-            if (trainer == null) {
-                throw new IllegalArgumentException("Trainer with the id"
-                        + " " + dto.trainerId() + " " + "doesn't exist!");
-            }
-            trainingSession.setTrainer(trainer);
-        } else {
-            trainingSession.setTrainer(null);
-        }
-        trainingSession.setDateTime(dto.dateTime());
-        trainingSession.setTrainingType(dto.trainingType());
-        trainingSession.setTrainingLevel(dto.trainingLevel());
     }
 
     public List<TrainingSessionResponseDTO> getAll() {
@@ -179,12 +144,12 @@ public class TrainingSessionService extends MainService {
             }
             
             Long count = session.createQuery(
-                    "select count(ts) from TrainingSession ts"
-                            + "where ts.trainer.id = :trainerId"
-                            + "and ts.dateTime = :reservation",
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.beginningOfSession = :reservation",
                     Long.class)
                     .setParameter("trainerId", o.trainerId())
-                    .setParameter("reservation", o.dateTime())
+                    .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
             
             if (count > 0) {
@@ -192,12 +157,28 @@ public class TrainingSessionService extends MainService {
                         + " " + o.trainerId() + " " + "already has a session"
                                 + " " + "at that time!");
             }
+            
+            Long count2 = session.createQuery(
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainerId = :trainerId "
+                            + "and ts.endOfSession = :reservation", 
+                    Long.class)
+                    .setParameter("trainerId", o.trainerId())
+                    .setParameter("reservation", o.endOfSession())
+                    .uniqueResult();
+            
+            if (count2 > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + o.trainerId() + " " + "already has a session"
+                                + " " + "that is ending at that time!");
+            }
 
             TrainingSession ts = new TrainingSession(
-                    trainer, 
-                    o.dateTime(),
+                    trainer,
                     o.trainingType(),
-                    o.trainingLevel()
+                    o.trainingLevel(),
+                    o.beginningOfSession(),
+                    o.endOfSession()
             );
             session.beginTransaction();
             session.persist(ts);
@@ -226,10 +207,10 @@ public class TrainingSessionService extends MainService {
             Long count = session.createQuery(
                     "select count(ts) from TrainingSession ts "
                             + "where ts.trainer.id = :trainerId "
-                            + "and ts.dateTime = :reservation",
+                            + "and ts.beginningOfSession = :reservation",
                     Long.class)
                     .setParameter("trainerId", userId)
-                    .setParameter("reservation", o.dateTime())
+                    .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
             
             if (count > 0) {
@@ -238,11 +219,27 @@ public class TrainingSessionService extends MainService {
                                 + " " + "at that time!");
             }
             
+            Long count2 = session.createQuery(
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.endOfSession = :reservation",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .setParameter("reservation", o.beginningOfSession())
+                    .uniqueResult();
+            
+            if (count2 > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + userId + " " + "already has a session"
+                                + " " + "that is ending at that time!");
+            }
+            
             TrainingSession trainingSession = new TrainingSession(
-                    trainerProfile, 
-                    o.dateTime(),
+                    trainerProfile,
                     o.trainingType(), 
-                    o.trainingLevel()
+                    o.trainingLevel(),
+                    o.beginningOfSession(),
+                    o.endOfSession()
             );
             
             session.beginTransaction();
@@ -279,12 +276,10 @@ public class TrainingSessionService extends MainService {
             Long count = session.createQuery(
                     "select count(ts) from TrainingSession ts "
                             + "where ts.trainer.id = :trainerId "
-                            + "and ts.dateTime = :reservation "
-                            + "and ts.id = :id",
+                            + "and ts.dateTime = :reservation",
                     Long.class)
                     .setParameter("trainerId", userId)
-                    .setParameter("reservation", o.dateTime())
-                    .setParameter("id", id)
+                    .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
             
             if (count > 0) {
@@ -293,9 +288,25 @@ public class TrainingSessionService extends MainService {
                                 + " " + "at that time!");
             }
             
-            existingSession.setDateTime(o.dateTime());
+            Long count2 = session.createQuery(
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.beginningOfSession = :reservation",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .setParameter("reservation", o.beginningOfSession())
+                    .uniqueResult();
+            
+            if (count2 > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + userId + " " + "already has a session"
+                                + " " + "that is ending at that time!");
+            }
+            
             existingSession.setTrainingType(o.trainingType());
             existingSession.setTrainingLevel(o.trainingLevel());
+            existingSession.setBeginningOfSession(o.beginningOfSession());
+            existingSession.setEndOfSession(o.endOfSession());
             
             session.beginTransaction();
             session.persist(existingSession);
@@ -325,12 +336,12 @@ public class TrainingSessionService extends MainService {
             }
             
             Long count = session.createQuery(
-                    "select count(ts) from TrainingSession ts"
-                            + "where ts.trainer.id = :trainerId"
-                            + "and ts.dateTime = :reservation"
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.beginningOfSession = :reservation "
                             + "and ts.id <> :id", Long.class)
                     .setParameter("trainerId", o.trainerId())
-                    .setParameter(":reservation", o.dateTime())
+                    .setParameter(":reservation", o.beginningOfSession())
                     .setParameter(":id", id)
                     .uniqueResult();
             
@@ -340,10 +351,27 @@ public class TrainingSessionService extends MainService {
                                 + " " + "at that time!");
             }
             
+            Long count2 = session.createQuery(
+                    "select count(ts) from TrainingSession ts "
+                            + "where ts.trainer.id = :trainerId "
+                            + "and ts.endOfSession = :reservation "
+                            + "and ts.id <> :id", Long.class)
+                    .setParameter("trainerId", o.trainerId())
+                    .setParameter(":reservation", o.endOfSession())
+                    .setParameter(":id", id)
+                    .uniqueResult();
+            
+            if (count2 > 0) {
+                throw new IllegalArgumentException("Trainer with the id" 
+                        + " " + o.trainerId() + " " + "already has a session"
+                                + " " + "that is ending at that time!");
+            }
+            
             existingSession.setTrainer(trainer);
-            existingSession.setDateTime(o.dateTime());
             existingSession.setTrainingType(o.trainingType());
             existingSession.setTrainingLevel(o.trainingLevel());
+            existingSession.setBeginningOfSession(o.beginningOfSession());
+            existingSession.setEndOfSession(o.endOfSession());
             
             session.beginTransaction();
             session.merge(existingSession);

@@ -315,7 +315,6 @@ public class UserService extends MainService {
 
     public void registration(RegistrationDTO o) {
         try {
-            session.beginTransaction();
 
             Long count = session.createQuery(
                     "select count(u) from User u "
@@ -337,6 +336,8 @@ public class UserService extends MainService {
                     bCryptPasswordEncoder.encode(o.password()),
                     o.role()
             );
+            
+            session.beginTransaction();
             session.persist(newUser);
             session.getTransaction().commit();
         } catch (Exception e) {
