@@ -15,10 +15,6 @@ import java.time.LocalDateTime;
 public record MyBookingRequestDTO(
         @Schema(example = "1")
         Integer trainingSessionId,
-        @Schema(example = "2025-07-29T20:00:00")
-        LocalDateTime reservationTime,
-        @Schema(example = "2025-07-29T21:30:00")
-        LocalDateTime endOfReservationTime,
         @Schema(example = "pending")
         BookingStatus bookingStatus
         ) {

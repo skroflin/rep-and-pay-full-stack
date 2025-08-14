@@ -47,8 +47,6 @@ public class BookingService extends MainService {
                 booking.getUser().getFirstName(),
                 booking.getUser().getLastName(),
                 trainingSessionId,
-                booking.getReservationTime(),
-                booking.getEndOfReservation(),
                 booking.getBookingStatus()
         );
     }
@@ -63,8 +61,6 @@ public class BookingService extends MainService {
         return new MyBookingResponseDTO(
                 booking.getId(),
                 trainingSessionId,
-                booking.getReservationTime(),
-                booking.getEndOfReservation(),
                 booking.getBookingStatus()
         );
     }
@@ -156,15 +152,14 @@ public class BookingService extends MainService {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId"
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    Long.class)
                     .setParameter("userId", o.userId())
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
+                    .setParameter("trainingSessionId", o.trainingSessionId())
                     .uniqueResult();
             if (count > 0) {
-                throw new IllegalArgumentException("You already have a booking"
-                        + " " + "that overlaps with this time!");
+                throw new IllegalArgumentException("User with id"
+                        + " " + o.userId() + " " + "already booked this session");
             }
             
             User user = session.get(User.class, o.userId());
@@ -174,8 +169,6 @@ public class BookingService extends MainService {
             Booking booking = new Booking(
                     user,
                     trainingSession,
-                    o.reservationTime(),
-                    o.endOfReservationTime(),
                     o.bookingStatus()
             );
             session.beginTransaction();
@@ -216,22 +209,19 @@ public class BookingService extends MainService {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId"
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    Long.class)
                     .setParameter("userId", userId)
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
+                    .setParameter("trainingSessionId", o.trainingSessionId())
                     .uniqueResult();
             if (count > 0) {
-                throw new IllegalArgumentException("You already have a booking"
-                        + " " + "that overlaps with this time!");
+                throw new IllegalArgumentException("You have already booked this"
+                        + " " + "session!");
             }
 
             Booking booking = new Booking(
                     userProfile,
                     ts,
-                    o.reservationTime(),
-                    o.endOfReservationTime(),
                     o.bookingStatus()
             );
 
@@ -257,12 +247,9 @@ public class BookingService extends MainService {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
-                    + "and b.id != :currentId "
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "and b.id != :currentId ",
+                    Long.class)
                     .setParameter("userId", o.userId())
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
                     .setParameter("currentId", id)
                     .uniqueResult();
 
@@ -287,8 +274,6 @@ public class BookingService extends MainService {
 
             existingBooking.setUser(user);
             existingBooking.setTrainingSession(trainingSession);
-            existingBooking.setReservationTime(o.reservationTime());
-            existingBooking.setEndOfReservation(o.endOfReservationTime());
             existingBooking.setBookingStatus(o.bookingStatus());
            
             session.beginTransaction();
@@ -325,12 +310,9 @@ public class BookingService extends MainService {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
-                    + "and b.id != :currentId "
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "and b.id != :currentId ",
+                    Long.class)
                     .setParameter("userId", userId)
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
                     .setParameter("currentId", id)
                     .uniqueResult();
 
@@ -347,8 +329,6 @@ public class BookingService extends MainService {
             }
 
             existingBooking.setTrainingSession(trainingSession);
-            existingBooking.setReservationTime(o.reservationTime());
-            existingBooking.setEndOfReservation(o.endOfReservationTime());
 
             session.beginTransaction();
             session.merge(existingBooking);

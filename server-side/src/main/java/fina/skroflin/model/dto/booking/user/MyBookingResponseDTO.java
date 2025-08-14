@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 public record MyBookingResponseDTO(
         Integer id,
         Integer trainingSessionId,
-        LocalDateTime reservationTime,
-        LocalDateTime endOfReservationTime,
         BookingStatus bookingStatus
         ) {
 

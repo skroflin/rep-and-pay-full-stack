@@ -178,18 +178,6 @@ public class BookingController {
                 );
             }
         }
-        if (dto.reservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Reservation time is necessary!"
-            );
-        }
-        if (dto.endOfReservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "End of reservation time is necessary!"
-            );
-        }
 
         bookingService.post(dto);
         return new ResponseEntity<>("New booking added!", HttpStatus.CREATED);
@@ -267,18 +255,6 @@ public class BookingController {
                 );
             }
         }
-        if (dto.reservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Reservation time is necessary!"
-            );
-        }
-        if (dto.endOfReservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "End of reservation time is necessary!"
-            );
-        }
         bookingService.put(dto, id);
         return new ResponseEntity<>(
                 "Booking with id" + " " + id + " " + "changed!",
@@ -306,18 +282,6 @@ public class BookingController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "DTO data wasn't inserted!"
-            );
-        }
-        if (dto.reservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Reservation time is necessary!"
-            );
-        }
-        if (dto.endOfReservationTime() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "End of reservation time is necessary!"
             );
         }
         bookingService.updateMyBooking(dto, id, headers);
