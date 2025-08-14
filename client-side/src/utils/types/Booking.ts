@@ -1,8 +1,6 @@
 export interface BookingRequest {
     userId: string,
     trainingSessionId: string,
-    reservationTime: Date | string,
-    endOfReservationTime: Date | string,
     bookingStatus: string,
 }
 
@@ -11,8 +9,6 @@ export interface BookingResponse {
     userFirstName: string,
     userLastName: string,
     trainingSessionId: string,
-    reservationTime: Date | string,
-    endOfReservationTime: Date | string,
     bookingStatus: string
 }
 
@@ -22,8 +18,8 @@ export interface TrainerBookingResponse {
     userFirstName: string,
     userLastName: string,
     trainingType: string,
-    reservationTime: Date | string,
-    endOfReservationTime: Date | string,
+    beginningOfSession: Date | string,
+    endOfSession: Date | string,
     bookingStatus: "APPROVED" | "REJECTED" | "PENDING"
 }
 

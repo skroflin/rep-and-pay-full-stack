@@ -1,5 +1,6 @@
 export interface MyTrainingSessionRequest {
-    dateTime: Date | string
-    trainingType: string
-    trainingLevel: string
+    trainingType: string,
+    trainingLevel: string,
+    beginningOfSession: Date | string,
+    endOfSession: Date | string
 }

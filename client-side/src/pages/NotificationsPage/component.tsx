@@ -33,12 +33,12 @@ export default function NotificationsPage() {
     }
 
     const bookingsForDate = bookings?.filter((b) =>
-        dayjs(b.reservationTime).isSame(selectedDate, "day")
+        dayjs(b.beginningOfSession).isSame(selectedDate, "day"),
     ) || []
 
     const dateCellRender = (value: dayjs.Dayjs) => {
         const hasPending = bookings?.some(
-            (b) => dayjs(b.reservationTime).isSame(value, "day")
+            (b) => dayjs(b.beginningOfSession).isSame(value, "day")
         )
         if (hasPending) {
             return (
@@ -101,7 +101,7 @@ export default function NotificationsPage() {
                                     <Text strong>{booking.userFirstName} {booking.userLastName}</Text>
                                     <Text>{booking.trainingType}</Text>
                                     <Text type="secondary">
-                                        {dayjs(booking.reservationTime).format("HH:mm")} - {dayjs(booking.endOfReservationTime).format("HH:mm")}
+                                        {dayjs(booking.beginningOfSession).format("HH:mm")} - {dayjs(booking.endOfSession).format("HH:mm")}
                                     </Text>
                                     <Text>Status: {booking.bookingStatus}</Text>
                                 </Space>
@@ -150,7 +150,7 @@ export default function NotificationsPage() {
                         </div>
                         <div style={{ marginTop: 8 }}>
                             <Text strong>Session:</Text>
-                            <Text>From: {dayjs(selectedBooking.reservationTime).format("HH:mm")} to: {dayjs(selectedBooking.endOfReservationTime).format("HH:mm")}</Text>
+                            <Text>From: {dayjs(selectedBooking.beginningOfSession).format("HH:mm")} to: {dayjs(selectedBooking.endOfSession).format("HH:mm")}</Text>
                         </div>
                         <div style={{ marginTop: 8 }}>
                             <Text strong>Booking status</Text>

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
+import {
     Button,
     Calendar,
     Form,
@@ -42,17 +42,23 @@ export default function TrainingSessionPage() {
             return
         }
 
-        const [trainingDate] = timeRange
+        const [startTime, endTime] = timeRange
 
-        const dateTime = selectedDate
-            .hour(trainingDate.hour())
-            .minute(trainingDate.minute())
+        const beginningOfSession = selectedDate
+            .hour(startTime.hour())
+            .minute(startTime.minute())
+            .toDate()
+
+        const endOfSession = selectedDate
+            .hour(endTime.hour())
+            .minute(endTime.minute())
             .toDate()
 
         const request: MyTrainingSessionRequest = {
             trainingType: values.trainingType,
             trainingLevel: values.trainingLevel,
-            dateTime
+            beginningOfSession,
+            endOfSession
         }
 
         createSessionMutation.mutate(request)
