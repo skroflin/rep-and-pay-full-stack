@@ -31,10 +31,6 @@ public class Booking extends MainEntity {
     @ManyToOne
     @JoinColumn(name = "training_session_id")
     private TrainingSession trainingSession;
-    @Column(name = "reservation_time")
-    private LocalDateTime reservationTime;
-    @Column(name = "end_of_reservation_time")
-    private LocalDateTime endOfReservation;
     @Enumerated(EnumType.STRING)
     @Column(name = "booking_status")
     private BookingStatus bookingStatus;
@@ -42,17 +38,9 @@ public class Booking extends MainEntity {
     public Booking() {
     }
 
-    public Booking(
-            User user, 
-            TrainingSession trainingSession, 
-            LocalDateTime reservationTime, 
-            LocalDateTime endOfReservation, 
-            BookingStatus bookingStatus
-    ) {
+    public Booking(User user, TrainingSession trainingSession, BookingStatus bookingStatus) {
         this.user = user;
         this.trainingSession = trainingSession;
-        this.reservationTime = reservationTime;
-        this.endOfReservation = endOfReservation;
         this.bookingStatus = bookingStatus;
     }
 
@@ -70,22 +58,6 @@ public class Booking extends MainEntity {
 
     public void setTrainingSession(TrainingSession trainingSession) {
         this.trainingSession = trainingSession;
-    }
-
-    public LocalDateTime getReservationTime() {
-        return reservationTime;
-    }
-
-    public void setReservationTime(LocalDateTime reservationTime) {
-        this.reservationTime = reservationTime;
-    }
-
-    public LocalDateTime getEndOfReservation() {
-        return endOfReservation;
-    }
-
-    public void setEndOfReservation(LocalDateTime endOfReservation) {
-        this.endOfReservation = endOfReservation;
     }
 
     public BookingStatus getBookingStatus() {

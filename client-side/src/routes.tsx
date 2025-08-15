@@ -101,8 +101,8 @@ const routes: RouteElement[] = [
         icon: <CalendarOutlined />
     },
     {
-        key: "Notifications Page",
-        path: "notifications",
+        key: "Notifications",
+        path: "/notifications",
         element: <NotificationsPage />,
         onNavBar: true,
         reqLogin: true,

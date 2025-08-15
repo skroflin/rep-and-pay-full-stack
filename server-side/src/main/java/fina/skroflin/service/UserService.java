@@ -315,7 +315,6 @@ public class UserService extends MainService {
 
     public void registration(RegistrationDTO o) {
         try {
-            session.beginTransaction();
 
             Long count = session.createQuery(
                     "select count(u) from User u "
@@ -337,6 +336,8 @@ public class UserService extends MainService {
                     bCryptPasswordEncoder.encode(o.password()),
                     o.role()
             );
+            
+            session.beginTransaction();
             session.persist(newUser);
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -390,31 +391,4 @@ public class UserService extends MainService {
             );
         }
     }
-    /*    
-    public User getUserByEmail(String email){
-        try {
-            return session.createQuery(
-                    "from User u where u.email = :email",
-                    User.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-            throw new RuntimeException("User with email" + " " 
-                    + email + " " + "doesn't exist!");
-        }
-    }
-    
-    public User getUserByUsername(String username){
-        try {
-            return session.createQuery(
-                    "from User u where u.username = :username",
-                    User.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
-        } catch (Exception e) {
-            throw new RuntimeException("User with username" + " "
-                    + username + " " + "doesn't exist!");
-        }
-    }
-     */
 }

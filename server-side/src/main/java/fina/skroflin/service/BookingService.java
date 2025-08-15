@@ -13,11 +13,9 @@ import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.TrainerBookingResponseDTO;
 import fina.skroflin.model.enums.BookingStatus;
-import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -49,8 +47,6 @@ public class BookingService extends MainService {
                 booking.getUser().getFirstName(),
                 booking.getUser().getLastName(),
                 trainingSessionId,
-                booking.getReservationTime(),
-                booking.getEndOfReservation(),
                 booking.getBookingStatus()
         );
     }
@@ -65,8 +61,6 @@ public class BookingService extends MainService {
         return new MyBookingResponseDTO(
                 booking.getId(),
                 trainingSessionId,
-                booking.getReservationTime(),
-                booking.getEndOfReservation(),
                 booking.getBookingStatus()
         );
     }
@@ -83,8 +77,8 @@ public class BookingService extends MainService {
                 booking.getUser().getFirstName(), 
                 booking.getUser().getLastName(), 
                 booking.getTrainingSession().getTrainingType(), 
-                booking.getReservationTime(), 
-                booking.getEndOfReservation(), 
+                booking.getTrainingSession().getBeginningOfSession(), 
+                booking.getTrainingSession().getEndOfSession(), 
                 booking.getBookingStatus()
         );
     }
@@ -140,7 +134,7 @@ public class BookingService extends MainService {
                     "select b from Booking b "
                     + "left join fetch b.user "
                     + "left join fetch b.trainingSession "
-                    + "where b.userId = :userId",
+                    + "where b.user.id = :userId",
                     Booking.class)
                     .setParameter("userId", userId)
                     .list();
@@ -157,16 +151,15 @@ public class BookingService extends MainService {
         try {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.user.id = :userId"
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "where b.user.id = :userId "
+                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    Long.class)
                     .setParameter("userId", o.userId())
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
+                    .setParameter("trainingSessionId", o.trainingSessionId())
                     .uniqueResult();
             if (count > 0) {
-                throw new IllegalArgumentException("You already have a booking"
-                        + " " + "that overlaps with this time!");
+                throw new IllegalArgumentException("User with id"
+                        + " " + o.userId() + " " + "already booked this session");
             }
             
             User user = session.get(User.class, o.userId());
@@ -176,8 +169,6 @@ public class BookingService extends MainService {
             Booking booking = new Booking(
                     user,
                     trainingSession,
-                    o.reservationTime(),
-                    o.endOfReservationTime(),
                     o.bookingStatus()
             );
             session.beginTransaction();
@@ -215,25 +206,23 @@ public class BookingService extends MainService {
                         + "not found!"
                 );
             }
+            
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.user.id = :userId"
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "where b.user.id = :userId "
+                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    Long.class)
                     .setParameter("userId", userId)
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
+                    .setParameter("trainingSessionId", o.trainingSessionId())
                     .uniqueResult();
             if (count > 0) {
-                throw new IllegalArgumentException("You already have a booking"
-                        + " " + "that overlaps with this time!");
+                throw new IllegalArgumentException("You have already booked this"
+                        + " " + "session!");
             }
 
             Booking booking = new Booking(
                     userProfile,
                     ts,
-                    o.reservationTime(),
-                    o.endOfReservationTime(),
                     o.bookingStatus()
             );
 
@@ -258,13 +247,10 @@ public class BookingService extends MainService {
 
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.userId = :userId "
-                    + "and b.id != :currentId "
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "where b.user.id = :userId "
+                    + "and b.id != :currentId ",
+                    Long.class)
                     .setParameter("userId", o.userId())
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
                     .setParameter("currentId", id)
                     .uniqueResult();
 
@@ -289,8 +275,6 @@ public class BookingService extends MainService {
 
             existingBooking.setUser(user);
             existingBooking.setTrainingSession(trainingSession);
-            existingBooking.setReservationTime(o.reservationTime());
-            existingBooking.setEndOfReservation(o.endOfReservationTime());
             existingBooking.setBookingStatus(o.bookingStatus());
            
             session.beginTransaction();
@@ -326,13 +310,10 @@ public class BookingService extends MainService {
 
             Long count = session.createQuery(
                     "select count(b) from Booking b "
-                    + "where b.userId = :userId "
-                    + "and b.id != :currentId "
-                    + "and :start < b.endOfReservationTime "
-                    + "and :end > b.reservationTime", Long.class)
+                    + "where b.user.id = :userId "
+                    + "and b.id != :currentId ",
+                    Long.class)
                     .setParameter("userId", userId)
-                    .setParameter("start", o.reservationTime())
-                    .setParameter("end", o.endOfReservationTime())
                     .setParameter("currentId", id)
                     .uniqueResult();
 
@@ -349,8 +330,6 @@ public class BookingService extends MainService {
             }
 
             existingBooking.setTrainingSession(trainingSession);
-            existingBooking.setReservationTime(o.reservationTime());
-            existingBooking.setEndOfReservation(o.endOfReservationTime());
 
             session.beginTransaction();
             session.merge(existingBooking);
@@ -443,8 +422,13 @@ public class BookingService extends MainService {
     public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers){
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer trainerId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("TrainerId", Integer.class));
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
             
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
@@ -452,7 +436,7 @@ public class BookingService extends MainService {
                             + "left join fetch b.trainingSession ts "
                             + "where ts.trainer.id = :trainerId", 
                     Booking.class)
-                    .setParameter("trainerId", trainerId)
+                    .setParameter("trainerId", userId)
                     .list();
             
             return bookings.stream()

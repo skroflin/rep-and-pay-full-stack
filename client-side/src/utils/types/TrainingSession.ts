@@ -1,15 +1,15 @@
 export interface TrainingSessionRequest {
     trainerId: string,
-    dateTime: Date | string,
-    trainingType: string,
-    trainingLevel: string,
+    trainingType: "PUSH" | "PULL" | "LEGS" | "CROSSFIT" | "CONDITIONING" | "YOGA" | "WEIGHTLIFTING"
+    trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
 }
 
 export interface TrainingSessionResponse {
     id: string,
     trainerFirstName: string,
     trainerLastName: string,
-    dateTime: Date | string,
-    trainingType: string,
-    trainingLevel: string
+    trainingType: "PUSH" | "PULL" | "LEGS" | "CROSSFIT" | "CONDITIONING" | "YOGA" | "WEIGHTLIFTING"
+    trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
+    beginningOfSession: Date | string,
+    endOfSession: Date | string
 }
