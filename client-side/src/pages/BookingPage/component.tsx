@@ -96,6 +96,7 @@ export default function BookingPage() {
                             />
                         </List.Item>
                     )}
+                    pagination={{pageSize: 1}}
                 >
 
                 </List>

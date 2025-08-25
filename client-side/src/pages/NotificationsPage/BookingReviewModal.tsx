@@ -7,7 +7,7 @@ interface BookingReveiwModalProps {
     open: boolean
     loading: boolean
     onClose: () => void
-    onDecision: (bookingStatus: "APPROVED" | "REJECTED") => void
+    onDecision: (bookingStatus: "approved" | "rejected") => void
 }
 
 export default function BookingReviewModal({
@@ -27,14 +27,14 @@ export default function BookingReviewModal({
                 <Space>
                     <Button
                         danger
-                        onClick={() => onDecision("REJECTED")}
+                        onClick={() => onDecision("rejected")}
                         loading={loading}
                     >
                         Reject
                     </Button>
                     <Button
                         type="primary"
-                        onClick={() => onDecision("APPROVED")}
+                        onClick={() => onDecision("approved")}
                         loading={loading}
                     >
                         Approve
@@ -77,9 +77,9 @@ export default function BookingReviewModal({
                         label="Booking status"
                     >
                         <Select style={{ textTransform: "capitalize" }} value={booking.bookingStatus} disabled>
-                            <Select.Option value="PENDING">Pending</Select.Option>
-                            <Select.Option value="APPROVED">Approved</Select.Option>
-                            <Select.Option value="REJECTED">Rejected</Select.Option>
+                            <Select.Option value="pending">Pending</Select.Option>
+                            <Select.Option value="approved">Approved</Select.Option>
+                            <Select.Option value="rejected">Rejected</Select.Option>
                         </Select>
                     </Form.Item>
                 </Form>

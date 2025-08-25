@@ -17,7 +17,7 @@ export default function NotificationsPage() {
     })
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "APPROVED" | "REJECTED" }) =>
+        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "approved" | "rejected" }) =>
             updateBookingStatus(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })

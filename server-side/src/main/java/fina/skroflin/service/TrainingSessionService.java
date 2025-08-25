@@ -436,7 +436,7 @@ public class TrainingSessionService extends MainService {
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
                             + "left join fetch ts.trainer "
-                            + "where date(ts.dateTime) = :date", 
+                            + "where date(ts.beginningOfSession) = :date", 
                     TrainingSession.class)
                     .setParameter("date", date)
                     .list();
