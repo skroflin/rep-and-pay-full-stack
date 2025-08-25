@@ -223,7 +223,7 @@ public class BookingService extends MainService {
             Booking booking = new Booking(
                     userProfile,
                     ts,
-                    o.bookingStatus()
+                    BookingStatus.pending
             );
 
             session.beginTransaction();

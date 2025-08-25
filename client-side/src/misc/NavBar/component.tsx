@@ -62,6 +62,7 @@ export default function NavBar({ routes }: NavBarProps) {
             trigger={null}
             theme="dark"
             style={{
+                borderRadius: 10,
                 padding: "6em 0em"
             }}
         >
