@@ -14,6 +14,7 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
+import { formatDate } from "../../misc/formatDate";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
@@ -65,7 +66,7 @@ export default function BookingPage() {
                 fullscreen={false}
                 onChange={handleDataChange} 
             />
-            <h2>Available sessions for {selectedDate}</h2>
+            <h2>Available sessions for {formatDate(selectedDate)}</h2>
 
             {isLoading ? (
                 <Spin/>

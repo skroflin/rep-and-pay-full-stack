@@ -12,6 +12,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
 import { createMyTrainingSession } from "../../utils/api";
+import { formatDate } from "../../misc/formatDate";
 
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
@@ -80,7 +81,7 @@ export default function TrainingSessionPage() {
             </h2>
             <Calendar fullscreen={false} onSelect={handleDateSelect} />
             <Modal
-                title={`Create session for ${selectedDate?.format("YYYY-MM-DD")}`}
+                title={`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
                 open={modalOpen}
                 onCancel={() => setModalOpen(false)}
             >
