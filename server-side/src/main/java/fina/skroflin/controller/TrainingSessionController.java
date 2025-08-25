@@ -204,12 +204,12 @@ public class TrainingSessionController {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = String.class), mediaType = "text/html"))
     })
     @PostMapping("/createMyTrainingSession")
-    public ResponseEntity<String> createMyTrainingSession(
+    public ResponseEntity<Void> createMyTrainingSession(
             @RequestHeader HttpHeaders headers,
-            MyTrainingSessionRequestDTO dto
+            @RequestBody(required = true) MyTrainingSessionRequestDTO dto
     ) {
         trainingSessionService.createMyTrainingSession(dto, headers);
-        return new ResponseEntity<>("New session created!", HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(

@@ -16,7 +16,6 @@ import { createMyTrainingSession } from "../../utils/api";
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
-    const [timeRange, setTimeRange] = useState<[Dayjs, Dayjs] | null>(null)
     const [modalOpen, setModalOpen] = useState(false)
     const [form] = Form.useForm()
 
@@ -34,24 +33,29 @@ export default function TrainingSessionPage() {
     const handleDateSelect = (value: Dayjs) => {
         setSelectedDate(value)
         setModalOpen(true)
+        form.resetFields()
     }
 
     const handleSubmit = (values: any) => {
-        if (!selectedDate || !timeRange) {
+        if (!selectedDate || !values.timeRange) {
             toast.warning("Please select a date and time range")
             return
         }
 
-        const [startTime, endTime] = timeRange
+        const [startTime, endTime] = values.timeRange
 
         const beginningOfSession = selectedDate
             .hour(startTime.hour())
             .minute(startTime.minute())
+            .second(0)
+            .millisecond(0)
             .format("YYYY-MM-DDTHH:mm:ss")
 
         const endOfSession = selectedDate
             .hour(endTime.hour())
             .minute(endTime.minute())
+            .second(0)
+            .millisecond(0)
             .format("YYYY-MM-DDTHH:mm:ss")
 
         const request: MyTrainingSessionRequest = {
@@ -60,7 +64,6 @@ export default function TrainingSessionPage() {
             beginningOfSession,
             endOfSession
         }
-        console.log(request)
         createSessionMutation.mutate(request)
     }
 
@@ -94,13 +97,13 @@ export default function TrainingSessionPage() {
                         <Select
                             placeholder="Select training type"
                             options={[
-                                { value: "PUSH", label: "Push" },
-                                { value: "PULL", label: "Pull" },
-                                { value: "LEGS", label: "Legs" },
-                                { value: "CROSSFIT", label: "Crossfit" },
-                                { value: "CONDITIONING", label: "Conditioning" },
-                                { value: "YOGA", label: "Yoga" },
-                                { value: "WEIGHTLIFTING", label: "Weightlifting" }
+                                { value: "push", label: "Push" },
+                                { value: "pull", label: "Pull" },
+                                { value: "legs", label: "Legs" },
+                                { value: "crossfir", label: "Crossfit" },
+                                { value: "conditioning", label: "Conditioning" },
+                                { value: "yoga", label: "Yoga" },
+                                { value: "weightlifting", label: "Weightlifting" }
                             ]}
                         />
                     </Form.Item>
@@ -112,27 +115,18 @@ export default function TrainingSessionPage() {
                         <Select
                             placeholder="Select training level"
                             options={[
-                                { value: "BEGINNER", label: "Beginner" },
-                                { value: "INTERMEDIATE", label: "Intermediate" },
-                                { value: "ADVANCED", label: "Advanced" }
+                                { value: "beginner", label: "Beginner" },
+                                { value: "intermediate", label: "Intermediate" },
+                                { value: "advanced", label: "Advanced" }
                             ]}
                         />
                     </Form.Item>
                     <Form.Item
+                        name="timeRange"
                         label="Time range"
-                        required
+                        rules={[{ required: true, message: "Please select time range" }]}
                     >
-                        <TimePicker.RangePicker
-                            format="HH:mm"
-                            value={timeRange}
-                            onChange={(values) => {
-                                if (values) {
-                                    setTimeRange(values as [Dayjs, Dayjs])
-                                } else {
-                                    setTimeRange(null)
-                                }
-                            }}
-                        />
+                        <TimePicker.RangePicker format="HH:mm" />
                     </Form.Item>
                     <Form.Item>
                         <Button

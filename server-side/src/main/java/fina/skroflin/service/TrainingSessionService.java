@@ -194,7 +194,7 @@ public class TrainingSessionService extends MainService {
             MyTrainingSessionRequestDTO o,
             HttpHeaders headers
     ){
-        try {
+        try {         
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));

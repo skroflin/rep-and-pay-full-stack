@@ -7,7 +7,6 @@ package fina.skroflin.model.dto.training.user;
 import fina.skroflin.model.enums.TrainingLevel;
 import fina.skroflin.model.enums.TrainingType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
