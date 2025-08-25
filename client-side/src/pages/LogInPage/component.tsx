@@ -30,6 +30,8 @@ export default function LoginIn() {
             if (error instanceof AxiosError) {
                 if (error.response?.status === 401) {
                     toast.error("User does not exist!")
+                } else if (error.response?.status === 403) {
+                    toast.error("Incorrect password or username!")
                 } else {
                     toast.error(error.message)
                 }
