@@ -10,8 +10,6 @@ import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
-import fina.skroflin.model.enums.TrainingLevel;
-import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -136,7 +134,7 @@ public class TrainingSessionService extends MainService {
         try {
             User trainer = (User) 
                     session.get(User.class, o.trainerId());
-            if (trainer == null || !"trainer".equals(trainer.getRole())) {
+            if (trainer == null || !trainer.equals(trainer.getRole())) {
                 throw new IllegalArgumentException(
                         "Trainer with the id" + " "
                         + o.trainerId() + " "
@@ -146,31 +144,18 @@ public class TrainingSessionService extends MainService {
             Long count = session.createQuery(
                     "select count(ts) from TrainingSession ts "
                             + "where ts.trainer.id = :trainerId "
-                            + "and ts.beginningOfSession = :reservation",
+                            + "and ts.beginningOfSession = :reservation "
+                            + "and ts.endOfSession = :reservation",
                     Long.class)
                     .setParameter("trainerId", o.trainerId())
                     .setParameter("reservation", o.beginningOfSession())
+                    .setParameter("reservation", o.endOfSession())
                     .uniqueResult();
             
             if (count > 0) {
                 throw new IllegalArgumentException("Trainer with the id" 
                         + " " + o.trainerId() + " " + "already has a session"
                                 + " " + "at that time!");
-            }
-            
-            Long count2 = session.createQuery(
-                    "select count(ts) from TrainingSession ts "
-                            + "where ts.trainerId = :trainerId "
-                            + "and ts.endOfSession = :reservation", 
-                    Long.class)
-                    .setParameter("trainerId", o.trainerId())
-                    .setParameter("reservation", o.endOfSession())
-                    .uniqueResult();
-            
-            if (count2 > 0) {
-                throw new IllegalArgumentException("Trainer with the id" 
-                        + " " + o.trainerId() + " " + "already has a session"
-                                + " " + "that is ending at that time!");
             }
 
             TrainingSession ts = new TrainingSession(

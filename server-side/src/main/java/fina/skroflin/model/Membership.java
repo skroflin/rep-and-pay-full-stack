@@ -10,8 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,12 +22,16 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Entity
-@Table(name = "user_report")
-@AttributeOverride(name = "id", column = @Column(name = "user_report_id"))
-public class UserReport extends MainEntity{
+@Table(name = "membership")
+@AttributeOverride(name = "id", column = @Column(name = "membership_id"))
+public class Membership extends MainEntity{
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "membership_months")
-    private List<LocalDate> membershipMonths;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    @Column(name = "end_date")
+    private LocalDate endDate;
+    @Column(name = "membership_price", columnDefinition = "float")
+    private BigInteger membershipPrice;
 }

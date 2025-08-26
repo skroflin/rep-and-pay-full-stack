@@ -23,7 +23,7 @@
         <mapping class="fina.skroflin.model.User" />
         <mapping class="fina.skroflin.model.Booking" />
         <mapping class="fina.skroflin.model.TrainingSession" />
-        <mapping class="fina.skroflin.model.UserReport" />
+        <mapping class="fina.skroflin.model.Membership" />
     
 
     </session-factory>
