@@ -12,11 +12,7 @@ import fina.skroflin.model.dto.user.RegistrationDTO;
 import fina.skroflin.model.dto.user.UserRequestDTO;
 import fina.skroflin.model.dto.user.UserResponseDTO;
 import fina.skroflin.model.dto.user.password.PasswordDTO;
-import fina.skroflin.model.dto.user.password.PasswordResponseDTO;
 import fina.skroflin.model.enums.Role;
-import fina.skroflin.service.BookingService;
-import fina.skroflin.service.MainService;
-import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -87,32 +83,9 @@ public class UserService extends MainService {
                 user.getPassword(),
                 user.getRole(),
                 user.isIsMembershipPaid(),
-                user.getMembershipMonth(),
                 trainingSessions,
                 bookings
         );
-    }
-
-    @Transactional
-    private PasswordResponseDTO convertPassToResponseDTO(
-            User user
-    ) {
-        return new PasswordResponseDTO(
-                user.getId(),
-                user.getUsername()
-        );
-    }
-
-    @Transactional
-    private User convertToEntity(UserRequestDTO dto) {
-        User user = new User();
-        user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
-        user.setEmail(dto.email());
-        user.setUsername(dto.username());
-        user.setPassword(dto.password());
-        user.setRole(dto.role());
-        return user;
     }
 
     @Transactional
@@ -125,10 +98,6 @@ public class UserService extends MainService {
         user.setRole(dto.role());
     }
 
-    @Transactional
-    private void updatePassEntityFromDto(User user, PasswordDTO dto) {
-        user.setPassword(bCryptPasswordEncoder.encode(dto.password()));
-    }
 
     public List<UserResponseDTO> getAll() {
         List<User> users = session.createQuery("from User u", User.class).list();
@@ -214,7 +183,6 @@ public class UserService extends MainService {
             userProfile.setPassword(bCryptPasswordEncoder.encode(o.password()));
             userProfile.setRole(o.role());
             userProfile.setIsMembershipPaid(o.isMembershipPaid());
-            userProfile.setMembershipMonth(o.membershipMonth());
 
             session.beginTransaction();
             session.merge(userProfile);
@@ -286,7 +254,6 @@ public class UserService extends MainService {
             existingUser.setPassword(bCryptPasswordEncoder.encode(o.password()));
             existingUser.setRole(o.role());
             existingUser.setIsMembershipPaid(o.isMembershipPaid());
-            existingUser.setMembershipMonth(o.membershipMonth());
 
             updateEntityFromDto(existingUser, o);
             session.beginTransaction();

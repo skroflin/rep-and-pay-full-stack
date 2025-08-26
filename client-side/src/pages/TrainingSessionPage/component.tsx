@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Calendar,
+    Drawer,
     Form,
     Modal,
     Select,
@@ -80,66 +81,77 @@ export default function TrainingSessionPage() {
                 Create a training session
             </h2>
             <Calendar fullscreen={false} onSelect={handleDateSelect} />
-            <Modal
+            <Drawer
                 title={`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
                 open={modalOpen}
-                onCancel={() => setModalOpen(false)}
+                onClose={() => setModalOpen(false)}
+                size="large"
+                placement="bottom"
             >
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleSubmit}
-                >
-                    <Form.Item
-                        name="trainingType"
-                        label="Training type"
-                        rules={[{ required: true, message: "Please select training type" }]}
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={handleSubmit}
+                        style={{
+                            maxWidth: 600
+                        }}
                     >
-                        <Select
-                            placeholder="Select training type"
-                            options={[
-                                { value: "push", label: "Push" },
-                                { value: "pull", label: "Pull" },
-                                { value: "legs", label: "Legs" },
-                                { value: "crossfir", label: "Crossfit" },
-                                { value: "conditioning", label: "Conditioning" },
-                                { value: "yoga", label: "Yoga" },
-                                { value: "weightlifting", label: "Weightlifting" }
-                            ]}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="trainingLevel"
-                        label="Training level"
-                        rules={[{ required: true, message: "Please select training level" }]}
-                    >
-                        <Select
-                            placeholder="Select training level"
-                            options={[
-                                { value: "beginner", label: "Beginner" },
-                                { value: "intermediate", label: "Intermediate" },
-                                { value: "advanced", label: "Advanced" }
-                            ]}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="timeRange"
-                        label="Time range"
-                        rules={[{ required: true, message: "Please select time range" }]}
-                    >
-                        <TimePicker.RangePicker format="HH:mm" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={createSessionMutation.isPending}
+                        <Form.Item
+                            name="trainingType"
+                            label="Training type"
+                            rules={[{ required: true, message: "Please select training type" }]}
                         >
-                            Create session
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
+                            <Select
+                                placeholder="Select training type"
+                                options={[
+                                    { value: "push", label: "Push" },
+                                    { value: "pull", label: "Pull" },
+                                    { value: "legs", label: "Legs" },
+                                    { value: "crossfir", label: "Crossfit" },
+                                    { value: "conditioning", label: "Conditioning" },
+                                    { value: "yoga", label: "Yoga" },
+                                    { value: "weightlifting", label: "Weightlifting" }
+                                ]}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="trainingLevel"
+                            label="Training level"
+                            rules={[{ required: true, message: "Please select training level" }]}
+                        >
+                            <Select
+                                placeholder="Select training level"
+                                options={[
+                                    { value: "beginner", label: "Beginner" },
+                                    { value: "intermediate", label: "Intermediate" },
+                                    { value: "advanced", label: "Advanced" }
+                                ]}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="timeRange"
+                            label="Time range"
+                            rules={[{ required: true, message: "Please select time range" }]}
+                        >
+                            <TimePicker.RangePicker format="HH:mm" />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={createSessionMutation.isPending}
+                            >
+                                Create session
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Drawer>
         </div>
     )
 }

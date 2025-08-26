@@ -39,14 +39,11 @@ public class User extends MainEntity implements UserDetails {
     private Role role;
     @Column(name = "is_membership_paid")
     private boolean isMembershipPaid;
-    @Column(name = "membership_month")
-    private LocalDate membershipMonth;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
-    
     
     public User() {
     }
@@ -60,7 +57,7 @@ public class User extends MainEntity implements UserDetails {
         this.role = role;
     }
 
-    public User(String firstName, String lastName, String email, String username, String password, Role role, boolean isMembershipPaid, LocalDate membershipMonth, List<TrainingSession> trainingSessions, List<Booking> bookings) {
+    public User(String firstName, String lastName, String email, String username, String password, Role role, boolean isMembershipPaid, List<TrainingSession> trainingSessions, List<Booking> bookings) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -68,7 +65,6 @@ public class User extends MainEntity implements UserDetails {
         this.password = password;
         this.role = role;
         this.isMembershipPaid = isMembershipPaid;
-        this.membershipMonth = membershipMonth;
         this.trainingSessions = trainingSessions;
         this.bookings = bookings;
     }
@@ -129,14 +125,6 @@ public class User extends MainEntity implements UserDetails {
 
     public void setIsMembershipPaid(boolean isMembershipPaid) {
         this.isMembershipPaid = isMembershipPaid;
-    }
-
-    public LocalDate getMembershipMonth() {
-        return membershipMonth;
-    }
-
-    public void setMembershipMonth(LocalDate membershipMonth) {
-        this.membershipMonth = membershipMonth;
     }
 
     public List<TrainingSession> getTrainingSessions() {

@@ -1,8 +1,8 @@
-import { Button, Form, Input, Modal, Select, Space } from "antd";
+import { Button, Drawer, Space, Descriptions } from "antd";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import dayjs from "dayjs";
 
-interface BookingReveiwModalProps {
+interface BookingReviewModalProps {
     booking: TrainerBookingResponse | null
     open: boolean
     loading: boolean
@@ -10,21 +10,22 @@ interface BookingReveiwModalProps {
     onDecision: (bookingStatus: "approved" | "rejected") => void
 }
 
-export default function BookingReviewModal({
+export default function BookingReviewDrawer({
     booking,
     open,
     loading,
     onClose,
     onDecision
-}: BookingReveiwModalProps) {
-    const [form] = Form.useForm()
+}: BookingReviewModalProps) {
     return (
-        <Modal
+        <Drawer
             open={open}
-            onCancel={onClose}
+            onClose={onClose}
             title="Review booking request"
+            placement="right"
+            width={400}
             footer={
-                <Space>
+                <Space style={{ float: "right" }}>
                     <Button
                         danger
                         onClick={() => onDecision("rejected")}
@@ -43,47 +44,27 @@ export default function BookingReviewModal({
             }
         >
             {booking && (
-                <Form
-                    layout="vertical"
-                    form={form}
-                    initialValues={{
-                        userName: `${booking.userFirstName} ${booking.userLastName}`,
-                        trainingType: `${booking.trainingType}`,
-                        sessionTime: `From: ${dayjs(booking.beginningOfSession)} to: ${dayjs(booking.endOfSession)}`,
-                        bookingStatus: booking.bookingStatus
-                    }}
-                >
-                    <Form.Item
-                        label="User"
-                    >
-                        <Input readOnly value={`${booking.userFirstName} ${booking.userLastName}`} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Training type"
-                    >
-                        <Input style={{ textTransform: "capitalize" }} readOnly value={`${booking.trainingType}`} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Session start"
-                    >
-                        <Input readOnly value={`${dayjs(booking.beginningOfSession)}`} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Session end"
-                    >
-                        <Input readOnly value={`${dayjs(booking.endOfSession)}`} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Booking status"
-                    >
-                        <Select style={{ textTransform: "capitalize" }} value={booking.bookingStatus} disabled>
-                            <Select.Option value="pending">Pending</Select.Option>
-                            <Select.Option value="approved">Approved</Select.Option>
-                            <Select.Option value="rejected">Rejected</Select.Option>
-                        </Select>
-                    </Form.Item>
-                </Form>
+                <Descriptions column={1} bordered size="small">
+                    <Descriptions.Item label="User">
+                        <p>{booking.userFirstName} {booking.userLastName}</p>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Training type">
+                        <p style={{ textTransform: "capitalize" }}>{booking.trainingType}</p>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Training level">
+                        <p style={{ textTransform: "capitalize" }}>{booking.trainingLevel}</p>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Session start">
+                        <p>{dayjs(booking.beginningOfSession).format("DD.MM.YYYY HH:mm")}</p>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Session end">
+                        <p>{dayjs(booking.endOfSession).format("DD.MM.YYYY HH:mm")}</p>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Booking status">
+                        <p style={{ textTransform: "capitalize" }}>{booking.bookingStatus}</p>
+                    </Descriptions.Item>
+                </Descriptions>
             )}
-        </Modal>
+        </Drawer>
     )
 }

@@ -23,7 +23,6 @@ public record UserResponseDTO(
         String password,
         Role role,
         boolean isMembershipPaid,
-        LocalDate membershipMonth,
         List<TrainingSessionResponseDTO> trainingSessions,
         List<BookingResponseDTO> bookings
         ) {
