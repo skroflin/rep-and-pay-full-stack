@@ -25,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
  *
  * @author skroflin
  */
-@AllArgsConstructor
 @Tag(name = "Membership", description = "Available endpoints for the entity 'Membership'")
 @RestController
 @RequestMapping("/api/fina/skroflin/membership")
