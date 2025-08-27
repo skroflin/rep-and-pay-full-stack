@@ -4,7 +4,7 @@ import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings } from "../../utils/api";
 import dayjs from "dayjs";
 import { Badge, Calendar, Spin } from "antd";
-import { ScheduleOutlined } from "@ant-design/icons";
+import { BookOutlined, ScheduleOutlined } from "@ant-design/icons";
 import BookingReviewModal from "./BookingReviewModal";
 
 export default function NotificationsPage() {
@@ -44,26 +44,27 @@ export default function NotificationsPage() {
                 {bookingsForDate?.map((b) => (
                     <Badge
                         key={b.bookingId}
-                        count={<ScheduleOutlined style={{ color: b.bookingStatus === "pending" ? "#faad14" : b.bookingStatus === "approved" ? "#52c41a" : "#ff4d4f" }} />}
+                        count={
+                            <ScheduleOutlined style={{
+                                color: b.bookingStatus === "pending" ? "#faad14" : b.bookingStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                            }}
+                            />}
                     />
-                    // <span
-                    //     key={b.bookingId}
-                    //     style={{
-                    //         display: "inline-block",
-                    //         width: 8,
-                    //         height: 8,
-                    //         borderRadius: "50%",
-                    //         backgroundColor: b.bookingStatus === "pending" ? "#faad14" : b.bookingStatus === "approved" ? "#52c41a" : "#ff4d4f"
-                    //     }}
-                    //     title={`${b.userFirstName} ${b.userLastName} - ${dayjs(b.beginningOfSession).format("HH:mm")}`}
-                    // />
                 ))}
             </div>
         )
     }
 
     return (
-        <>
+        <div 
+        style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            padding: 20
+        }}>
+            <h1>
+                Booking requests made <BookOutlined />
+            </h1>
             {isLoading && <Spin />}
 
             <Calendar
@@ -77,6 +78,6 @@ export default function NotificationsPage() {
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
             />
-        </>
+        </div>
     )
 }

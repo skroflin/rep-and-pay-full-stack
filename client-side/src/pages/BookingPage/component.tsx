@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { 
+import {
     Button,
     Calendar,
     List,
-    Spin
+    Spin,
+    Typography
 } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { 
+import {
     createMyBooking,
     getAvailableTrainingSessions
 } from "../../utils/api";
@@ -15,6 +16,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
+import { MehFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
@@ -30,7 +32,7 @@ export default function BookingPage() {
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
         onSuccess: () => {
             toast.success("Booking request sent!")
-            queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate ]})
+            queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate] })
         },
         onError: () => toast.error("Failed to create a booking!"),
     })
@@ -46,12 +48,14 @@ export default function BookingPage() {
         bookingMutation.mutate({
             trainingSessionId: session.id
         },
-        {
-            onError: () => {
-                setPendingSession(prev => prev.filter(id => id !== session.id))
-            }
-        })
+            {
+                onError: () => {
+                    setPendingSession(prev => prev.filter(id => id !== session.id))
+                }
+            })
     }
+
+    const { Text } = Typography
 
     return (
         <div
@@ -64,13 +68,13 @@ export default function BookingPage() {
         >
             <Calendar
                 fullscreen={false}
-                onChange={handleDataChange} 
+                onChange={handleDataChange}
             />
-            <h2>Available sessions for {formatDate(selectedDate)}</h2>
+            <h2><OrderedListOutlined /> Available sessions for {formatDate(selectedDate)}</h2>
 
             {isLoading ? (
-                <Spin/>
-            ): (
+                <Spin />
+            ) : (
                 <List
                     bordered
                     dataSource={sessions || []}
@@ -82,6 +86,7 @@ export default function BookingPage() {
                                     onClick={() => handleBooking(session)}
                                     loading={bookingMutation.isPending}
                                     disabled={pendingSession.includes(session.id)}
+                                    icon={<PlusCircleFilled />}
                                 >
                                     Book
                                 </Button>
@@ -89,7 +94,7 @@ export default function BookingPage() {
                         >
                             <List.Item.Meta
                                 style={{ textTransform: "capitalize" }}
-                                title = {`${session.trainingType}`}
+                                title={`${session.trainingType}`}
                                 description={
                                     `${session.trainingLevel} by 
                                     ${session.trainerFirstName} ${session.trainerLastName}`
@@ -97,9 +102,13 @@ export default function BookingPage() {
                             />
                         </List.Item>
                     )}
-                    pagination={{pageSize: 1}}
+                    pagination={{ pageSize: 1 }}
+                    locale={{
+                        emptyText: (
+                            <Text strong>No sessions available for {formatDate(selectedDate)} <MehFilled /></Text>
+                        )
+                    }}
                 >
-
                 </List>
             )}
         </div>

@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBookingStatus } from "../../utils/api";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, ArrowRightOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 export default function BookingReviewDrawer({
     bookings,
@@ -43,7 +43,7 @@ export default function BookingReviewDrawer({
             onClose={onClose}
             title="Review booking request"
             placement="right"
-            width={400}
+            width={500}
             footer={
                 <div>
                     <Space style={{
@@ -52,12 +52,14 @@ export default function BookingReviewDrawer({
                         <Button
                             danger
                             onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "rejected" })}
+                            icon={<CloseCircleOutlined />}
                         >
                             Reject
                         </Button>
                         <Button
                             type="primary"
                             onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "approved" })}
+                            icon={<CheckCircleOutlined />}
                         >
                             Approve
                         </Button>

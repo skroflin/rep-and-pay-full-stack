@@ -70,7 +70,8 @@ export default function NavBar({ routes }: NavBarProps) {
                 level={4}
                 style={{
                     color: "#fff",
-                    margin: 0
+                    margin: 0,
+                    fontStyle: "italic"
                 }}
             >
                 {!collapsed && "Rep & Pay "}

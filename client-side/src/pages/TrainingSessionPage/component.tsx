@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
 import { createMyTrainingSession } from "../../utils/api";
 import { formatDate } from "../../misc/formatDate";
+import { FormOutlined, PlusCircleFilled } from "@ant-design/icons";
 
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
@@ -78,19 +79,24 @@ export default function TrainingSessionPage() {
                 padding: 20
             }}
         >
-            <h2>
-                Create a training session
-            </h2>
+            <h1>
+                Create a training session <FormOutlined />
+            </h1>
             <Calendar fullscreen={false} onSelect={handleDateSelect} />
             <Drawer
-                title={`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
+                title={
+                    <span>
+                        {`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
+                        <FormOutlined style={{ marginLeft: 10 }} />
+                    </span>
+                }
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
-                size="large"
-                placement="bottom"
+                width={650}
+                placement="right"
             >
                 <Row justify="center">
-                    <Col span={8}>
+                    <Col span={10}>
                         <Form
                             form={form}
                             layout="vertical"
@@ -143,6 +149,7 @@ export default function TrainingSessionPage() {
                                     type="primary"
                                     htmlType="submit"
                                     loading={createSessionMutation.isPending}
+                                    icon={<PlusCircleFilled />}
                                 >
                                     Create session
                                 </Button>

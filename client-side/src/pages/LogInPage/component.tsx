@@ -7,7 +7,7 @@ import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
 import { Button, Col, Form, Input, Row, Spin } from "antd"
-import { LockOutlined, UserOutlined } from "@ant-design/icons"
+import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")
@@ -94,6 +94,7 @@ export default function LoginIn() {
                                         username: username,
                                         password: password
                                     })}
+                                    icon={<LoginOutlined />}
                                 >
                                     Log In
                                 </Button>

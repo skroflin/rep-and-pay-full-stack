@@ -20,13 +20,15 @@ import UserPage from "./pages/UserPage/component";
 import BookingPage from "./pages/BookingPage/component";
 import {
     CalendarOutlined,
+    CodeOutlined,
     HomeOutlined,
     NotificationOutlined,
     TeamOutlined,
-    UserOutlined
+    WalletOutlined
 } from "@ant-design/icons";
 import TrainingSessionPage from "./pages/TrainingSessionPage/component";
 import NotificationsPage from "./pages/NotificationsPage/component";
+import MembershipPage from "./pages/MembershipPage/component";
 
 export interface RouteElement {
     key: string
@@ -80,7 +82,7 @@ const routes: RouteElement[] = [
         onNavBar: true,
         reqLogin: true,
         allowedRoles: ["superuser"],
-        icon: <UserOutlined />
+        icon: <CodeOutlined />
     },
     {
         key: "Bookings",
@@ -108,6 +110,15 @@ const routes: RouteElement[] = [
         reqLogin: true,
         allowedRoles: ["coach"],
         icon: <NotificationOutlined />
+    },
+    {
+        key: "Membership",
+        path: "/membership",
+        element: <MembershipPage />,
+        onNavBar: true,
+        reqLogin: true,
+        allowedRoles: ["user"],
+        icon: <WalletOutlined />
     }
 ]
 
