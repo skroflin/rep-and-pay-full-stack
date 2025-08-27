@@ -64,7 +64,7 @@ public class BookingService extends MainService {
                 booking.getBookingStatus()
         );
     }
-    
+
     public TrainerBookingResponseDTO convertToTrainerBookingResponse(Booking booking) {
         if (booking == null) {
             return null;
@@ -72,14 +72,14 @@ public class BookingService extends MainService {
         Integer trainingSessionId = (booking.getId() != null)
                 ? booking.getTrainingSession().getId() : null;
         return new TrainerBookingResponseDTO(
-                booking.getId(), 
-                trainingSessionId, 
-                booking.getUser().getFirstName(), 
-                booking.getUser().getLastName(), 
+                booking.getId(),
+                trainingSessionId,
+                booking.getUser().getFirstName(),
+                booking.getUser().getLastName(),
                 booking.getTrainingSession().getTrainingType(),
                 booking.getTrainingSession().getTrainingLevel(),
-                booking.getTrainingSession().getBeginningOfSession(), 
-                booking.getTrainingSession().getEndOfSession(), 
+                booking.getTrainingSession().getBeginningOfSession(),
+                booking.getTrainingSession().getEndOfSession(),
                 booking.getBookingStatus()
         );
     }
@@ -89,7 +89,7 @@ public class BookingService extends MainService {
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
                     + "left join fetch b.user "
-                    + "left join fetch b.trainingSession", 
+                    + "left join fetch b.trainingSession",
                     Booking.class).list();
             return bookings.stream()
                     .map(this::convertToResponseDTO)
@@ -153,7 +153,7 @@ public class BookingService extends MainService {
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
-                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    + "and b.trainingSession.id = :trainingSessionId ",
                     Long.class)
                     .setParameter("userId", o.userId())
                     .setParameter("trainingSessionId", o.trainingSessionId())
@@ -162,10 +162,10 @@ public class BookingService extends MainService {
                 throw new IllegalArgumentException("User with id"
                         + " " + o.userId() + " " + "already booked this session");
             }
-            
+
             User user = session.get(User.class, o.userId());
-            TrainingSession trainingSession = 
-                    session.get(TrainingSession.class, o.trainingSessionId());
+            TrainingSession trainingSession
+                    = session.get(TrainingSession.class, o.trainingSessionId());
 
             Booking booking = new Booking(
                     user,
@@ -207,11 +207,11 @@ public class BookingService extends MainService {
                         + "not found!"
                 );
             }
-            
+
             Long count = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
-                    + "and b.trainingSession.id = :trainingSessionId ", 
+                    + "and b.trainingSession.id = :trainingSessionId ",
                     Long.class)
                     .setParameter("userId", userId)
                     .setParameter("trainingSessionId", o.trainingSessionId())
@@ -277,7 +277,7 @@ public class BookingService extends MainService {
             existingBooking.setUser(user);
             existingBooking.setTrainingSession(trainingSession);
             existingBooking.setBookingStatus(o.bookingStatus());
-           
+
             session.beginTransaction();
             session.merge(existingBooking);
             session.getTransaction().commit();
@@ -419,32 +419,112 @@ public class BookingService extends MainService {
                     + " with id" + " " + id + " " + e.getMessage(), e);
         }
     }
-    
-    public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers){
+
+    public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
-            
+
             User trainerProfile = (User) session.get(User.class, userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
-            
+
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
-                            + "left join fetch b.user u "
-                            + "left join fetch b.trainingSession ts "
-                            + "where ts.trainer.id = :trainerId", 
+                    + "left join fetch b.user u "
+                    + "left join fetch b.trainingSession ts "
+                    + "where ts.trainer.id = :trainerId",
                     Booking.class)
                     .setParameter("trainerId", userId)
                     .list();
-            
+
             return bookings.stream()
                     .map(this::convertToTrainerBookingResponse)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching trainer booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+
+    public Long getNumOfTrainerBookings(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+
+            Long numOfTrainerBookings = session.createQuery(
+                    "select count(b.id) from Booking b "
+                    + "left join fetch b.user u "
+                    + "left join fetch b.trainingSession ts "
+                    + "where ts.trainer.id = .trainerId",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .getSingleResult();
+            return numOfTrainerBookings;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of trainer booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+
+    public Long getNumOfPendingTrainerBookings(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+
+            Long numOfTrainerBookings = session.createQuery(
+                    "select count(b.id) from Booking b "
+                    + "left join fetch b.user u "
+                    + "left join fetch b.trainingSession ts "
+                    + "where ts.trainer.id = .trainerId "
+                    + "and ts.bookingStatus = pending",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .getSingleResult();
+            return numOfTrainerBookings;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of trainer booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+
+    public Long getNumOfAcceptedTrainerBookings(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+
+            Long numOfTrainerBookings = session.createQuery(
+                    "select count(b.id) from Booking b "
+                    + "left join fetch b.user u "
+                    + "left join fetch b.trainingSession ts "
+                    + "where ts.trainer.id = .trainerId "
+                    + "and ts.bookingStatus = accepted",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .getSingleResult();
+            return numOfTrainerBookings;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of trainer booking"
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }

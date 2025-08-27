@@ -20,7 +20,6 @@ import UserPage from "./pages/UserPage/component";
 import BookingPage from "./pages/BookingPage/component";
 import {
     CalendarOutlined,
-    CodeOutlined,
     HomeOutlined,
     NotificationOutlined,
     TeamOutlined,
@@ -82,7 +81,7 @@ const routes: RouteElement[] = [
         onNavBar: true,
         reqLogin: true,
         allowedRoles: ["superuser"],
-        icon: <CodeOutlined />
+        icon: <TeamOutlined />
     },
     {
         key: "Bookings",
