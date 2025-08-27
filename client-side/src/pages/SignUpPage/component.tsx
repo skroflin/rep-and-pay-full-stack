@@ -8,7 +8,7 @@ import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
 import { Button, Col, Form, Input, Row, Select, Spin } from "antd";
 import { Option } from "antd/es/mentions";
-import { IdcardFilled, IdcardOutlined, LockFilled, LockOutlined, MailOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { IdcardFilled, IdcardOutlined, LockFilled, LockOutlined, MailOutlined, TeamOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
 
 export default function SignUp() {
     const setUser = useUserSetter()
@@ -179,6 +179,7 @@ export default function SignUp() {
                             type="primary"
                             htmlType="submit"
                             onSubmit={handleSubmit}
+                            icon={<UserAddOutlined />}
                         >
                             Sign Up
                         </Button>

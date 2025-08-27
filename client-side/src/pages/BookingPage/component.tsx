@@ -16,7 +16,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
-import { MehFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { FrownFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
@@ -105,7 +105,7 @@ export default function BookingPage() {
                     pagination={{ pageSize: 1 }}
                     locale={{
                         emptyText: (
-                            <Text strong>No sessions available for {formatDate(selectedDate)} <MehFilled /></Text>
+                            <Text strong>No sessions available for {formatDate(selectedDate)} <FrownFilled /></Text>
                         )
                     }}
                 >
