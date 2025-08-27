@@ -73,6 +73,10 @@ public class MembershipService extends MainService {
                 o.endDate(),
                 o.membershipPrice()
         );
+        
+        session.beginTransaction();
+        session.persist(m);
+        session.getTransaction().commit();
     }
     
     public List<MembershipResponseDTO> getActiveMemberships() {
