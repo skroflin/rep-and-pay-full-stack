@@ -2,8 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Calendar,
+    Col,
     Drawer,
     Form,
+    Row,
     Select,
     TimePicker
 } from "antd";
@@ -87,69 +89,67 @@ export default function TrainingSessionPage() {
                 size="large"
                 placement="bottom"
             >
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={handleSubmit}
-                        style={{
-                            maxWidth: 600
-                        }}
-                    >
-                        <Form.Item
-                            name="trainingType"
-                            label="Training type"
-                            rules={[{ required: true, message: "Please select training type" }]}
+                <Row justify="center">
+                    <Col span={8}>
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={handleSubmit}
+                            style={{
+                                width: "100%"
+                            }}
                         >
-                            <Select
-                                placeholder="Select training type"
-                                options={[
-                                    { value: "push", label: "Push" },
-                                    { value: "pull", label: "Pull" },
-                                    { value: "legs", label: "Legs" },
-                                    { value: "crossfir", label: "Crossfit" },
-                                    { value: "conditioning", label: "Conditioning" },
-                                    { value: "yoga", label: "Yoga" },
-                                    { value: "weightlifting", label: "Weightlifting" }
-                                ]}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="trainingLevel"
-                            label="Training level"
-                            rules={[{ required: true, message: "Please select training level" }]}
-                        >
-                            <Select
-                                placeholder="Select training level"
-                                options={[
-                                    { value: "beginner", label: "Beginner" },
-                                    { value: "intermediate", label: "Intermediate" },
-                                    { value: "advanced", label: "Advanced" }
-                                ]}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="timeRange"
-                            label="Time range"
-                            rules={[{ required: true, message: "Please select time range" }]}
-                        >
-                            <TimePicker.RangePicker format="HH:mm" />
-                        </Form.Item>
-                        <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                loading={createSessionMutation.isPending}
+                            <Form.Item
+                                name="trainingType"
+                                label="Training type"
+                                rules={[{ required: true, message: "Please select training type" }]}
                             >
-                                Create session
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </div>
+                                <Select
+                                    placeholder="Select training type"
+                                    options={[
+                                        { value: "push", label: "Push" },
+                                        { value: "pull", label: "Pull" },
+                                        { value: "legs", label: "Legs" },
+                                        { value: "crossfir", label: "Crossfit" },
+                                        { value: "conditioning", label: "Conditioning" },
+                                        { value: "yoga", label: "Yoga" },
+                                        { value: "weightlifting", label: "Weightlifting" }
+                                    ]}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name="trainingLevel"
+                                label="Training level"
+                                rules={[{ required: true, message: "Please select training level" }]}
+                            >
+                                <Select
+                                    placeholder="Select training level"
+                                    options={[
+                                        { value: "beginner", label: "Beginner" },
+                                        { value: "intermediate", label: "Intermediate" },
+                                        { value: "advanced", label: "Advanced" }
+                                    ]}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name="timeRange"
+                                label="Time range"
+                                rules={[{ required: true, message: "Please select time range" }]}
+                            >
+                                <TimePicker.RangePicker format="HH:mm" />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={createSessionMutation.isPending}
+                                >
+                                    Create session
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
             </Drawer>
         </div>
     )

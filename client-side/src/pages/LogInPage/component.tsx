@@ -6,7 +6,8 @@ import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
-import { Button, Form, Input, Layout, Spin } from "antd"
+import { Button, Col, Form, Input, Row, Spin } from "antd"
+import { LockOutlined, UserOutlined } from "@ant-design/icons"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")
@@ -42,64 +43,67 @@ export default function LoginIn() {
     return <>
         {
             isUserLoggedIn ? <Navigate to="/" /> :
-                <Layout
+                <Row 
+                    justify="center"
+                    align="middle"
                     style={{
-                        paddingTop: "4em",
-                        paddingBottom: "4em",
-                        textAlign: "center",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        display: "flex"
+                        height: "100vh"
                     }}
                 >
-                    <Form
-                        name="basic"
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        style={{ maxWidth: 400 }}
-                        initialValues={{ remember: true }}
-                        autoComplete="off"
+                    <Col 
+                        span={8}
                     >
-                        <Form.Item
-                            label="Username"
-                            name="username"
-                            rules={[{ required: true, message: 'Please input your username!' }]}
+                        <h1>Log In</h1>
+                        <Form
+                            name="basic"
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                            initialValues={{ remember: true }}
+                            autoComplete="off"
                         >
-                            <Input
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)} />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
-                        >
-                            <Input.Password
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </Form.Item>
-
-
-                        <Form.Item label={null}>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                onClick={() => signInUser.mutate({
-                                    username: username,
-                                    password: password
-                                })}
+                            <Form.Item
+                                name="username"
+                                rules={[{ required: true, message: 'Please input your username!' }]}
                             >
-                                Log In
+                                <Input
+                                    placeholder="Username"
+                                    prefix={<UserOutlined />}
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)} />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="password"
+                                rules={[{ required: true, message: 'Please input your password!' }]}
+                            >
+                                <Input.Password
+                                    placeholder="Password"
+                                    prefix={<LockOutlined />}
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </Form.Item>
+
+
+                            <Form.Item label={null}>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    onClick={() => signInUser.mutate({
+                                        username: username,
+                                        password: password
+                                    })}
+                                >
+                                    Log In
+                                </Button>
+                            </Form.Item>
+                            <Button type="link" onClick={() => navigate("/sign-up")}>
+                                Don't have an account? Sign up!
                             </Button>
-                        </Form.Item>
-                        <Button type="link" onClick={() => navigate("/sign-up")}>
-                            Don't have an account? Sign up!
-                        </Button>
-                    </Form>
-                </Layout>
+                        </Form>
+                    </Col>
+                </Row>
         }
         <Spin
             spinning={signInUser.isPending}

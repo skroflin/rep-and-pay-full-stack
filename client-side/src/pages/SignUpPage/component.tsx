@@ -6,8 +6,9 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
-import { Button, Form, Input, Layout, Select, Spin } from "antd";
+import { Button, Col, Form, Input, Row, Select, Spin } from "antd";
 import { Option } from "antd/es/mentions";
+import { IdcardFilled, IdcardOutlined, LockFilled, LockOutlined, MailOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 
 export default function SignUp() {
     const setUser = useUserSetter()
@@ -80,124 +81,127 @@ export default function SignUp() {
     }
 
     return (
-        <Layout
-            style={{
-                padding: "1em 0em",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex"
-            }}
-        >
-            <Form
-                name="basic"
-                labelCol={{ span: 9 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 400 }}
-                initialValues={{ remember: true }}
-                autoComplete="off"
-            >
-                <Form.Item
-                    label="First name"
-                    name="firstName"
-                    rules={[{ required: true, message: 'Please input your first name!' }]}
+        <Row justify="center">
+            <Col span={8}>
+                <h1>Sign Up</h1>
+                <Form
+                    name="basic"
+                    labelCol={{ span: 9 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 400 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
                 >
-                    <Input
-                        value={formData.firstName}
-                        onChange={handleChange} />
-                </Form.Item>
-
-                <Form.Item
-                    label="Last name"
-                    name="lastName"
-                    rules={[{ required: true, message: 'Please input your last name/surname!' }]}
-                >
-                    <Input
-                        value={formData.lastName}
-                        onChange={handleChange} />
-                </Form.Item>
-
-                <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
-                >
-                    <Input
-                        value={formData.username}
-                        onChange={handleChange} />
-                </Form.Item>
-
-                <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                    <Input
-                        value={formData.email}
-                        onChange={handleChange} />
-                </Form.Item>
-
-                <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                    <Input.Password
-                        type="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    label="Confirm password"
-                    name="confirmPassword"
-                    rules={[{ required: true, message: 'Please confirm your password!' }]}
-                >
-                    <Input.Password
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                    />
-                </Form.Item>
-
-                <Form.Item name="role" label="Role" rules={[{ required: true }]}>
-                    <Select
-                        placeholder="Select a role"
-                        allowClear
-                        onChange={handleChange}
+                    <Form.Item
+                        name="firstName"
+                        rules={[{ required: true, message: 'Please input your first name!' }]}
                     >
-                        <Option value="user">User</Option>
-                        <Option value="coach">Coach</Option>
-                    </Select>
-                </Form.Item>
+                        <Input
+                            placeholder="First name"
+                            prefix={<IdcardOutlined />}
+                            value={formData.firstName}
+                            onChange={handleChange} />
+                    </Form.Item>
 
-                <Form.Item label={null}>
+                    <Form.Item
+                        name="lastName"
+                        rules={[{ required: true, message: 'Please input your last name/surname!' }]}
+                    >
+                        <Input
+                            placeholder="Last name"
+                            prefix={<IdcardFilled />}
+                            value={formData.lastName}
+                            onChange={handleChange} />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Input
+                            placeholder="Username"
+                            prefix={<UserOutlined />}
+                            value={formData.username}
+                            onChange={handleChange} />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your email!' }]}
+                    >
+                        <Input
+                            placeholder="Email"
+                            prefix={<MailOutlined />}
+                            value={formData.email}
+                            onChange={handleChange} />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                    >
+                        <Input.Password
+                            placeholder="Password"
+                            prefix={<LockOutlined />}
+                            type="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="confirmPassword"
+                        rules={[{ required: true, message: 'Please confirm your password!' }]}
+                    >
+                        <Input.Password
+                            placeholder="Confirm password"
+                            prefix={<LockFilled />}
+                            type="password"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                        />
+                    </Form.Item>
+
+                    <Form.Item name="role" rules={[{ required: true }]}>
+                        <Select
+                            prefix={<TeamOutlined />}
+                            placeholder="Select a role"
+                            allowClear
+                            onChange={handleChange}
+                        >
+                            <Option value="user">User</Option>
+                            <Option value="coach">Coach</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item label={null}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            onSubmit={handleSubmit}
+                        >
+                            Sign Up
+                        </Button>
+                    </Form.Item>
+
                     <Button
-                        type="primary"
-                        htmlType="submit"
-                        onSubmit={handleSubmit}
+                        style={{
+                            textAlign: "center",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}
+                        type="link"
+                        onClick={() => navigate("/log-in")}
                     >
-                        Sign Up
+                        Already have an account? Log in!
                     </Button>
-                </Form.Item>
-
-                <Button
-                    style={{
-                        textAlign: "center",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }} 
-                    type="link" 
-                    onClick={() => navigate("/log-in")}
-                >
-                    Already have an account? Log in!
-                </Button>
-            </Form>
-            <Spin
-                spinning={signUpUser.isPending}
-                size="large"
-                tip="Logging in..."
-            />
-        </Layout>
+                </Form>
+                <Spin
+                    spinning={signUpUser.isPending}
+                    size="large"
+                    tip="Logging in..."
+                />
+            </Col>
+        </Row>
     )
 }
