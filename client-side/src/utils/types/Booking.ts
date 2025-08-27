@@ -19,7 +19,7 @@ export interface TrainerBookingResponse {
     userLastName: string,
     trainingType: string,
     trainingLevel: string,
-    beginningOfSession: Date | string,
+    startOfSession: Date | string,
     endOfSession: Date | string,
     bookingStatus: "approved" | "rejected" | "pending"
 }

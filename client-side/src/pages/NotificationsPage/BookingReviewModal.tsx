@@ -1,22 +1,42 @@
 import { Button, Drawer, Space, Descriptions } from "antd";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import dayjs from "dayjs";
-
-interface BookingReviewModalProps {
-    booking: TrainerBookingResponse | null
-    open: boolean
-    loading: boolean
-    onClose: () => void
-    onDecision: (bookingStatus: "approved" | "rejected") => void
-}
+import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateBookingStatus } from "../../utils/api";
+import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 export default function BookingReviewDrawer({
-    booking,
+    bookings,
     open,
-    loading,
-    onClose,
-    onDecision
-}: BookingReviewModalProps) {
+    onClose
+}: {
+    bookings: TrainerBookingResponse[]
+    open: boolean
+    onClose: () => void
+}) {
+
+    const queryClient = useQueryClient()
+
+    const updateStatusMutation = useMutation({
+        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "approved" | "rejected" }) =>
+            updateBookingStatus(bookingId, { bookingStatus }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
+            onClose()
+        }
+    })
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        if (open) setCurrentIndex(0)
+    }, [open, bookings])
+
+    if (!bookings || bookings.length === 0) return null
+
+    const booking = bookings[currentIndex]
+
     return (
         <Drawer
             open={open}
@@ -25,25 +45,47 @@ export default function BookingReviewDrawer({
             placement="right"
             width={400}
             footer={
-                <Space style={{ float: "right" }}>
-                    <Button
-                        danger
-                        onClick={() => onDecision("rejected")}
-                        loading={loading}
-                    >
-                        Reject
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={() => onDecision("approved")}
-                        loading={loading}
-                    >
-                        Approve
-                    </Button>
-                </Space>
+                <div>
+                    <Space style={{
+                        float: "left"
+                    }}>
+                        <Button
+                            danger
+                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "rejected" })}
+                        >
+                            Reject
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "approved" })}
+                        >
+                            Approve
+                        </Button>
+                    </Space>
+                    <Space style={{ float: "right" }}>
+                        <Button
+                            disabled={currentIndex === 0}
+                            onClick={() => setCurrentIndex((i) => i - 1)}
+                            icon={
+                                <ArrowLeftOutlined />
+                            }
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            disabled={currentIndex === bookings.length - 1}
+                            onClick={() => setCurrentIndex((i) => i + 1)}
+                            icon={
+                                <ArrowRightOutlined />
+                            }
+                        >
+                            Next
+                        </Button>
+                    </Space>
+                </div>
             }
         >
-            {booking && (
+            {bookings && (
                 <Descriptions column={1} bordered size="small">
                     <Descriptions.Item label="User">
                         <p>{booking.userFirstName} {booking.userLastName}</p>
@@ -55,7 +97,7 @@ export default function BookingReviewDrawer({
                         <p style={{ textTransform: "capitalize" }}>{booking.trainingLevel}</p>
                     </Descriptions.Item>
                     <Descriptions.Item label="Session start">
-                        <p>{dayjs(booking.beginningOfSession).format("DD.MM.YYYY HH:mm")}</p>
+                        <p>{dayjs(booking.startOfSession).format("DD.MM.YYYY HH:mm")}</p>
                     </Descriptions.Item>
                     <Descriptions.Item label="Session end">
                         <p>{dayjs(booking.endOfSession).format("DD.MM.YYYY HH:mm")}</p>
