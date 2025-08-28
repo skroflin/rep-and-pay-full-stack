@@ -115,3 +115,9 @@ export const getMyBookings = () => apiGetCall("booking/getMyBookings")
 export const createMyBooking = (req: MyBookingRequest) => apiPostCall<MyBookingRequest>("booking/createMyBooking", req)
 export const updateMyBooking = (req: MyBookingRequest, myBookingId: string) => apiPutCall<MyBookingRequest>(`booking/updateMyBooking?id=${myBookingId}`, req)
 export const deleteMyBooking = (myBookingId: string) => apiDeleteCall(`booking/deleteMyBooking?id=${myBookingId}`)
+
+//statistics methods
+export const getNumOfMyTrainingSessions = () => apiGetCall("trainingSession/getNumOfMyTrainingSessions")
+export const getNumOfTrainerBookings = () => apiGetCall("booking/getNumOfTrainerBookings")
+export const getNumOfPendingTrainerBookings = () => apiGetCall("booking/getNumOfPendingTrainerBookings")
+export const getNumOfAcceptedTrainerBookings = () => apiGetCall("booking/getNumOfAcceptedTrainerBookings")

@@ -464,7 +464,7 @@ public class BookingService extends MainService {
                     "select count(b.id) from Booking b "
                     + "left join b.user u "
                     + "left join b.trainingSession ts "
-                    + "where ts.trainer.id = .trainerId",
+                    + "where ts.trainer.id = :trainerId",
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
@@ -490,8 +490,8 @@ public class BookingService extends MainService {
                     "select count(b.id) from Booking b "
                     + "left join b.user u "
                     + "left join b.trainingSession ts "
-                    + "where ts.trainer.id = .trainerId "
-                    + "and ts.bookingStatus = pending",
+                    + "where ts.trainer.id = :trainerId "
+                    + "and b.bookingStatus = pending",
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
@@ -517,8 +517,8 @@ public class BookingService extends MainService {
                     "select count(b.id) from Booking b "
                     + "left join b.user u "
                     + "left join b.trainingSession ts "
-                    + "where ts.trainer.id = .trainerId "
-                    + "and ts.bookingStatus = accepted",
+                    + "where ts.trainer.id = :trainerId "
+                    + "and b.bookingStatus = accepted",
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
