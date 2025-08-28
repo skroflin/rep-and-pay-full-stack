@@ -381,4 +381,33 @@ public class BookingController {
         List<TrainerBookingResponseDTO> trainerBookings = bookingService.getTrainerBookings(headers);
         return new ResponseEntity<>(trainerBookings, HttpStatus.OK);
     }
+    
+    @GetMapping("/getNumOfTrainerBookings")
+    public ResponseEntity<Long> getNumOfTrainerBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        Long numOfTrainerBookings = bookingService.getNumOfTrainerBookings(headers);
+        return new ResponseEntity<>(numOfTrainerBookings, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getNumOfPendingTrainerBookings")
+    public ResponseEntity<Long> getNumOfPendingTrainerBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        Long numOfPendingTrainerBookings = 
+                bookingService.getNumOfPendingTrainerBookings(headers);
+        return new ResponseEntity<>(numOfPendingTrainerBookings, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getNumOfAcceptedTrainerBookings")
+    public ResponseEntity<Long> getNumOfAcceptedTrainerBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        Long numOfAcceptedTrainerBookings =
+                bookingService.getNumOfAcceptedTrainerBookings(headers);
+        return new ResponseEntity<>(numOfAcceptedTrainerBookings, HttpStatus.OK);
+    }
 }

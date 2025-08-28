@@ -445,7 +445,7 @@ public class TrainingSessionService extends MainService {
             
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from TrainingSession ts "
-                            + "left join fetch ts.trainer "
+                            + "left join ts.trainer "
                             + "where ts.trainer.id = :userId",
                     Long.class)
                     .setParameter("userId", userId)

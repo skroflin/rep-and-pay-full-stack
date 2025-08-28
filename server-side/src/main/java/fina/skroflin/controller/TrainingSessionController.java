@@ -378,4 +378,13 @@ public class TrainingSessionController {
                 = trainingSessionService.getAvailableTrainingSessionsByDate(date);
         return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);
     }
+    
+    @GetMapping("/getNumOfMyTrainingSessions")
+    public ResponseEntity<Long> getNumOfMyTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ){
+        Long numOfMyTrainingSessions = 
+                trainingSessionService.getNumOfMyTrainingSessions(headers);
+        return new ResponseEntity<>(numOfMyTrainingSessions, HttpStatus.OK);
+    }
 }

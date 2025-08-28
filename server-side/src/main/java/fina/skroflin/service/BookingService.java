@@ -462,8 +462,8 @@ public class BookingService extends MainService {
 
             Long numOfTrainerBookings = session.createQuery(
                     "select count(b.id) from Booking b "
-                    + "left join fetch b.user u "
-                    + "left join fetch b.trainingSession ts "
+                    + "left join b.user u "
+                    + "left join b.trainingSession ts "
                     + "where ts.trainer.id = .trainerId",
                     Long.class)
                     .setParameter("trainerId", userId)
@@ -488,8 +488,8 @@ public class BookingService extends MainService {
 
             Long numOfTrainerBookings = session.createQuery(
                     "select count(b.id) from Booking b "
-                    + "left join fetch b.user u "
-                    + "left join fetch b.trainingSession ts "
+                    + "left join b.user u "
+                    + "left join b.trainingSession ts "
                     + "where ts.trainer.id = .trainerId "
                     + "and ts.bookingStatus = pending",
                     Long.class)
@@ -515,8 +515,8 @@ public class BookingService extends MainService {
 
             Long numOfTrainerBookings = session.createQuery(
                     "select count(b.id) from Booking b "
-                    + "left join fetch b.user u "
-                    + "left join fetch b.trainingSession ts "
+                    + "left join b.user u "
+                    + "left join b.trainingSession ts "
                     + "where ts.trainer.id = .trainerId "
                     + "and ts.bookingStatus = accepted",
                     Long.class)
