@@ -48,14 +48,14 @@ export default function NotificationsPage() {
                         count={
                             <span>
                                 <ScheduleOutlined style={{
-                                    color: firstStatus === "pending" ? "#faad14" : firstStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                                    color: firstStatus === "pending" ? "orange" : firstStatus === "approved" ? "green" : firstStatus === "rejected" ? "red" : "gray"
                                 }}
                                 />
                                 <span 
                                     style={{
                                         marginLeft: 4,
                                         fontSize: 12,
-                                        color: firstStatus === "pending" ? "#faad14" : firstStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                                        color: firstStatus === "pending" ? "orange" : firstStatus === "approved" ? "green" : firstStatus === "rejected" ? "red" : "gray"
                                     }}
                                 >
                                     1+
@@ -79,7 +79,7 @@ export default function NotificationsPage() {
                         key={b.bookingId}
                         count={
                             <ScheduleOutlined style={{
-                                color: b.bookingStatus === "pending" ? "#faad14" : b.bookingStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                                color: b.bookingStatus === "pending" ? "orange" : b.bookingStatus === "approved" ? "green" : b.bookingStatus === "rejected" ? "red" : "gray"
                             }}
                             />}
                     />

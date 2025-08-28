@@ -1,16 +1,17 @@
-import { Button, Drawer, Space, Descriptions } from "antd";
+import { Button, Drawer, Space, Descriptions, Typography } from "antd";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBookingStatus } from "../../utils/api";
-import { 
+import {
     ArrowLeftOutlined,
     ArrowRightOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
     SnippetsOutlined
 } from "@ant-design/icons";
+import { formatDate } from "../../misc/formatDate";
 
 export default function BookingReviewDrawer({
     bookings,
@@ -43,18 +44,28 @@ export default function BookingReviewDrawer({
 
     const booking = bookings[currentIndex]
 
+    const { Text } = Typography
+
     return (
         <Drawer
             open={open}
             onClose={onClose}
             title={
                 <span>
-                    Review booking {currentIndex + 1} of {bookings.length}
-                    <SnippetsOutlined style={{ marginLeft: 10 }} />
+                    <Text style={{
+                        float: "left"
+                    }}>
+                        Review booking for {formatDate(dayjs(booking.startOfSession).format("YYYY-MM-DD"))}
+                    </Text>
+                    <Text style={{
+                        float: "right"
+                    }}>
+                        {currentIndex + 1} of {bookings.length}<SnippetsOutlined style={{ marginLeft: 4 }} />
+                    </Text>
                 </span>
             }
             placement="right"
-            width={500}
+            width={650}
             footer={
                 <div>
                     <Space style={{
@@ -101,22 +112,30 @@ export default function BookingReviewDrawer({
             {bookings && (
                 <Descriptions column={1} bordered size="small">
                     <Descriptions.Item label="User">
-                        <p>{booking.userFirstName} {booking.userLastName}</p>
+                        <Text>{booking.userFirstName} {booking.userLastName}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Training type">
-                        <p style={{ textTransform: "capitalize" }}>{booking.trainingType}</p>
+                        <Text style={{ textTransform: "capitalize" }}>{booking.trainingType}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Training level">
-                        <p style={{ textTransform: "capitalize" }}>{booking.trainingLevel}</p>
+                        <Text style={{ textTransform: "capitalize" }}>{booking.trainingLevel}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Session start">
-                        <p>{dayjs(booking.startOfSession).format("DD.MM.YYYY HH:mm")}</p>
+                        <Text>{dayjs(booking.startOfSession).format("HH:mm")}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Session end">
-                        <p>{dayjs(booking.endOfSession).format("DD.MM.YYYY HH:mm")}</p>
+                        <Text>{dayjs(booking.endOfSession).format("HH:mm")}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Booking status">
-                        <p style={{ textTransform: "capitalize" }}>{booking.bookingStatus}</p>
+                        <Text style={{ textTransform: "capitalize" }}>
+                            {booking.bookingStatus === "pending" ? (
+                                <Text type="warning">Pending</Text>
+                            ) : booking.bookingStatus === "approved" ? (
+                                <Text type="danger">Approved</Text>
+                            ) : booking.bookingStatus === "rejected" ? (
+                                <Text type="success">Rejected</Text>
+                            ) : null}
+                        </Text>
                     </Descriptions.Item>
                 </Descriptions>
             )}

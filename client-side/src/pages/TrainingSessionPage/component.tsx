@@ -18,7 +18,16 @@ import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
 import { createMyTrainingSession, getAvailableTrainingSessions } from "../../utils/api";
 import { formatDate } from "../../misc/formatDate";
-import { ClockCircleFilled, ClockCircleOutlined, FireOutlined, FormOutlined, PlusCircleFilled, SettingFilled, SettingOutlined, SnippetsOutlined } from "@ant-design/icons";
+import { 
+    ClockCircleFilled,
+    ClockCircleOutlined,
+    FireOutlined,
+    FormOutlined,
+    PlusCircleFilled,
+    SettingFilled,
+    SettingOutlined,
+    SnippetsOutlined
+} from "@ant-design/icons";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 
 export default function TrainingSessionPage() {
