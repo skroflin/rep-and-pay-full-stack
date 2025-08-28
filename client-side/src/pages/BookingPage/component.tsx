@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Calendar,
+    Descriptions,
     List,
     Spin,
     Typography
@@ -79,27 +80,36 @@ export default function BookingPage() {
                     bordered
                     dataSource={sessions || []}
                     renderItem={(session) => (
-                        <List.Item
-                            actions={[
-                                <Button
-                                    type="primary"
-                                    onClick={() => handleBooking(session)}
-                                    loading={bookingMutation.isPending}
-                                    disabled={pendingSession.includes(session.id)}
-                                    icon={<PlusCircleFilled />}
-                                >
-                                    Book
-                                </Button>
-                            ]}
-                        >
-                            <List.Item.Meta
-                                style={{ textTransform: "capitalize" }}
-                                title={`${session.trainingType}`}
-                                description={
-                                    `${session.trainingLevel} by 
-                                    ${session.trainerFirstName} ${session.trainerLastName}`
-                                }
-                            />
+                        <List.Item>
+                            <Descriptions>
+                                <Descriptions.Item label="Trainer">
+                                    <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Type">
+                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Level">
+                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Start">
+                                    <Text strong>{dayjs(session.beginningOfSession).format("HH:mm")}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="End">
+                                    <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => handleBooking(session)}
+                                        loading={bookingMutation.isPending}
+                                        disabled={pendingSession.includes(session.id)}
+                                        icon={<PlusCircleFilled />}
+                                        size="large"
+                                    >
+                                        Book
+                                    </Button>
+                                </Descriptions.Item>
+                            </Descriptions>
                         </List.Item>
                     )}
                     pagination={{ pageSize: 1 }}
@@ -108,8 +118,7 @@ export default function BookingPage() {
                             <Text strong>No sessions available for {formatDate(selectedDate)} <FrownFilled /></Text>
                         )
                     }}
-                >
-                </List>
+                />
             )}
         </div>
     )

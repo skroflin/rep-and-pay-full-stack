@@ -5,9 +5,11 @@ import {
     Col,
     Drawer,
     Form,
+    List,
     Row,
     Select,
-    TimePicker
+    TimePicker,
+    Typography
 } from "antd";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
@@ -15,7 +17,7 @@ import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
 import { createMyTrainingSession } from "../../utils/api";
 import { formatDate } from "../../misc/formatDate";
-import { FormOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { FireOutlined, FormOutlined, PlusCircleFilled, SettingOutlined } from "@ant-design/icons";
 
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
@@ -71,6 +73,8 @@ export default function TrainingSessionPage() {
         createSessionMutation.mutate(request)
     }
 
+    const { Title, Text } = Typography
+
     return (
         <div
             style={{
@@ -85,10 +89,15 @@ export default function TrainingSessionPage() {
             <Calendar fullscreen={false} onSelect={handleDateSelect} />
             <Drawer
                 title={
-                    <span>
+                    <Title
+                        level={3}
+                        style={{
+                            textAlign: "center"
+                        }}
+                    >
                         {`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
                         <FormOutlined style={{ marginLeft: 10 }} />
-                    </span>
+                    </Title>
                 }
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
@@ -107,10 +116,17 @@ export default function TrainingSessionPage() {
                         >
                             <Form.Item
                                 name="trainingType"
-                                label="Training type"
+                                label={
+                                    <Text
+                                        strong
+                                    >
+                                        Training type
+                                    </Text>
+                                }
                                 rules={[{ required: true, message: "Please select training type" }]}
                             >
                                 <Select
+                                    prefix={<SettingOutlined />}
                                     placeholder="Select training type"
                                     options={[
                                         { value: "push", label: "Push" },
@@ -125,10 +141,17 @@ export default function TrainingSessionPage() {
                             </Form.Item>
                             <Form.Item
                                 name="trainingLevel"
-                                label="Training level"
+                                label={
+                                    <Text
+                                        strong
+                                    >
+                                        Training level
+                                    </Text>
+                                }
                                 rules={[{ required: true, message: "Please select training level" }]}
                             >
                                 <Select
+                                    prefix={<FireOutlined />}
                                     placeholder="Select training level"
                                     options={[
                                         { value: "beginner", label: "Beginner" },
@@ -139,12 +162,24 @@ export default function TrainingSessionPage() {
                             </Form.Item>
                             <Form.Item
                                 name="timeRange"
-                                label="Time range"
+                                label={
+                                    <Text
+                                        strong
+                                    >
+                                        Time range
+                                    </Text>
+                                }
                                 rules={[{ required: true, message: "Please select time range" }]}
                             >
                                 <TimePicker.RangePicker format="HH:mm" />
                             </Form.Item>
-                            <Form.Item>
+                            <Form.Item
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center"
+                                }}
+                            >
                                 <Button
                                     type="primary"
                                     htmlType="submit"
@@ -155,6 +190,14 @@ export default function TrainingSessionPage() {
                                 </Button>
                             </Form.Item>
                         </Form>
+                        {/* <Descriptions column={1} bordered size="middle">
+                            <Descriptions.Item label={
+                                <Text>Existing sessions for {formatDate(selectedDate?.format("YYYY-MM-DD") || "")}</Text>
+                            }>
+                                <Text>Session</Text>
+                            </Descriptions.Item>
+                        </Descriptions> */}
+                        <List renderItem={() => <List.Item>Sessions</List.Item>} />
                     </Col>
                 </Row>
             </Drawer>

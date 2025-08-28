@@ -31,8 +31,41 @@ export default function NotificationsPage() {
     }
 
     const dateCellRender = (value: dayjs.Dayjs) => {
-        const bookingsForDate = bookings?.filter((b) => dayjs(b.startOfSession).isSame(value, "day"))
-        if (bookingsForDate?.length === 0) return null
+        const bookingsForDate = bookings?.filter((b) => dayjs(b.startOfSession).isSame(value, "day")) || []
+        if (bookingsForDate.length === 0) return null
+
+        if (bookingsForDate.length > 1) {
+            const firstStatus = bookingsForDate[0].bookingStatus
+            return (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2
+                    }}
+                >
+                    <Badge
+                        count={
+                            <span>
+                                <ScheduleOutlined style={{
+                                    color: firstStatus === "pending" ? "#faad14" : firstStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                                }}
+                                />
+                                <span 
+                                    style={{
+                                        marginLeft: 4,
+                                        fontSize: 12,
+                                        color: firstStatus === "pending" ? "#faad14" : firstStatus === "approved" ? "#52c41a" : "#ff4d4f"
+                                    }}
+                                >
+                                    1+
+                                </span>
+                            </span>
+                        }
+                    />
+                </div>
+            )
+        }
         return (
             <div
                 style={{
@@ -56,12 +89,12 @@ export default function NotificationsPage() {
     }
 
     return (
-        <div 
-        style={{
-            maxWidth: 900,
-            margin: "0 auto",
-            padding: 20
-        }}>
+        <div
+            style={{
+                maxWidth: 900,
+                margin: "0 auto",
+                padding: 20
+            }}>
             <h1>
                 Booking requests made <BookOutlined />
             </h1>
