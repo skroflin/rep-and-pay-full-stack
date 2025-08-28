@@ -83,7 +83,7 @@ public class SecurityConfig {
                         //  .requestMatchers(HttpMethod.GET,"/api/fina/skroflin/trainingSession/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/get").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getById").hasAnyAuthority(Role.superuser.name())
-                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getAvailableTrainingSessionsByDate").hasAnyAuthority(Role.user.name())
+                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getAvailableTrainingSessionsByDate").hasAnyAuthority(Role.user.name(), Role.coach.name())
                         .requestMatchers(HttpMethod.POST, "/api/fina/skroflin/trainingSession/post").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/trainingSession/put").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/fina/skroflin/trainingSession/delete").hasAnyAuthority(Role.superuser.name())

@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Calendar,
     Col,
+    Descriptions,
     Drawer,
     Form,
     List,
@@ -11,17 +12,18 @@ import {
     TimePicker,
     Typography
 } from "antd";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
-import { createMyTrainingSession } from "../../utils/api";
+import { createMyTrainingSession, getAvailableTrainingSessions } from "../../utils/api";
 import { formatDate } from "../../misc/formatDate";
-import { FireOutlined, FormOutlined, PlusCircleFilled, SettingOutlined } from "@ant-design/icons";
+import { ClockCircleFilled, ClockCircleOutlined, FireOutlined, FormOutlined, PlusCircleFilled, SettingFilled, SettingOutlined, SnippetsOutlined } from "@ant-design/icons";
+import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
-    const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+    const [selectedDate, setSelectedDate] = useState<string>(dayjs().format("YYYY-MM-DD"))
     const [modalOpen, setModalOpen] = useState(false)
     const [form] = Form.useForm()
 
@@ -37,7 +39,7 @@ export default function TrainingSessionPage() {
     })
 
     const handleDateSelect = (value: Dayjs) => {
-        setSelectedDate(value)
+        setSelectedDate(value.format("YYYY-MM-DD"))
         setModalOpen(true)
         form.resetFields()
     }
@@ -50,14 +52,14 @@ export default function TrainingSessionPage() {
 
         const [startTime, endTime] = values.timeRange
 
-        const beginningOfSession = selectedDate
+        const beginningOfSession = dayjs(selectedDate)
             .hour(startTime.hour())
             .minute(startTime.minute())
             .second(0)
             .millisecond(0)
             .format("YYYY-MM-DDTHH:mm:ss")
 
-        const endOfSession = selectedDate
+        const endOfSession = dayjs(selectedDate)
             .hour(endTime.hour())
             .minute(endTime.minute())
             .second(0)
@@ -72,6 +74,12 @@ export default function TrainingSessionPage() {
         }
         createSessionMutation.mutate(request)
     }
+
+    const { data: sessions, isLoading } = useQuery<TrainingSessionResponse[]>({
+        queryKey: ["my-training-session", selectedDate],
+        queryFn: () => getAvailableTrainingSessions(selectedDate),
+        enabled: !!selectedDate
+    })
 
     const { Title, Text } = Typography
 
@@ -95,7 +103,7 @@ export default function TrainingSessionPage() {
                             textAlign: "center"
                         }}
                     >
-                        {`Create session for ${formatDate(selectedDate?.format("YYYY-MM-DD") || "")}`}
+                        {`Create session for ${formatDate(dayjs(selectedDate).format("YYYY-MM-DD"))}`}
                         <FormOutlined style={{ marginLeft: 10 }} />
                     </Title>
                 }
@@ -190,14 +198,37 @@ export default function TrainingSessionPage() {
                                 </Button>
                             </Form.Item>
                         </Form>
-                        {/* <Descriptions column={1} bordered size="middle">
-                            <Descriptions.Item label={
-                                <Text>Existing sessions for {formatDate(selectedDate?.format("YYYY-MM-DD") || "")}</Text>
-                            }>
-                                <Text>Session</Text>
-                            </Descriptions.Item>
-                        </Descriptions> */}
-                        <List renderItem={() => <List.Item>Sessions</List.Item>} />
+                        <Title level={4} style={{ textAlign: "center" }}>
+                            Existing sessions for {formatDate(dayjs(selectedDate).format("YYYY-MM-DD"))} <SnippetsOutlined />
+                        </Title>
+                        {isLoading ? (
+                            <Text>Loading...</Text>
+                        ) : sessions && sessions.length > 0 ? (
+                            <List
+                                bordered
+                                dataSource={sessions}
+                                renderItem={(session) => (
+                                    <List.Item>
+                                        <Descriptions column={1} size="small" style={{ width: "100%" }}>
+                                            <Descriptions.Item label="Start">
+                                                <Text><ClockCircleOutlined /> {dayjs(session.beginningOfSession).format("HH:mm")}</Text>
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="End">
+                                                <Text><ClockCircleFilled /> {dayjs(session.endOfSession).format("HH:mm")}</Text>
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="Type">
+                                                <Text style={{ textTransform: "capitalize" }}><SettingOutlined /> {session.trainingType}</Text>
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="Level">
+                                                <Text style={{ textTransform: "capitalize" }}><SettingFilled /> {session.trainingLevel}</Text>
+                                            </Descriptions.Item>
+                                        </Descriptions>
+                                    </List.Item>
+                                )}
+                            />
+                        ) : (
+                            <Text>No sessions available for this date.</Text>
+                        )}
                     </Col>
                 </Row>
             </Drawer>

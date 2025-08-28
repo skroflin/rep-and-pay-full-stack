@@ -96,7 +96,7 @@ export default function NotificationsPage() {
                 padding: 20
             }}>
             <h1>
-                Booking requests made <BookOutlined />
+                Booking requests <BookOutlined />
             </h1>
             {isLoading && <Spin />}
 
