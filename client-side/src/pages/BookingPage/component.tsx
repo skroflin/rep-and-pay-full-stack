@@ -11,15 +11,13 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import {
     createMyBooking,
-    getAvailableTrainingSessions,
-    getMyBookings
+    getAvailableTrainingSessions
 } from "../../utils/api";
 import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
 import { FrownFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
-import type { BookingResponse } from "../../utils/types/Booking";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
@@ -30,13 +28,6 @@ export default function BookingPage() {
         queryKey: ["available-sessions", selectedDate],
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
-
-    const { data: myBookingsRaw } = useQuery({
-        queryKey: ["my-bookings", selectedDate],
-        queryFn: () => getMyBookings()
-    })
-
-    const myBookings = Array.isArray(myBookingsRaw) ? myBookingsRaw : []
 
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
@@ -88,44 +79,39 @@ export default function BookingPage() {
                 <List
                     bordered
                     dataSource={sessions || []}
-                    renderItem={(session) => {
-                        const alreadyBooked = myBookings.some((booking: BookingResponse) => booking.trainingSessionId === session.id)
-                        return (
-                            <List.Item>
-                                <Descriptions>
-                                    <Descriptions.Item label="Trainer">
-                                        <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="Type">
-                                        <Text strong style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="Level">
-                                        <Text strong style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="Start">
-                                        <Text strong>{dayjs(session.beginningOfSession).format("HH:mm")}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="End">
-                                        <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item>
-                                        <Button
-                                            type="primary"
-                                            onClick={() => handleBooking(session)}
-                                            loading={bookingMutation.isPending}
-                                            disabled={
-                                                pendingSession.includes(session.id) || alreadyBooked
-                                            }
-                                            icon={<PlusCircleFilled />}
-                                            size="large"
-                                        >
-                                            {alreadyBooked ? "Already booked" : "Book"}
-                                        </Button>
-                                    </Descriptions.Item>
-                                </Descriptions>
-                            </List.Item>
-                        )
-                    }}
+                    renderItem={(session) => (
+                        <List.Item>
+                            <Descriptions>
+                                <Descriptions.Item label="Trainer">
+                                    <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Type">
+                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Level">
+                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Start">
+                                    <Text strong>{dayjs(session.beginningOfSession).format("HH:mm")}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="End">
+                                    <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
+                                </Descriptions.Item>
+                                <Descriptions.Item>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => handleBooking(session)}
+                                        loading={bookingMutation.isPending}
+                                        disabled={pendingSession.includes(session.id)}
+                                        icon={<PlusCircleFilled />}
+                                        size="large"
+                                    >
+                                        Book
+                                    </Button>
+                                </Descriptions.Item>
+                            </Descriptions>
+                        </List.Item>
+                    )}
                     pagination={{ pageSize: 1 }}
                     locale={{
                         emptyText: (
