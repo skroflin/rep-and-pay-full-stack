@@ -528,4 +528,28 @@ public class BookingService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
+    
+    public Long getNumOfMyBookings(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            User userProfile = (User) session.get(User.class, userId);
+            if (userProfile == null) {
+                throw new NoResultException("User not found");
+            }
+            
+            Long numOfUserBookings = session.createQuery(
+                    "select from Booking b left join b.user u "
+                            + "where u.id = :userId", 
+                    Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return numOfUserBookings;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of user booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
 }
