@@ -1,13 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Col, Row, Statistic, theme } from "antd";
+import { Col, Row, Statistic } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { getNumOfAcceptedTrainerBookings, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
 import { getRole } from "../../utils/helper";
 
 export default function HomePage() {
-    // const {
-    //     token: { colorBgContainer, borderRadiusLG },
-    // } = theme.useToken()
 
     const role = getRole()
 
@@ -61,25 +58,25 @@ export default function HomePage() {
 
     return (
         <>
-            <Row gutter={16}>
+            <Row>
                 {role === "coach" && (
                     <>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
                         </Col>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
                         </Col>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of bookings" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
                         </Col>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of bookings" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
                         </Col>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`}/>
                         </Col>
-                        <Col span={14}>
+                        <Col span={14} offset={10}>
                             <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`}/>
                         </Col>
                     </>

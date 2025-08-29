@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
-import { Button, Col, Form, Input, Row, Select, Spin } from "antd";
+import { Button, Col, Form, Input, Row, Select, Spin, Typography } from "antd";
 import { Option } from "antd/es/mentions";
 import { IdcardFilled, IdcardOutlined, LockFilled, LockOutlined, MailOutlined, TeamOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -80,10 +80,17 @@ export default function SignUp() {
         }
     }
 
+    const { Title } = Typography
+
     return (
-        <Row justify="center">
-            <Col span={8}>
-                <h1>Sign Up</h1>
+        <Row 
+            justify="center" 
+            align="middle"
+        >
+            <Col lg={6}>
+                <Title level={2}>
+                    Sign Up
+                </Title>
                 <Form
                     name="basic"
                     labelCol={{ span: 9 }}
@@ -176,6 +183,11 @@ export default function SignUp() {
 
                     <Form.Item label={null}>
                         <Button
+                            style={{
+                                alignItems: "center",
+                                justifyContent: "center",
+                                display: "flex"
+                            }}
                             type="primary"
                             htmlType="submit"
                             onSubmit={handleSubmit}
@@ -189,7 +201,8 @@ export default function SignUp() {
                         style={{
                             textAlign: "center",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            display: "flex"
                         }}
                         type="link"
                         onClick={() => navigate("/log-in")}

@@ -6,7 +6,7 @@ import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
-import { Button, Col, Form, Input, Row, Spin } from "antd"
+import { Button, Col, Form, Input, Row, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 
 export default function LoginIn() {
@@ -40,24 +40,22 @@ export default function LoginIn() {
         },
     })
 
+    const { Title } = Typography
+
     return <>
         {
             isUserLoggedIn ? <Navigate to="/" /> :
-                <Row 
+                <Row
                     justify="center"
                     align="middle"
-                    style={{
-                        height: "100vh"
-                    }}
                 >
-                    <Col 
-                        span={8}
-                    >
-                        <h1>Log In</h1>
+                    <Col lg={6}>
+                        <Title level={2}>Log In</Title>
                         <Form
                             name="basic"
-                            labelCol={{ span: 8 }}
+                            labelCol={{ span: 9 }}
                             wrapperCol={{ span: 16 }}
+                            style={{ maxWidth: 400 }}
                             initialValues={{ remember: true }}
                             autoComplete="off"
                         >
@@ -69,7 +67,8 @@ export default function LoginIn() {
                                     placeholder="Username"
                                     prefix={<UserOutlined />}
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)} />
+                                    onChange={(e) => setUsername(e.target.value)} 
+                                />
                             </Form.Item>
 
                             <Form.Item
