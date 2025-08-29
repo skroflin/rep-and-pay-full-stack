@@ -378,13 +378,49 @@ public class TrainingSessionController {
                 = trainingSessionService.getAvailableTrainingSessionsByDate(date);
         return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);
     }
-    
+
     @GetMapping("/getNumOfMyTrainingSessions")
     public ResponseEntity<Long> getNumOfMyTrainingSessions(
             @RequestHeader HttpHeaders headers
-    ){
-        Long numOfMyTrainingSessions = 
-                trainingSessionService.getNumOfMyTrainingSessions(headers);
+    ) {
+        Long numOfMyTrainingSessions
+                = trainingSessionService.getNumOfMyCoachTrainingSessions(headers);
         return new ResponseEntity<>(numOfMyTrainingSessions, HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumOfMyUserTrainingSessions")
+    public ResponseEntity<Long> getNumOfMyUserTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ) {
+        Long numOfMyTrainingSessions
+                = trainingSessionService.getNumOfMyUserTrainingSessions(headers);
+        return new ResponseEntity<>(numOfMyTrainingSessions, HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumOfBeginnerTrainingSessions")
+    public ResponseEntity<Long> getNumOfBeginnerTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ) {
+        Long numOfBeginnerTrainingSessions
+                = trainingSessionService.getNumOfBeginnerTrainingSessions(headers);
+        return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumOfIntermediateTainingSessions")
+    public ResponseEntity<Long> getNumOfIntermediateTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ) {
+        Long numOfBeginnerTrainingSessions
+                = trainingSessionService.getNumOfIntermediateTrainingSessions(headers);
+        return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumOfAdvancedTainingSessions")
+    public ResponseEntity<Long> getNumOfAdvancedTrainingSessions(
+            @RequestHeader HttpHeaders headers
+    ) {
+        Long numOfBeginnerTrainingSessions
+                = trainingSessionService.getNumOfAdvancedTrainingSessions(headers);
+        return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
     }
 }

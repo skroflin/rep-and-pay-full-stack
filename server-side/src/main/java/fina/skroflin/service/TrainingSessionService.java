@@ -432,7 +432,7 @@ public class TrainingSessionService extends MainService {
         }
     }
 
-    public Long getNumOfMyTrainingSessions(HttpHeaders headers) {
+    public Long getNumOfMyCoachTrainingSessions(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
@@ -447,6 +447,110 @@ public class TrainingSessionService extends MainService {
                     "select count(ts.id) from TrainingSession ts "
                             + "left join ts.trainer "
                             + "where ts.trainer.id = :userId",
+                    Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return numOfMyTrainingSessions;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of training sessions"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+    
+    public Long getNumOfMyUserTrainingSessions(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
+            User userProfile = (User) session.get(User.class, userId);
+            if (userProfile == null) {
+                throw new NoResultException("User not found");
+            }
+            
+            Long numOfMyTrainingSessions = session.createQuery(
+                    "select count(ts.id) from Booking b "
+                            + "left join b.trainingSession ts "
+                            + "left join b.user u "
+                            + "where u.id = :userId",
+                    Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return numOfMyTrainingSessions;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of training sessions"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+    
+    public Long getNumOfBeginnerTrainingSessions(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+            
+            Long numOfMyTrainingSessions = session.createQuery(
+                    "select count(ts.id) from TrainingSession ts "
+                            + "left join ts.trainer "
+                            + "where ts.trainer.id = :userId "
+                            + "and ts.trainingLevel = beginner",
+                    Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return numOfMyTrainingSessions;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of training sessions"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+    
+    public Long getNumOfIntermediateTrainingSessions(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+            
+            Long numOfMyTrainingSessions = session.createQuery(
+                    "select count(ts.id) from TrainingSession ts "
+                            + "left join ts.trainer "
+                            + "where ts.trainer.id = :userId "
+                            + "and ts.trainingLevel = intermediate",
+                    Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return numOfMyTrainingSessions;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of training sessions"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
+    
+    public Long getNumOfAdvancedTrainingSessions(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+            
+            Long numOfMyTrainingSessions = session.createQuery(
+                    "select count(ts.id) from TrainingSession ts "
+                            + "left join ts.trainer "
+                            + "where ts.trainer.id = :userId "
+                            + "and ts.trainingLevel = advanced",
                     Long.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
