@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Col, Row, Statistic, theme } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { getNumOfAcceptedTrainerBookings, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
+import { getNumOfAcceptedTrainerBookings, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
 import { getRole } from "../../utils/helper";
 
 export default function HomePage() {
@@ -47,6 +47,18 @@ export default function HomePage() {
         enabled: role === "coach"
     })
 
+    const { data: numOfUserBookings } = useQuery({
+        queryKey: ["num-of-user-bookings"],
+        queryFn: () => getNumOfMyBookings(),
+        enabled: role === "user"
+    })
+
+    const { data: numOfUserTrainingSessions } = useQuery({
+        queryKey: ["num-of-user-training-sessions"],
+        queryFn: () => getNumOfMyUserTrainingSessions(),
+        enabled: role === "user"
+    })
+
     return (
         <>
             <Row gutter={16}>
@@ -74,9 +86,12 @@ export default function HomePage() {
                 )}
                 {role === "user" && (
                     <>
-                        <Content>
-                            User content
-                        </Content>
+                        <Col span={14}>
+                            <Statistic title="Number of my bookings" value={numOfUserBookings}/>
+                        </Col>
+                        <Col span={14}>
+                            <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions}/>
+                        </Col>
                     </>
                 )}
                 {role === "superuser" && (

@@ -9,6 +9,7 @@ import {
     List,
     Row,
     Select,
+    Spin,
     TimePicker,
     Typography
 } from "antd";
@@ -211,7 +212,7 @@ export default function TrainingSessionPage() {
                             Existing sessions for {formatDate(dayjs(selectedDate).format("YYYY-MM-DD"))} <SnippetsOutlined />
                         </Title>
                         {isLoading ? (
-                            <Text>Loading...</Text>
+                            <Spin />
                         ) : sessions && sessions.length > 0 ? (
                             <List
                                 bordered

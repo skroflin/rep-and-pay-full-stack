@@ -32,12 +32,6 @@ export default function CoachPage() {
             dataIndex: "isMembershipPaid",
             key: "isMembershipPaid",
             render: (paid: boolean) => (paid ? "Paid" : "Not paid")
-        },
-        {
-            title: "Membership Month",
-            dataIndex: "membershipMonth",
-            key: "membershipMonth",
-            render: (date: string) => new Date(date).toLocaleDateString("hr-HR")
         }
     ]
 
