@@ -186,6 +186,7 @@ public class BookingService extends MainService {
             MyBookingRequestDTO o,
             HttpHeaders headers
     ) {
+        session.beginTransaction();
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
@@ -207,7 +208,7 @@ public class BookingService extends MainService {
                         + "not found!"
                 );
             }
-
+            /*
             Long userCount = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
@@ -227,19 +228,17 @@ public class BookingService extends MainService {
                             + "and b.bookingStatus = :status", 
                     Long.class)
                     .setParameter("trainingSessionId", o.trainingSessionId())
-                    .setParameter("status", o.bookingStatus().pending)
+                    .setParameter("status", BookingStatus.pending)
                     .uniqueResult();
             if (sessionCount > 0) {
                 throw new IllegalAccessException("This session is already booked!");
             }
-
+            */
             Booking booking = new Booking(
                     userProfile,
                     ts,
                     BookingStatus.pending
             );
-
-            session.beginTransaction();
             session.persist(booking);
             session.getTransaction().commit();
 
