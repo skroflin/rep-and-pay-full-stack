@@ -123,6 +123,7 @@ export const getNumOfPendingTrainerBookings = () => apiGetCall("booking/getNumOf
 export const getNumOfAcceptedTrainerBookings = () => apiGetCall("booking/getNumOfAcceptedTrainerBookings")
 export const getNumOfBeginnerTrainingSessions = () => apiGetCall("trainingSession/getNumOfBeginnerTrainingSessions")
 export const getNumOfIntermediateTrainingSessions = () => apiGetCall("trainingSession/getNumOfIntermediateTainingSessions")
+export const getNumOfAdvancedTainingSessions = () => apiGetCall("trainingSessions/getNumOfAdvancedTainingSessions")
 
 //statistic methods (user)
 export const getNumOfMyBookings = () => apiGetCall("booking/getNumOfMyBookings")
