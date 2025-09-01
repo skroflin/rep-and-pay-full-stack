@@ -222,7 +222,7 @@ public class BookingService extends MainService {
             }
             
             Long sessionCount = session.createQuery(
-                    "select from Booking b "
+                    "select b from Booking b "
                             + "where b.trainingSession.id = :trainingSessionId "
                             + "and b.bookingStatus = :status", 
                     Long.class)

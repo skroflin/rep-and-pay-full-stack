@@ -21,7 +21,9 @@ public record MyTrainingSessionRequestDTO(
         @Schema(example = "2025-08-14T18:00")
         LocalDateTime beginningOfSession,
         @Schema(example = "2025-08-14T19:30")
-        LocalDateTime endOfSession
+        LocalDateTime endOfSession,
+        @Schema(example = "true")
+        boolean alreadyBooked
         ) {
 
 }

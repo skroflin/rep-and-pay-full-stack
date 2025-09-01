@@ -102,11 +102,11 @@ export default function BookingPage() {
                                         type="primary"
                                         onClick={() => handleBooking(session)}
                                         loading={bookingMutation.isPending}
-                                        disabled={pendingSession.includes(session.id)}
+                                        disabled={pendingSession.includes(session.id) || session.alreadyBooked}
                                         icon={<PlusCircleFilled />}
                                         size="large"
                                     >
-                                        Book
+                                        {session.alreadyBooked ? "Already booked" : "Book"}
                                     </Button>
                                 </Descriptions.Item>
                             </Descriptions>

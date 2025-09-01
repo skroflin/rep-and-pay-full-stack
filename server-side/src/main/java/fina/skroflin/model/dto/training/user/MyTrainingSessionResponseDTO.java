@@ -23,7 +23,8 @@ public record MyTrainingSessionResponseDTO(
         @Enumerated(EnumType.STRING)
         TrainingLevel trainingLevel,
         LocalDateTime beginningOfSession,
-        LocalDateTime endOfSession
+        LocalDateTime endOfSession,
+        boolean alreadyBooked
         ) {
 
 }

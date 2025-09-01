@@ -372,10 +372,11 @@ public class TrainingSessionController {
     @GetMapping("/getAvailableTrainingSessionsByDate")
     public ResponseEntity<List<TrainingSessionResponseDTO>> getAvailableSessions(
             @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestHeader HttpHeaders headers
     ) {
         List<TrainingSessionResponseDTO> availableSessionsByDate
-                = trainingSessionService.getAvailableTrainingSessionsByDate(date);
+                = trainingSessionService.getAvailableTrainingSessionsByDate(date, headers);
         return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);
     }
 

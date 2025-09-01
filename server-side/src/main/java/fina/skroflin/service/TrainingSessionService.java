@@ -40,9 +40,6 @@ public class TrainingSessionService extends MainService {
             return null;
         }
 
-        Integer trainerId = (trainingSession.getId() != null)
-                ? trainingSession.getTrainer().getId() : null;
-
         return new TrainingSessionResponseDTO(
                 trainingSession.getId(),
                 trainingSession.getTrainer().getFirstName(),
@@ -50,7 +47,8 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getTrainingType(),
                 trainingSession.getTrainingLevel(),
                 trainingSession.getBeginningOfSession(),
-                trainingSession.getEndOfSession()
+                trainingSession.getEndOfSession(),
+                trainingSession.isAlreadyBooked()
         );
     }
 
@@ -66,7 +64,8 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getTrainingType(),
                 trainingSession.getTrainingLevel(),
                 trainingSession.getBeginningOfSession(),
-                trainingSession.getEndOfSession()
+                trainingSession.getEndOfSession(),
+                trainingSession.isAlreadyBooked()
         );
     }
 
@@ -413,9 +412,14 @@ public class TrainingSessionService extends MainService {
     }
 
     public List<TrainingSessionResponseDTO> getAvailableTrainingSessionsByDate(
-            LocalDate date
+            LocalDate date,
+            HttpHeaders headers
     ) {
         try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
                     + "left join fetch ts.trainer "
@@ -424,7 +428,21 @@ public class TrainingSessionService extends MainService {
                     .setParameter("date", date)
                     .list();
             return trainingSessions.stream()
-                    .map(this::convertToResponseDTO)
+                    .map(ts -> {
+                        Long count = session.createQuery(
+                                "select count(b) from Booking b "
+                                        + "where b.user.id = :userId "
+                                        + "and b.trainingSession.id = :sessionId", 
+                                Long.class)
+                                .setParameter("userId", userId)
+                                .setParameter("sessionId", ts.getId())
+                                .uniqueResult();
+                        
+                        boolean alreadyBooked = count != null && count > 0;
+                        ts.setAlreadyBooked(alreadyBooked);
+                        
+                        return convertToResponseDTO(ts);
+                    })
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching training sessions:"

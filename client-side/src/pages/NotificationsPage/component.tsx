@@ -4,7 +4,7 @@ import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings } from "../../utils/api";
 import dayjs from "dayjs";
 import { Badge, Calendar, Spin } from "antd";
-import { BookOutlined, ScheduleOutlined } from "@ant-design/icons";
+import { BookOutlined, PlusOutlined, ScheduleOutlined } from "@ant-design/icons";
 import BookingReviewModal from "./BookingReviewModal";
 
 export default function NotificationsPage() {
@@ -47,19 +47,20 @@ export default function NotificationsPage() {
                     <Badge
                         count={
                             <span>
-                                <ScheduleOutlined style={{
-                                    color: firstStatus === "pending" ? "orange" : firstStatus === "approved" ? "green" : firstStatus === "rejected" ? "red" : "gray"
-                                }}
+                                <ScheduleOutlined color={
+                                    firstStatus === "pending" ? "orange" :
+                                        firstStatus === "approved" ? "green" :
+                                            firstStatus === "rejected" ? "red" : "gray"}
                                 />
-                                <span 
+                                <PlusOutlined
                                     style={{
-                                        marginLeft: 4,
-                                        fontSize: 12,
-                                        color: firstStatus === "pending" ? "orange" : firstStatus === "approved" ? "green" : firstStatus === "rejected" ? "red" : "gray"
+                                        marginLeft: 4
                                     }}
-                                >
-                                    1+
-                                </span>
+                                    color={
+                                        firstStatus === "pending" ? "orange" :
+                                            firstStatus === "approved" ? "green" :
+                                                firstStatus === "rejected" ? "red" : "gray"}
+                                />
                             </span>
                         }
                     />

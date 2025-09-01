@@ -14,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -39,6 +40,9 @@ public class TrainingSession extends MainEntity {
     private LocalDateTime beginningOfSession;
     @Column(name = "end_of_session")
     private LocalDateTime endOfSession;
+    @Transient
+    @Column(name = "already_booked", columnDefinition = "bit")
+    private boolean alreadyBooked;
 
     public TrainingSession() {
     }
@@ -95,5 +99,13 @@ public class TrainingSession extends MainEntity {
 
     public void setEndOfSession(LocalDateTime endOfSession) {
         this.endOfSession = endOfSession;
+    }
+
+    public boolean isAlreadyBooked() {
+        return alreadyBooked;
+    }
+
+    public void setAlreadyBooked(boolean alreadyBooked) {
+        this.alreadyBooked = alreadyBooked;
     }
 }

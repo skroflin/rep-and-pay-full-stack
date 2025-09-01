@@ -1,7 +1,8 @@
 export interface TrainingSessionRequest {
     trainerId: string,
     trainingType: "PUSH" | "PULL" | "LEGS" | "CROSSFIT" | "CONDITIONING" | "YOGA" | "WEIGHTLIFTING"
-    trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
+    trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED",
+    alreadyBooked: boolean
 }
 
 export interface TrainingSessionResponse {
@@ -11,5 +12,6 @@ export interface TrainingSessionResponse {
     trainingType: "PUSH" | "PULL" | "LEGS" | "CROSSFIT" | "CONDITIONING" | "YOGA" | "WEIGHTLIFTING"
     trainingLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
     beginningOfSession: Date | string,
-    endOfSession: Date | string
+    endOfSession: Date | string,
+    alreadyBooked: boolean
 }

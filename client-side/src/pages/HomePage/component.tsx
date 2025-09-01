@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Col, Row, Statistic } from "antd";
+import { Card, Col, Row, Statistic } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { getNumOfAcceptedTrainerBookings, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
 import { getRole } from "../../utils/helper";
@@ -58,36 +58,54 @@ export default function HomePage() {
 
     return (
         <>
-            <Row>
+            <Row style={{
+                marginTop: 30
+            }}>
                 {role === "coach" && (
                     <>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
+                            </Card>
                         </Col>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
+                            </Card>
                         </Col>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of bookings" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of bookings" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
+                            </Card>
                         </Col>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of bookings" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of bookings" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
+                            </Card>
                         </Col>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`}/>
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                            </Card>
                         </Col>
-                        <Col span={14} offset={10}>
-                            <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`}/>
+                        <Col span={13} offset={10}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                            </Card>
                         </Col>
                     </>
                 )}
                 {role === "user" && (
                     <>
-                        <Col span={14}>
-                            <Statistic title="Number of my bookings" value={numOfUserBookings}/>
+                        <Col span={13}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of my bookings" value={numOfUserBookings} />
+                            </Card>
                         </Col>
-                        <Col span={14}>
-                            <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions}/>
+                        <Col span={13}>
+                            <Card variant="borderless">
+                                <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions} />
+                            </Card>
                         </Col>
                     </>
                 )}
