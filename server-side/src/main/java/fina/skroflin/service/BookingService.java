@@ -208,7 +208,7 @@ public class BookingService extends MainService {
                         + "not found!"
                 );
             }
-            /*
+            
             Long userCount = session.createQuery(
                     "select count(b) from Booking b "
                     + "where b.user.id = :userId "
@@ -223,7 +223,7 @@ public class BookingService extends MainService {
             }
             
             Long sessionCount = session.createQuery(
-                    "select b from Booking b "
+                    "select count(b) from Booking b "
                             + "where b.trainingSession.id = :trainingSessionId "
                             + "and b.bookingStatus = :status", 
                     Long.class)
@@ -233,7 +233,7 @@ public class BookingService extends MainService {
             if (sessionCount > 0) {
                 throw new IllegalAccessException("This session is already booked!");
             }
-            */
+            
             Booking booking = new Booking(
                     userProfile,
                     ts,
