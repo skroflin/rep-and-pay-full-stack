@@ -4,6 +4,7 @@
  */
 package fina.skroflin.exception;
 
+import com.stripe.exception.SignatureVerificationException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import javax.management.InstanceNotFoundException;
@@ -43,6 +44,18 @@ public class ApiExceptionHandler {
         ApiException apiException = new ApiException(
                 e.getMessage(), 
                 httpStatus, 
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    
+    @ExceptionHandler(value = {SignatureVerificationException.class})
+    public ResponseEntity<Object> handleStripeSignatureException(SignatureVerificationException e) {
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        log.error("STRIPE_SIGNATURE_INVALID: ", e);
+        ApiException apiException = new ApiException(
+                "Stripe webhook signature verification failed:" + " " + e.getMessage(),
+                httpStatus,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
         return new ResponseEntity<>(apiException, httpStatus);

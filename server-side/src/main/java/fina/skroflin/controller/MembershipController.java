@@ -96,6 +96,7 @@ public class MembershipController {
             int price
     ){
         String checkoutUrl = membershipService.createCheckoutSession(headers, price);
+        System.out.println("ACTIVATING MEMBERSHIP FOR USER" + " " + headers + " " + price);
         return new ResponseEntity<>(checkoutUrl, HttpStatus.OK);
     }
 }
