@@ -200,6 +200,7 @@ public class MembershipService extends MainService {
                             )
                             .build();
             Session sessionStripe = Session.create(params);
+            System.out.println("Stripe session created" + " " + sessionStripe.getUrl());
             return sessionStripe.getUrl();
         } catch (Exception e) {
             throw new RuntimeException(
@@ -220,6 +221,7 @@ public class MembershipService extends MainService {
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(durationInDays);
         
+        /*
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
@@ -227,13 +229,13 @@ public class MembershipService extends MainService {
                 + "and m.endDate >= :today",
                 Long.class)
                 .setParameter("userId", userId)
-                .setParameter("today", LocalDate.now())
+                .setParameter("today", today)
                 .uniqueResult();
         
         if (count > 0) {
             throw new IllegalArgumentException("There is already a membership "
                     + "for this user" + " " + userId);
-        }
+        }*/
         
         Membership newMembership = new Membership(user, today, endDate, price);
         
