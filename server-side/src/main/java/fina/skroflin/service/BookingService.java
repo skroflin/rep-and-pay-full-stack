@@ -29,9 +29,14 @@ import org.springframework.stereotype.Service;
 public class BookingService extends MainService {
 
     private final JwtTokenUtil jwtTokenUtil;
+    private final MembershipService membershipService;
 
-    public BookingService(JwtTokenUtil jwtTokenUtil) {
+    public BookingService(
+            JwtTokenUtil jwtTokenUtil,
+            MembershipService membershipService
+    ) {
         this.jwtTokenUtil = jwtTokenUtil;
+        this.membershipService = membershipService;
     }
 
     @Transactional
@@ -195,6 +200,13 @@ public class BookingService extends MainService {
             User userProfile = (User) session.get(User.class, userId);
             if (userProfile == null) {
                 throw new NoResultException("User not found!");
+            }
+            
+            if (!membershipService.hasActiveMembership(userId)) {
+                throw new IllegalStateException(
+                        "You must have a paid membership "
+                        + "to book a training session!"
+                );
             }
 
             TrainingSession ts = (TrainingSession) session.get(

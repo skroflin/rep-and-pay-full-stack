@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +27,14 @@ import org.springframework.stereotype.Service;
  * @author skroflin
  */
 @Service
-@AllArgsConstructor
 public class MembershipService extends MainService {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private final StripeConfig stripConfig;
+    private final StripeConfig stripeConfig;
 
-    public MembershipService(JwtTokenUtil jwtTokenUtil, StripeConfig stripConfig) {
+    public MembershipService(JwtTokenUtil jwtTokenUtil, StripeConfig stripeConfig) {
         this.jwtTokenUtil = jwtTokenUtil;
-        this.stripConfig = stripConfig;
+        this.stripeConfig = stripeConfig;
     }
 
     @Transactional
@@ -144,10 +144,7 @@ public class MembershipService extends MainService {
         }
     }
 
-    public boolean hasActiveMembership(HttpHeaders headers) {
-        String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-        Integer userId = jwtTokenUtil.extractClaim(token,
-                claims -> claims.get("UserId", Integer.class));
+    public boolean hasActiveMembership(Integer userId) {
 
         User user = (User) session.get(User.class, userId);
         if (user == null) {
@@ -211,5 +208,37 @@ public class MembershipService extends MainService {
                     e
             );
         }
+    }
+    
+    public void activateMembership(Integer userId, int durationInDays, int price) {
+
+        User user = (User) session.get(User.class, userId);
+        if (user == null) {
+            throw new NoResultException("User not found!");
+        }
+        
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(durationInDays);
+        
+        Long count = session.createQuery(
+                "select count(m) from Membership m "
+                + "where m.user.id = :userId "
+                + "and m.startDate <= :today "
+                + "and m.endDate >= :today",
+                Long.class)
+                .setParameter("userId", userId)
+                .setParameter("today", LocalDate.now())
+                .uniqueResult();
+        
+        if (count > 0) {
+            throw new IllegalArgumentException("There is already a membership "
+                    + "for this user" + " " + userId);
+        }
+        
+        Membership newMembership = new Membership(user, today, endDate, price);
+        
+        session.beginTransaction();
+        session.persist(newMembership);
+        session.getTransaction().commit();
     }
 }
