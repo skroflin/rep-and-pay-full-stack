@@ -5,7 +5,6 @@
 package fina.skroflin.model.dto.membership;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 /**
@@ -20,7 +19,7 @@ public record MembershipRequestDTO(
         @Schema(example = "2025-09-01")
         LocalDate endDate,
         @Schema(example = "29.99")
-        BigInteger membershipPrice
+        long membershipPrice
         ) {
 
 }

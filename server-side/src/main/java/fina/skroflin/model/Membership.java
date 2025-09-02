@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +32,6 @@ public class Membership extends MainEntity{
     private LocalDate startDate;
     @Column(name = "end_date")
     private LocalDate endDate;
-    @Column(name = "membership_price", columnDefinition = "float")
-    private BigInteger membershipPrice;
+    @Column(name = "membership_price", columnDefinition = "int")
+    private long membershipPrice;
 }

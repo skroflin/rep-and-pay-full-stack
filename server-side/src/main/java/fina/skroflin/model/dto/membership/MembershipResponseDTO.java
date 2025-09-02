@@ -4,7 +4,6 @@
  */
 package fina.skroflin.model.dto.membership;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 /**
@@ -17,7 +16,7 @@ public record MembershipResponseDTO(
         String userLastName,
         LocalDate startDate,
         LocalDate endDate,
-        BigInteger membershipPrice
+        long membershipPrice
         ) {
 
 }
