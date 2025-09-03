@@ -4,14 +4,13 @@
  */
 package fina.skroflin.controller;
 
-import fina.skroflin.model.dto.checkout.CheckoutSessionResponseDTO;
-import fina.skroflin.model.dto.membership.MembershipRequestDTO;
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
+import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
 import fina.skroflin.service.MembershipService;
 import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,14 +89,23 @@ public class MembershipController {
     }
     
     @PostMapping("/createCheckoutSession")
-    public ResponseEntity<CheckoutSessionResponseDTO> createCheckoutSession(
+    public ResponseEntity<StripeCheckoutResponseDTO> createCheckoutSession(
             @RequestHeader
             HttpHeaders headers,
-            @RequestParam
-            int price
+            @RequestBody
+            CheckoutSessionRequestDTO dto
     ){
-        String checkoutUrl = membershipService.createCheckoutSession(headers, price);
-        System.out.println("Stripe url:" + " " + checkoutUrl);
-        return ResponseEntity.ok().body(new CheckoutSessionResponseDTO(checkoutUrl));
+        StripeCheckoutResponseDTO response = membershipService.createCheckoutSession(headers, dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    @GetMapping("/success")
+    public ResponseEntity<String> paymentSuccess(){
+        return new ResponseEntity<>("Payment successful!", HttpStatus.OK);
+    }
+    
+    @GetMapping("/cancel")
+    public ResponseEntity<String> paymentCancelled(){
+        return new ResponseEntity<>("Payment cancelled!", HttpStatus.OK);
     }
 }

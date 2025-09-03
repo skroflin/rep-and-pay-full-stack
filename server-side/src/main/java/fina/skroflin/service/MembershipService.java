@@ -10,6 +10,8 @@ import fina.skroflin.model.Membership;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.membership.MembershipRequestDTO;
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
+import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import fina.skroflin.utils.stripe.StripeConfig;
 import jakarta.persistence.NoResultException;
@@ -164,7 +166,7 @@ public class MembershipService extends MainService {
         return count != null && count > 0;
     }
 
-    public String createCheckoutSession(HttpHeaders headers, int price) {
+    public StripeCheckoutResponseDTO createCheckoutSession(HttpHeaders headers, CheckoutSessionRequestDTO o) {
         String token = jwtTokenUtil.extractTokenFromHeaders(headers);
         Integer userId = jwtTokenUtil.extractClaim(token,
                 claims -> claims.get("UserId", Integer.class));
@@ -187,7 +189,7 @@ public class MembershipService extends MainService {
                                             .setPriceData(
                                                     SessionCreateParams.LineItem.PriceData.builder()
                                                             .setCurrency("eur")
-                                                            .setUnitAmount((long) price)
+                                                            .setUnitAmount((long) o.price())
                                                             .setProductData(
                                                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                                             .setName("Gym membership")
@@ -201,13 +203,20 @@ public class MembershipService extends MainService {
                             .build();
             Session sessionStripe = Session.create(params);
             System.out.println("Stripe session created" + " " + sessionStripe.getUrl());
-            return sessionStripe.getUrl();
+            // return sessionStripe.getUrl();
+            return StripeCheckoutResponseDTO.builder()
+                    .status("SUCCESS")
+                    .message("Stripe session created")
+                    .sessionId(sessionStripe.getId())
+                    .sessionUrl(sessionStripe.getUrl())
+                    .build();
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error creating Stripe checkout session" + " "
-                    + e.getMessage(),
-                    e
-            );
+            return StripeCheckoutResponseDTO.builder()
+                    .status("FAILED")
+                    .message(e.getMessage())
+                    .sessionId(null)
+                    .sessionUrl(null)
+                    .build();
         }
     }
     
