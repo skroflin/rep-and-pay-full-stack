@@ -169,7 +169,7 @@ public class MembershipService extends MainService {
         return count != null && count > 0;
     }
 
-    public StripeCheckoutResponseDTO createCheckoutSession(HttpHeaders headers, CheckoutSessionRequestDTO o) {
+    public String createCheckoutSession(HttpHeaders headers, CheckoutSessionRequestDTO o) {
         String token = jwtTokenUtil.extractTokenFromHeaders(headers);
         Integer userId = jwtTokenUtil.extractClaim(token,
                 claims -> claims.get("UserId", Integer.class));
@@ -207,19 +207,11 @@ public class MembershipService extends MainService {
             Session sessionStripe = Session.create(params);
             System.out.println("Stripe session created" + " " + sessionStripe.getUrl());
             // return sessionStripe.getUrl();
-            return StripeCheckoutResponseDTO.builder()
-                    .status("SUCCESS")
-                    .message("Stripe session created")
-                    .sessionId(sessionStripe.getId())
-                    .sessionUrl(sessionStripe.getUrl())
-                    .build();
+            return sessionStripe.getUrl();
         } catch (Exception e) {
-            return StripeCheckoutResponseDTO.builder()
-                    .status("FAILED")
-                    .message(e.getMessage())
-                    .sessionId(null)
-                    .sessionUrl(null)
-                    .build();
+            throw new RuntimeException("Error upon creating checkout session!"
+                    + " " + "by id" + " " + userId
+                    + " " + e.getMessage(), e);
         }
     }
 

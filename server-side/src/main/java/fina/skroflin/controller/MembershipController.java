@@ -89,14 +89,14 @@ public class MembershipController {
     }
     
     @PostMapping("/createCheckoutSession")
-    public ResponseEntity<StripeCheckoutResponseDTO> createCheckoutSession(
+    public ResponseEntity<String> createCheckoutSession(
             @RequestHeader
             HttpHeaders headers,
             @RequestBody
             CheckoutSessionRequestDTO dto
     ){
-        StripeCheckoutResponseDTO response = membershipService.createCheckoutSession(headers, dto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String checkoutUrl = membershipService.createCheckoutSession(headers, dto);
+        return new ResponseEntity<>(checkoutUrl, HttpStatus.OK);
     }
     
     @GetMapping("/success")
