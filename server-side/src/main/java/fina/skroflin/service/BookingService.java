@@ -202,7 +202,7 @@ public class BookingService extends MainService {
                 throw new NoResultException("User not found!");
             }
             
-            if (!membershipService.hasActiveMembership(userId)) {
+            if (!membershipService.hasActiveMembership(headers)) {
                 throw new IllegalStateException(
                         "You must have a paid membership "
                         + "to book a training session!"

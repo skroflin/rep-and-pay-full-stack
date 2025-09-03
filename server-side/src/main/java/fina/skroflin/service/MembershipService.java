@@ -146,7 +146,10 @@ public class MembershipService extends MainService {
         }
     }
 
-    public boolean hasActiveMembership(Integer userId) {
+    public boolean hasActiveMembership(HttpHeaders headers) {
+        String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+        Integer userId = jwtTokenUtil.extractClaim(token,
+                claims -> claims.get("UserId", Integer.class));
 
         User user = (User) session.get(User.class, userId);
         if (user == null) {
@@ -219,17 +222,17 @@ public class MembershipService extends MainService {
                     .build();
         }
     }
-    
+
     public void activateMembership(Integer userId, int durationInDays, int price) {
 
         User user = (User) session.get(User.class, userId);
         if (user == null) {
             throw new NoResultException("User not found!");
         }
-        
+
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(durationInDays);
-        
+
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
@@ -239,14 +242,14 @@ public class MembershipService extends MainService {
                 .setParameter("userId", userId)
                 .setParameter("today", today)
                 .uniqueResult();
-        
+
         if (count > 0) {
             throw new IllegalArgumentException("There is already a membership "
                     + "for this user" + " " + userId);
         }
-        
+
         Membership newMembership = new Membership(user, today, endDate, price);
-        
+
         session.beginTransaction();
         session.persist(newMembership);
         session.getTransaction().commit();

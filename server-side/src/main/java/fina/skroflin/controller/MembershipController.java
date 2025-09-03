@@ -36,7 +36,7 @@ public class MembershipController {
     private final MembershipService membershipService;
 
     public MembershipController(
-            UserService userService,
+            UserService userService,    
             MembershipService membershipService
     ) {
         this.userService = userService;
@@ -81,10 +81,10 @@ public class MembershipController {
     
     @GetMapping("/hasActiveMembership")
     public ResponseEntity<Boolean> hasActiveMembership(
-            @RequestParam
-            int userId
+            @RequestHeader
+            HttpHeaders headers
     ){
-        boolean activeMembership = membershipService.hasActiveMembership(userId);
+        boolean activeMembership = membershipService.hasActiveMembership(headers);
         return new ResponseEntity<>(activeMembership, HttpStatus.OK);
     }
     

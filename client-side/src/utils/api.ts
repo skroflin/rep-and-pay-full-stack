@@ -8,6 +8,7 @@ import type { TrainingSessionRequest } from "./types/TrainingSession";
 import type { PasswordUserRequest } from "./types/Password";
 import type { MyTrainingSessionRequest } from "./types/user-authenticated/MyTrainingSession";
 import type { MyBookingRequest } from "./types/user-authenticated/MyBooking";
+import type { CheckoutRequest } from "./types/Checkout";
 
 const BASE_URL = 'http://localhost:8080'
 
@@ -128,3 +129,12 @@ export const getNumOfAdvancedTainingSessions = () => apiGetCall("trainingSession
 //statistic methods (user)
 export const getNumOfMyBookings = () => apiGetCall("booking/getNumOfMyBookings")
 export const getNumOfMyUserTrainingSessions = () => apiGetCall("trainingSession/getNumOfMyUserTrainingSessions")
+
+//stripe membership methods (user)
+export const createCheckoutSession = (req: CheckoutRequest) => apiPostCall("membership/createCheckoutSession", req)
+export const hasActiveMembership = () => apiGetCall("membership/hasActiveMembership")
+
+//stripe membership methods (superuser)
+export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?id=${userId}`)
+export const getActiveMemberships = () => apiGetCall("membership/getActiveMemberships")
+export const getExpiredMemberships = () => apiGetCall("membership/getExpiredMemberships")
