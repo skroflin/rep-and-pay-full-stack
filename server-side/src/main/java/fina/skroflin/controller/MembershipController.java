@@ -4,6 +4,7 @@
  */
 package fina.skroflin.controller;
 
+import fina.skroflin.model.dto.checkout.CheckoutSessionResponseDTO;
 import fina.skroflin.model.dto.membership.MembershipRequestDTO;
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
 import fina.skroflin.service.MembershipService;
@@ -89,14 +90,14 @@ public class MembershipController {
     }
     
     @PostMapping("/createCheckoutSession")
-    public ResponseEntity<String> createCheckoutSession(
+    public ResponseEntity<CheckoutSessionResponseDTO> createCheckoutSession(
             @RequestHeader
             HttpHeaders headers,
             @RequestParam
             int price
     ){
         String checkoutUrl = membershipService.createCheckoutSession(headers, price);
-        System.out.println("ACTIVATING MEMBERSHIP FOR USER" + " " + headers + " " + price);
-        return ResponseEntity.ok().body(checkoutUrl);
+        System.out.println("Stripe url:" + " " + checkoutUrl);
+        return ResponseEntity.ok().body(new CheckoutSessionResponseDTO(checkoutUrl));
     }
 }

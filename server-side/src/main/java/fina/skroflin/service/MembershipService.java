@@ -221,7 +221,6 @@ public class MembershipService extends MainService {
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(durationInDays);
         
-        /*
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
@@ -235,7 +234,7 @@ public class MembershipService extends MainService {
         if (count > 0) {
             throw new IllegalArgumentException("There is already a membership "
                     + "for this user" + " " + userId);
-        }*/
+        }
         
         Membership newMembership = new Membership(user, today, endDate, price);
         
