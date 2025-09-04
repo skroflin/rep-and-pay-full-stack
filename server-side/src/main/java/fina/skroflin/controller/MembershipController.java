@@ -108,4 +108,17 @@ public class MembershipController {
     public ResponseEntity<String> paymentCancelled(){
         return new ResponseEntity<>("Payment cancelled!", HttpStatus.OK);
     }
+    
+    @GetMapping("/confirm")
+    public ResponseEntity<String> confirmPayment(
+            @RequestParam
+            String status
+    ) {
+        if ("success".equals(status)) {
+            return new ResponseEntity<>("Payment confirmed", HttpStatus.OK);
+        } else if ("cancel".equals(status)) {
+            return new ResponseEntity<>("Payment cancelled", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid status", HttpStatus.BAD_REQUEST);
+    }
 }

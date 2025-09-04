@@ -133,6 +133,7 @@ export const getNumOfMyUserTrainingSessions = () => apiGetCall("trainingSession/
 //stripe membership methods (user)
 export const createCheckoutSession = (req: CheckoutRequest) => apiPostCall("membership/createCheckoutSession", req)
 export const hasActiveMembership = () => apiGetCall("membership/hasActiveMembership")
+export const confirmPayment = (status: string) => apiGetCall(`membership/confirm?status=${status}`)
 
 //stripe membership methods (superuser)
 export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?id=${userId}`)

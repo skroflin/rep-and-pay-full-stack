@@ -121,6 +121,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getActiveMemberships").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers("/api/fina/skroflin/membership/success").permitAll()
                         .requestMatchers("/api/fina/skroflin/membership/cancel").permitAll()
+                        .requestMatchers("/api/fina/skroflin/membership/confirm").permitAll()
                         .requestMatchers("/api/fina/skroflin/stripe/webhook").permitAll()
                         .requestMatchers("/api/fina/skroflin/user").hasAuthority(Role.superuser.toString()).anyRequest()
                         .authenticated())

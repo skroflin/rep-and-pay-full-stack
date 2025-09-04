@@ -12,8 +12,8 @@ import java.time.LocalDate;
  */
 public record MembershipResponseDTO(
         Integer id,
-        String userFirstName,
-        String userLastName,
+        String firstName,
+        String lastName,
         LocalDate startDate,
         LocalDate endDate,
         long membershipPrice

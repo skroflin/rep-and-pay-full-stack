@@ -19,8 +19,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -95,7 +93,7 @@ public class MembershipService extends MainService {
     public List<MembershipResponseDTO> getActiveMemberships() {
         try {
             List<Membership> memberships = session.createQuery(
-                    "select m from Membership m"
+                    "select m from Membership m "
                     + "left join fetch m.user "
                     + "where m.startDate <= :today "
                     + "and m.endDate >= :today", Membership.class)
@@ -114,7 +112,7 @@ public class MembershipService extends MainService {
         try {
             List<Membership> memberships = session.createQuery(
                     "select m from Membership m "
-                    + "left join fetch m.trainer "
+                    + "left join fetch m.user "
                     + "where m.endDate < :today", Membership.class)
                     .setParameter("today", LocalDate.now())
                     .list();
@@ -129,10 +127,18 @@ public class MembershipService extends MainService {
 
     public List<MembershipResponseDTO> getMembershipByUser(int userId) {
         try {
+            User user = (User) session.get(User.class, userId);
+            if (user == null || !user.equals(user.getRole())) {
+                throw new IllegalArgumentException(
+                        "User with the id" + " "
+                        + userId + " "
+                        + "doesn't exist or isn't a user!"
+                );
+            }
             List<Membership> memberships = session.createQuery(
                     "select m from Membership m "
-                    + "left join fetch m.user "
-                    + "where m.user.id = :userId "
+                    + "left join fetch m.user u "
+                    + "where u.id = :userId "
                     + "order by m.startDate desc", Membership.class)
                     .setParameter("userId", userId)
                     .list();
@@ -140,9 +146,11 @@ public class MembershipService extends MainService {
                     .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new RuntimeException("Error upon fetching memberships"
-                    + " " + "by id" + " " + userId
-                    + " " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Error upon fetching memberships" 
+                            + " " + e.getMessage(), 
+                    e
+            );
         }
     }
 
@@ -183,8 +191,8 @@ public class MembershipService extends MainService {
             SessionCreateParams params
                     = SessionCreateParams.builder()
                             .setMode(SessionCreateParams.Mode.PAYMENT)
-                            .setSuccessUrl("http://localhost:8080/api/fina/skroflin/membership/success")
-                            .setCancelUrl("http://localhost:8080/api/fina/skroflin/membership/cancel")
+                            .setSuccessUrl("http://localhost:5173/?status=success")
+                            .setCancelUrl("http://localhost:5173/?status=cancel")
                             .setClientReferenceId(userId.toString())
                             .addLineItem(
                                     SessionCreateParams.LineItem.builder()

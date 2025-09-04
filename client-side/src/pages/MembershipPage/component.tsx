@@ -1,16 +1,23 @@
 import { useMutation } from "@tanstack/react-query";
-import { Button, Col, Row, theme, Typography } from "antd";
+import { Button, Col, Row, Spin, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { CheckoutRequest } from "../../utils/types/Checkout";
-import { createCheckoutSession } from "../../utils/api";
+import { createCheckoutSession, confirmPayment } from "../../utils/api";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export default function MembershipPage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
 
-    const mutation = useMutation({
+    const location = useLocation()
+    const navigate = useNavigate()
+    const queryParams = new URLSearchParams(location.search)
+    const status = queryParams.get("status")
+
+    const checkoutMutation = useMutation({
         mutationFn: (req: CheckoutRequest) => createCheckoutSession(req),
         onSuccess: (checkoutUrl) => {
             if (checkoutUrl) {
@@ -28,10 +35,25 @@ export default function MembershipPage() {
         }
     })
 
-    const handleBuyMembership = () => {
-        mutation.mutate({ price: 3000 })
-    }
+    const confirmMutation = useMutation({
+        mutationFn: (status: string) => confirmPayment(status),
+        onSuccess: () => {
+            if (status == "success") {
+                toast.success("Payment successful!")
+                navigate("/")
+            } else if (status === "cancel") {
+                toast.error("Payment cancelled!")
+            }
+        },
+        onError: () => toast.error("Error upon pay confirmation!")
+    })
 
+    useEffect(() => {
+        if (status) {
+            confirmMutation.mutate(status)
+        }
+    }, [status])
+    
     const { Text, Title } = Typography
 
     return (
@@ -54,14 +76,17 @@ export default function MembershipPage() {
                     <Text>Choose your membership and continue via Stripe</Text>
                 </Col>
                 <Col>
-                    <Button
-                        type="primary"
-                        size="large"
-                        loading={mutation.isPending}
-                        onClick={handleBuyMembership}
-                    >
-                        Pay for membership
-                    </Button>
+                    {checkoutMutation.isPending || confirmMutation.isPending ? (
+                        <Spin tip="Loading..." />
+                    ) : (
+                        <Button
+                            type="primary"
+                            size="large"
+                            onClick={() => checkoutMutation.mutate({price: 3000})}
+                        >
+                            Pay for membership
+                        </Button>
+                    )}
                 </Col>
             </Row>
         </Content>
