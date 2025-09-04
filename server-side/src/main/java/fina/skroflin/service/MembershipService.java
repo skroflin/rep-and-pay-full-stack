@@ -127,14 +127,21 @@ public class MembershipService extends MainService {
 
     public List<MembershipResponseDTO> getMembershipByUser(int userId) {
         try {
-            User user = (User) session.get(User.class, userId);
-            if (user == null || !user.equals(user.getRole())) {
-                throw new IllegalArgumentException(
-                        "User with the id" + " "
-                        + userId + " "
-                        + "doesn't exist or isn't a user!"
-                );
-            }
+            String query = """
+                            select
+                            	m.membership_id as "id",
+                            	u.first_name as "firstName", 
+                            	u.last_name as "lastName",
+                            	m.start_date as "startDate",
+                            	m.end_date as "endDate",
+                            	m.membership_price as "membershipPrice"
+                            from
+                            	membership m
+                            left join user u on
+                            	m.user_id = u.id
+                            where
+                            	u.id = :userId
+                            """;
             List<Membership> memberships = session.createQuery(
                     "select m from Membership m "
                     + "left join fetch m.user u "
@@ -142,13 +149,24 @@ public class MembershipService extends MainService {
                     + "order by m.startDate desc", Membership.class)
                     .setParameter("userId", userId)
                     .list();
+
+            if (memberships.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "User with id"
+                        + " " + userId
+                        + " " + "has no memberships!"
+                );
+            }
+            System.out.println("Vraćam listu membershipa");
             return memberships.stream()
                     .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
+            System.out.println("Dogodila se greška prilikom fetchanja membershipa po userId-ju "+userId);
+            e.printStackTrace();
             throw new RuntimeException(
-                    "Error upon fetching memberships" 
-                            + " " + e.getMessage(), 
+                    "Error upon fetching memberships"
+                    + " " + e.getMessage(),
                     e
             );
         }

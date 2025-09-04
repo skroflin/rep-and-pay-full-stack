@@ -11,6 +11,7 @@ import fina.skroflin.service.MembershipService;
 import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Tag(name = "Membership", description = "Available endpoints for the entity 'Membership'")
 @RestController
 @RequestMapping("/api/fina/skroflin/membership")
+@Slf4j
 public class MembershipController {
 
     private final UserService userService;
@@ -76,7 +78,10 @@ public class MembershipController {
                     + userId + " " + "doesn't exist!"
             );
         }
-        return new ResponseEntity<>(memberships, HttpStatus.OK);
+        
+        log.info("Svi membershipi: "+memberships);
+        //return new ResponseEntity<>(memberships, HttpStatus.OK);
+        return ResponseEntity.ok(memberships);
     }
     
     @GetMapping("/hasActiveMembership")

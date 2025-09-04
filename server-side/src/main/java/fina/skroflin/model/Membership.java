@@ -19,12 +19,11 @@ import lombok.Data;
  *
  * @author skroflin
  */
-@Data
-@AllArgsConstructor
 @Entity
 @Table(name = "membership")
 @AttributeOverride(name = "id", column = @Column(name = "membership_id"))
-public class Membership extends MainEntity{
+public class Membership extends MainEntity {
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,4 +33,48 @@ public class Membership extends MainEntity{
     private LocalDate endDate;
     @Column(name = "membership_price", columnDefinition = "int")
     private long membershipPrice;
+
+    public Membership() {
+    }
+
+    public Membership(User user, LocalDate startDate, LocalDate endDate, long membershipPrice) {
+        this.user = user;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.membershipPrice = membershipPrice;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public long getMembershipPrice() {
+        return membershipPrice;
+    }
+
+    public void setMembershipPrice(long membershipPrice) {
+        this.membershipPrice = membershipPrice;
+    }
+    
+    
 }
