@@ -102,7 +102,7 @@ export default function UserPage() {
                     <ul>
                         {memberships.map((m, idx) => (
                             <li key={idx}>
-                                Start: {dayjs(m.startDate).format("dd.MM.yyyy")}, end: {dayjs(m.endDate).format("dd.MM.yyyy")}, price: {m.membershipPrice}
+                                Start: {dayjs(m.startDate).format("DD.MM.YYYY")}, end: {dayjs(m.endDate).format("DD.MM.YYYY")}, price: {m.membershipPrice}
                             </li>
                         ))}
                     </ul>

@@ -136,6 +136,6 @@ export const hasActiveMembership = () => apiGetCall("membership/hasActiveMembers
 export const confirmPayment = (status: string) => apiGetCall(`membership/confirm?status=${status}`)
 
 //stripe membership methods (superuser)
-export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?id=${userId}`)
+export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?userId=${userId}`)
 export const getActiveMemberships = () => apiGetCall("membership/getActiveMemberships")
 export const getExpiredMemberships = () => apiGetCall("membership/getExpiredMemberships")
