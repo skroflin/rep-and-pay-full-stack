@@ -12,7 +12,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 public record CheckoutSessionRequestDTO(
         @Schema(example = "30")
-        int price
+        int price,
+        @Schema(example = "10")
+        int month
         ) {
 
 }

@@ -564,7 +564,7 @@ public class BookingService extends MainService {
             }
             
             Long numOfUserBookings = session.createQuery(
-                    "select from Booking b left join b.user u "
+                    "select count(b.id) from Booking b left join b.user u "
                             + "where u.id = :userId", 
                     Long.class)
                     .setParameter("userId", userId)

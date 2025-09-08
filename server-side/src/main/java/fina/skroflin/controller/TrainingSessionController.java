@@ -407,7 +407,7 @@ public class TrainingSessionController {
         return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
     }
 
-    @GetMapping("/getNumOfIntermediateTainingSessions")
+    @GetMapping("/getNumOfIntermediateTrainingSessions")
     public ResponseEntity<Long> getNumOfIntermediateTrainingSessions(
             @RequestHeader HttpHeaders headers
     ) {
@@ -416,7 +416,7 @@ public class TrainingSessionController {
         return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
     }
 
-    @GetMapping("/getNumOfAdvancedTainingSessions")
+    @GetMapping("/getNumOfAdvancedTrainingSessions")
     public ResponseEntity<Long> getNumOfAdvancedTrainingSessions(
             @RequestHeader HttpHeaders headers
     ) {

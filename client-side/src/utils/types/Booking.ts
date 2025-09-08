@@ -21,9 +21,9 @@ export interface TrainerBookingResponse {
     trainingLevel: string,
     startOfSession: Date | string,
     endOfSession: Date | string,
-    bookingStatus: "approved" | "rejected" | "pending"
+    bookingStatus: "accepted" | "rejected" | "pending"
 }
 
 export interface UpdateBookingStatusRequest {
-    bookingStatus: "approved" | "rejected"
+    bookingStatus: "accepted" | "rejected"
 }

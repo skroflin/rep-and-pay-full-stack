@@ -94,7 +94,7 @@ export const createBooking = (req: BookingRequest) => apiPostCall<BookingRequest
 export const updateBooking = (req: BookingRequest, bookingId: string) => apiPutCall<BookingRequest>(`booking/put?=${bookingId}`, req)
 export const deleteBooking = (bookingId: string) => apiDeleteCall(`booking/delete?id=${bookingId}`)
 export const getTrainerBookings = () => apiGetCall("booking/getTrainerBookings")
-export const updateBookingStatus = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/updateBookingStatus?=${bookingId}`, req)
+export const updateBookingStatus = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/updateBookingStatus?id=${bookingId}`, req)
 
 //training session methods
 export const getTrainingSessions = () => apiGetCall("trainingSessions/get")
@@ -123,8 +123,8 @@ export const getNumOfTrainerBookings = () => apiGetCall("booking/getNumOfTrainer
 export const getNumOfPendingTrainerBookings = () => apiGetCall("booking/getNumOfPendingTrainerBookings")
 export const getNumOfAcceptedTrainerBookings = () => apiGetCall("booking/getNumOfAcceptedTrainerBookings")
 export const getNumOfBeginnerTrainingSessions = () => apiGetCall("trainingSession/getNumOfBeginnerTrainingSessions")
-export const getNumOfIntermediateTrainingSessions = () => apiGetCall("trainingSession/getNumOfIntermediateTainingSessions")
-export const getNumOfAdvancedTainingSessions = () => apiGetCall("trainingSessions/getNumOfAdvancedTainingSessions")
+export const getNumOfIntermediateTrainingSessions = () => apiGetCall("trainingSession/getNumOfIntermediateTrainingSessions")
+export const getNumOfAdvancedTrainingSessions = () => apiGetCall("trainingSession/getNumOfAdvancedTrainingSessions")
 
 //statistic methods (user)
 export const getNumOfMyBookings = () => apiGetCall("booking/getNumOfMyBookings")

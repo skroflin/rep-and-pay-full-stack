@@ -1,7 +1,7 @@
 import { useQueries } from "@tanstack/react-query";
-import { Card, Col, Flex, Row, Statistic, Tooltip } from "antd";
+import { Card, Flex, Statistic } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { getMyBookings, getNumOfAcceptedTrainerBookings, getNumOfAdvancedTainingSessions, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
+import { getMyBookings, getNumOfAcceptedTrainerBookings, getNumOfAdvancedTrainingSessions, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
 import { getRole } from "../../utils/helper";
 import type { BookingResponse } from "../../utils/types/Booking";
 
@@ -61,8 +61,8 @@ export default function HomePage() {
                 enabled: role === "user"
             },
             {
-                queryKey: ["num-of-advanced-sessions"],
-                queryFn: getNumOfAdvancedTainingSessions,
+                queryKey: ["num-of-advanced-training-sessions"],
+                queryFn: getNumOfAdvancedTrainingSessions,
                 enabled: role === "coach"
             }
         ]
@@ -83,77 +83,55 @@ export default function HomePage() {
 
     return (
         <>
-            <Row style={{
-                marginTop: 30
-            }}>
+            <Flex vertical justify="center" align="center" style={{ marginTop: 30, minHeight: "80vh" }} gap={24}>
                 {role === "coach" && (
-                    <>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of pending booking requests" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of accepted booking requests" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
-                            </Card>
-                        </Col>
-                        <Col span={8} offset={6}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of advanced training sessions" value={numOfAdvancedTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
-                            </Card>
-                        </Col>
-                    </>
+                    <Flex vertical justify="center" align="flex-end" gap={16}>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of pending booking requests" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of accepted booking requests" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                        </Card>
+                        {/* <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of advanced training sessions" value={numOfAdvancedTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                        </Card> */}
+                    </Flex>
                 )}
                 {role === "user" && (
-                    <>
-                        <Col span={13} offset={10}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of my bookings" value={numOfUserBookings} />
-                            </Card>
-                        </Col>
-                        <Col span={13} offset={10}>
-                            <Card variant="borderless">
-                                <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions} />
-                            </Card>
-                        </Col>
-                        <Col span={13} offset={10}>
-                            <Card variant="borderless" title="My bookings">
-                                <Content>
-                                    {/* logika mapiranja ovdje! */}
-                                </Content>
-                            </Card>
-                        </Col>
-                    </>
+                    <Flex vertical justify="center" align="flex-end" gap={16}>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of my bookings" value={numOfUserBookings} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }}>
+                            <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions} />
+                        </Card>
+                        <Card variant="borderless" style={{ width: 350 }} title="My bookings">
+                            <Content>
+                                {/* logika mapiranja ovdje! */}
+                            </Content>
+                        </Card>
+                    </Flex>
                 )}
                 {role === "superuser" && (
-                    <>
+                    <Card variant="borderless" style={{ width: 350 }}>
                         <Content>
                             Superuser content
                         </Content>
-                    </>
+                    </Card>
                 )}
-            </Row>
+            </Flex>
         </>
     )
 }

@@ -6,7 +6,7 @@ import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
-import { Button, Col, Form, Input, Row, Spin, Typography } from "antd"
+import { Button, Col, Flex, Form, Input, Row, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 
 export default function LoginIn() {
@@ -45,17 +45,14 @@ export default function LoginIn() {
     return <>
         {
             isUserLoggedIn ? <Navigate to="/" /> :
-                <Row
-                    justify="center"
-                    align="middle"
-                >
-                    <Col lg={6}>
-                        <Title level={2}>Log In</Title>
+                <Flex vertical justify="center" align="center" style={{ minHeight: "100vh" }}>
+                    <Flex vertical align="center">
+                        <Title level={2} style={{ textAlign: "center" }}>Log In</Title>
                         <Form
                             name="basic"
                             labelCol={{ span: 9 }}
                             wrapperCol={{ span: 16 }}
-                            style={{ maxWidth: 400 }}
+                            style={{ maxWidth: 400, margin: "0 auto" }}
                             initialValues={{ remember: true }}
                             autoComplete="off"
                         >
@@ -67,10 +64,9 @@ export default function LoginIn() {
                                     placeholder="Username"
                                     prefix={<UserOutlined />}
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)} 
+                                    onChange={(e) => setUsername(e.target.value)}
                                 />
                             </Form.Item>
-
                             <Form.Item
                                 name="password"
                                 rules={[{ required: true, message: 'Please input your password!' }]}
@@ -83,9 +79,7 @@ export default function LoginIn() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </Form.Item>
-
-
-                            <Form.Item label={null}>
+                            <Form.Item>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
@@ -94,16 +88,23 @@ export default function LoginIn() {
                                         password: password
                                     })}
                                     icon={<LoginOutlined />}
+                                    style={{ width: "100%" }}
                                 >
                                     Log In
                                 </Button>
                             </Form.Item>
-                            <Button type="link" onClick={() => navigate("/sign-up")}>
-                                Don't have an account? Sign up!
-                            </Button>
+                            <Form.Item>
+                                <Button
+                                    type="link"
+                                    onClick={() => navigate("/sign-up")}
+                                    style={{ width: "100%" }}
+                                >
+                                    Don't have an account? Sign up!
+                                </Button>
+                            </Form.Item>
                         </Form>
-                    </Col>
-                </Row>
+                    </Flex>
+                </Flex>
         }
         <Spin
             spinning={signInUser.isPending}

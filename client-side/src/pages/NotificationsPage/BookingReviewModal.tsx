@@ -26,7 +26,7 @@ export default function BookingReviewDrawer({
     const queryClient = useQueryClient()
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "approved" | "rejected" }) =>
+        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "accepted" | "rejected" }) =>
             updateBookingStatus(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
@@ -80,7 +80,7 @@ export default function BookingReviewDrawer({
                         </Button>
                         <Button
                             type="primary"
-                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "approved" })}
+                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "accepted" })}
                             icon={<CheckCircleOutlined />}
                         >
                             Approve
@@ -130,7 +130,7 @@ export default function BookingReviewDrawer({
                         <Text style={{ textTransform: "capitalize" }}>
                             {booking.bookingStatus === "pending" ? (
                                 <Text type="warning">Pending</Text>
-                            ) : booking.bookingStatus === "approved" ? (
+                            ) : booking.bookingStatus === "accepted" ? (
                                 <Text type="danger">Approved</Text>
                             ) : booking.bookingStatus === "rejected" ? (
                                 <Text type="success">Rejected</Text>

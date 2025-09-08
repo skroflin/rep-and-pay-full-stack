@@ -50,7 +50,8 @@ public class MembershipWebhookController {
             if (session != null) {
                 Integer userId = Integer.parseInt(session.getClientReferenceId());
                 int price = session.getAmountTotal().intValue();
-                membershipService.activateMembership(userId, 30, price);
+                int month = Integer.parseInt(session.getMetadata().get("month"));
+                membershipService.activateMembership(userId, price, month);
             }
         }
         return new ResponseEntity<>("Webhook received!", HttpStatus.OK);

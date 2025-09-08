@@ -1,4 +1,4 @@
-import { Button, Modal, Space, Table, Tag, theme } from "antd";
+import { Button, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import type { UserRequest } from "../../utils/types/User";
@@ -50,12 +50,6 @@ export default function UserPage() {
             }
         },
         {
-            title: "Membership",
-            dataIndex: "isMembershipPaid",
-            key: "isMembershipPaid",
-            render: (paid: boolean) => (paid ? "Paid" : "Not paid")
-        },
-        {
             title: "Functions",
             key: "functions",
             render: (_: any, record: UserRequest) => (
@@ -71,6 +65,8 @@ export default function UserPage() {
             )
         }
     ]
+
+    const { Text } = Typography
 
     return (
         <Content
@@ -96,18 +92,19 @@ export default function UserPage() {
             <Modal
                 title={`Selected membership for ${selectedUser?.firstName} ${selectedUser?.lastName}`}
                 open={isModalOpen}
+                onOk={() => setIsModalOpen(false)}
                 onCancel={() => setIsModalOpen(false)}
             >
                 {memberships.length > 0 ? (
-                    <ul>
+                    <List bordered>
                         {memberships.map((m, idx) => (
-                            <li key={idx}>
-                                Start: {dayjs(m.startDate).format("DD.MM.YYYY")}, end: {dayjs(m.endDate).format("DD.MM.YYYY")}, price: {m.membershipPrice}
-                            </li>
+                            <List.Item key={idx}>
+                                <Text>Start: {dayjs(m.startDate).format("DD.MM.YYYY")}, End: {dayjs(m.endDate).format("DD.MM.YYYY")}, Price: {m.membershipPrice}</Text>
+                            </List.Item>
                         ))}
-                    </ul>
+                    </List>
                 ) : (
-                    <p>No memberships found</p>
+                    <Text>No memberships found</Text>
                 )}
             </Modal>
         </Content>

@@ -1,11 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { Button, Col, Row, Spin, theme, Typography } from "antd";
+import { Button, Col, Flex, Row, Select, Spin, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { CheckoutRequest } from "../../utils/types/Checkout";
 import { createCheckoutSession, confirmPayment } from "../../utils/api";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { DollarOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 export default function MembershipPage() {
     const {
@@ -16,6 +17,7 @@ export default function MembershipPage() {
     const navigate = useNavigate()
     const queryParams = new URLSearchParams(location.search)
     const status = queryParams.get("status")
+    const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
 
     const checkoutMutation = useMutation({
         mutationFn: (req: CheckoutRequest) => createCheckoutSession(req),
@@ -53,8 +55,13 @@ export default function MembershipPage() {
             confirmMutation.mutate(status)
         }
     }, [status])
-    
+
     const { Text, Title } = Typography
+
+    const months = [
+        "January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    ]
 
     return (
         <Content
@@ -73,20 +80,48 @@ export default function MembershipPage() {
                     }}
                 >
                     <Title>Membership</Title>
-                    <Text>Choose your membership and continue via Stripe</Text>
+                    <Text>Choose your membership month and continue via Stripe</Text>
                 </Col>
                 <Col>
-                    {checkoutMutation.isPending || confirmMutation.isPending ? (
-                        <Spin tip="Loading..." />
-                    ) : (
-                        <Button
-                            type="primary"
-                            size="large"
-                            onClick={() => checkoutMutation.mutate({price: 3000})}
+                    <Row>
+                        <Select
+                            placeholder="Select month"
+                            style={{
+                                width: 200
+                            }}
+                            onChange={(val) => setSelectedMonth(val)}
+                            prefix={
+                                <OrderedListOutlined />
+                            }
                         >
-                            Pay for membership
-                        </Button>
-                    )}
+                            {months.map((m, idx) => (
+                                <Select.Option key={idx + 1} value={idx - 1}>
+                                    {m}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Row>
+                    <Flex
+                        style={{
+                            width: 200,
+                            marginTop: 10
+                        }}
+                    >
+                        {checkoutMutation.isPending || confirmMutation.isPending ? (
+                            <Spin tip="Loading..." />
+                        ) : (
+                            <Button
+                                type="primary"
+                                size="middle"
+                                onClick={() => checkoutMutation.mutate({ price: 3000, month: selectedMonth })}
+                                icon={
+                                    <DollarOutlined />
+                                }
+                            >
+                                Pay for membership
+                            </Button>
+                        )}
+                    </Flex>
                 </Col>
             </Row>
         </Content>

@@ -1,4 +1,4 @@
-import { Table, theme } from "antd";
+import { Table, Tag, theme } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
 import type { UserRequest } from "../../utils/types/User";
@@ -26,12 +26,14 @@ export default function CoachPage() {
         { title: "Name", dataIndex: "firstName", key: "firstName" },
         { title: "Username", dataIndex: "username", key: "username" },
         { title: "Email", dataIndex: "email", key: "email" },
-        { title: "Role", dataIndex: "role", key: "role" },
-        {
-            title: "Membership",
-            dataIndex: "isMembershipPaid",
-            key: "isMembershipPaid",
-            render: (paid: boolean) => (paid ? "Paid" : "Not paid")
+        { 
+            title: "Role",
+            dataIndex: "role",
+            key: "role",
+            render: (role: string) => {
+                let color = role === "coach" ? "blue" : "green"
+                return <Tag color={color}>{role.toUpperCase()}</Tag>
+            }
         }
     ]
 

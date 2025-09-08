@@ -17,6 +17,7 @@ import fina.skroflin.utils.stripe.StripeConfig;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -212,6 +213,7 @@ public class MembershipService extends MainService {
                             .setSuccessUrl("http://localhost:5173/?status=success")
                             .setCancelUrl("http://localhost:5173/?status=cancel")
                             .setClientReferenceId(userId.toString())
+                            .putMetadata("month", String.valueOf(o.month()))
                             .addLineItem(
                                     SessionCreateParams.LineItem.builder()
                                             .setQuantity(1L)
@@ -241,32 +243,35 @@ public class MembershipService extends MainService {
         }
     }
 
-    public void activateMembership(Integer userId, int durationInDays, int price) {
+    public void activateMembership(Integer userId, int price, int month) {
 
         User user = (User) session.get(User.class, userId);
         if (user == null) {
             throw new NoResultException("User not found!");
         }
 
-        LocalDate today = LocalDate.now();
-        LocalDate endDate = today.plusDays(durationInDays);
+        int year = LocalDate.now().getYear();
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
-                + "and m.startDate <= :today "
-                + "and m.endDate >= :today",
+                + "and m.startDate <= :endDate "
+                + "and m.endDate >= :startDate",
                 Long.class)
                 .setParameter("userId", userId)
-                .setParameter("today", today)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
                 .uniqueResult();
 
         if (count > 0) {
             throw new IllegalArgumentException("There is already a membership "
-                    + "for this user" + " " + userId);
+                    + "for this user" + " " + userId + " " + "and the given month"
+                    + " " + month + "/" + year);
         }
 
-        Membership newMembership = new Membership(user, today, endDate, price);
+        Membership newMembership = new Membership(user, startDate, endDate, price);
 
         session.beginTransaction();
         session.persist(newMembership);
