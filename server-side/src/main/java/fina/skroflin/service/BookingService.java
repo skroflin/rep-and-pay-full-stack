@@ -61,11 +61,14 @@ public class BookingService extends MainService {
         if (booking == null) {
             return null;
         }
-        Integer trainingSessionId = (booking.getId() != null)
-                ? booking.getTrainingSession().getId() : null;
+        
         return new MyBookingResponseDTO(
-                booking.getId(),
-                trainingSessionId,
+                booking.getTrainingSession().getBeginningOfSession(),
+                booking.getTrainingSession().getEndOfSession(),
+                booking.getTrainingSession().getTrainingType(),
+                booking.getTrainingSession().getTrainingLevel(),
+                booking.getTrainingSession().getTrainer().getFirstName(),
+                booking.getTrainingSession().getTrainer().getLastName(),
                 booking.getBookingStatus()
         );
     }

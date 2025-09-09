@@ -1,14 +1,23 @@
-import { useQueries } from "@tanstack/react-query";
-import { Card, Flex, Statistic } from "antd";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { Card, Descriptions, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { getMyBookings, getNumOfAcceptedTrainerBookings, getNumOfAdvancedTrainingSessions, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
+import {
+    getMyBookings,
+    getNumOfAcceptedTrainerBookings,
+    getNumOfAdvancedTrainingSessions,
+    getNumOfBeginnerTrainingSessions,
+    getNumOfIntermediateTrainingSessions,
+    getNumOfMyBookings,
+    getNumOfMyTrainingSessions,
+    getNumOfMyUserTrainingSessions,
+    getNumOfPendingTrainerBookings,
+    getNumOfTrainerBookings
+} from "../../utils/api";
 import { getRole } from "../../utils/helper";
 import type { BookingResponse } from "../../utils/types/Booking";
 import CountUp from "react-countup";
-
-export interface HomePageProps {
-    userBookings: BookingResponse[]
-}
+import type { MyBookingResponse } from "../../utils/types/user-authenticated/MyBooking";
+import dayjs from "dayjs";
 
 export default function HomePage() {
 
@@ -47,11 +56,6 @@ export default function HomePage() {
                 enabled: role === "coach"
             },
             {
-                queryKey: ["num-of-user-bookings"],
-                queryFn: getNumOfMyBookings,
-                enabled: role === "user"
-            },
-            {
                 queryKey: ["num-of-user-training-sessions"],
                 queryFn: getNumOfMyUserTrainingSessions,
                 enabled: role === "user"
@@ -69,6 +73,12 @@ export default function HomePage() {
         ]
     });
 
+    const { data: bookings, isLoading } = useQuery<MyBookingResponse[]>({
+        queryKey: ["my-booking-request"],
+        queryFn: () => getMyBookings(),
+        enabled: role === "user"
+    })
+
     const [
         numOfMyTrainingSessions,
         numOfTrainerBookings,
@@ -78,9 +88,10 @@ export default function HomePage() {
         numOfIntermediateTrainingSessions,
         numOfUserBookings,
         numOfUserTrainingSessions,
-        numOfAdvancedTrainingSessions,
-        userBookings //napraviti logiku mapiranja i prikaz podataka za rezervacije
+        numOfAdvancedTrainingSessions //napraviti logiku mapiranja i prikaz podataka za rezervacije
     ] = results.map((r: { data: any; }) => r.data);
+
+    const { Text, Title } = Typography
 
     return (
         <Flex vertical justify="space-evenly" align="start" style={{ marginTop: 30, minHeight: "80vh" }} wrap>
@@ -164,7 +175,40 @@ export default function HomePage() {
                     <Flex>
                         <Card variant="borderless" style={{ width: 350 }} title="My bookings">
                             <Content>
-                                {/* logika mapiranja ovdje! */}
+                                {isLoading ? (
+                                    <Spin />
+                                ) : bookings && bookings.length > 0 ? (
+                                    <List
+                                        pagination={{ pageSize: 3 }}
+                                        bordered
+                                        dataSource={bookings}
+                                        renderItem={(booking) => (
+                                            <List.Item>
+                                                <Descriptions column={1} size="small" style={{ width: "100%" }}>
+                                                    <Descriptions.Item>
+                                                        <Title level={5}>{booking.trainingType.toUpperCase()} - {booking.trainingLevel.toUpperCase()}</Title>
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item>
+                                                        <Text>{booking.trainerFirstName} {booking.trainerLastName}</Text>
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item>
+                                                        <Text>From {dayjs(booking.beginningOfSession).format("HH:MM")} to {dayjs(booking.endOfSession).format("HH:MM")}</Text>
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item>
+                                                        <Text>
+                                                            {booking.bookingStatus === "accepted" && <Tag color="green">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                                            {booking.bookingStatus === "rejected" && <Tag color="red">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                                            {booking.bookingStatus === "pending" && <Tag color="yellow">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                                        </Text>
+                                                    </Descriptions.Item>
+                                                </Descriptions>
+                                            </List.Item>
+                                        )}
+                                    >
+                                    </List>
+                                ) : (
+                                    <Text></Text>
+                                )}
                             </Content>
                         </Card>
                     </Flex>
