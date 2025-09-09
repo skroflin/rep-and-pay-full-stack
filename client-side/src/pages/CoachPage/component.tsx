@@ -23,7 +23,6 @@ export default function CoachPage() {
     const columns = [
         { title: "First name", dataIndex: "firstName", key: "firstName" },
         { title: "Last name", dataIndex: "lastName", key: "lastName" },
-        { title: "Name", dataIndex: "firstName", key: "firstName" },
         { title: "Username", dataIndex: "username", key: "username" },
         { title: "Email", dataIndex: "email", key: "email" },
         { 

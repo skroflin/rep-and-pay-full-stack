@@ -4,6 +4,7 @@ import { Content } from "antd/es/layout/layout";
 import { getMyBookings, getNumOfAcceptedTrainerBookings, getNumOfAdvancedTrainingSessions, getNumOfBeginnerTrainingSessions, getNumOfIntermediateTrainingSessions, getNumOfMyBookings, getNumOfMyTrainingSessions, getNumOfMyUserTrainingSessions, getNumOfPendingTrainerBookings, getNumOfTrainerBookings } from "../../utils/api";
 import { getRole } from "../../utils/helper";
 import type { BookingResponse } from "../../utils/types/Booking";
+import CountUp from "react-countup";
 
 export interface HomePageProps {
     userBookings: BookingResponse[]
@@ -87,22 +88,50 @@ export default function HomePage() {
                 {role === "coach" && (
                     <Flex vertical justify="center" align="flex-end" gap={16}>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of training sessions" value={numOfMyTrainingSessions} />
+                            <Statistic 
+                                title="Number of training sessions" 
+                                value={numOfMyTrainingSessions} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of training bookings" value={numOfTrainerBookings} />
+                            <Statistic 
+                                title="Number of training bookings" 
+                                value={numOfTrainerBookings} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of pending booking requests" value={numOfPendingTrainerBookings} suffix={`/${numOfTrainerBookings}`} />
+                            <Statistic 
+                                title="Number of pending booking requests" 
+                                value={numOfPendingTrainerBookings} 
+                                suffix={`/${numOfTrainerBookings}`} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of accepted booking requests" value={numOfAcceptedTrainerBookings} suffix={` /${numOfTrainerBookings}`} />
+                            <Statistic 
+                                title="Number of accepted booking requests" 
+                                value={numOfAcceptedTrainerBookings} 
+                                suffix={` /${numOfTrainerBookings}`} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of beginner training sessions" value={numOfBeginnerTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                            <Statistic 
+                                title="Number of beginner training sessions" 
+                                value={numOfBeginnerTrainingSessions} 
+                                suffix={` /${numOfMyTrainingSessions}`} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of intermediate training sessions" value={numOfIntermediateTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
+                            <Statistic 
+                                title="Number of intermediate training sessions" 
+                                value={numOfIntermediateTrainingSessions} 
+                                suffix={` /${numOfMyTrainingSessions}`} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         {/* <Card variant="borderless" style={{ width: 350 }}>
                             <Statistic title="Number of advanced training sessions" value={numOfAdvancedTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
@@ -112,10 +141,18 @@ export default function HomePage() {
                 {role === "user" && (
                     <Flex vertical justify="center" align="flex-end" gap={16}>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of my bookings" value={numOfUserBookings} />
+                            <Statistic
+                                title="Number of my bookings"
+                                value={numOfUserBookings ?? 0}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of my training sessions" value={numOfUserTrainingSessions} />
+                            <Statistic 
+                                title="Number of my training sessions" 
+                                value={numOfUserTrainingSessions} 
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
                         </Card>
                         <Card variant="borderless" style={{ width: 350 }} title="My bookings">
                             <Content>

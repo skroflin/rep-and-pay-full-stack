@@ -73,14 +73,26 @@ export default function BookingReviewDrawer({
                     }}>
                         <Button
                             danger
-                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "rejected" })}
+                            loading={updateStatusMutation.isPending}
+                            onClick={() =>
+                                updateStatusMutation.mutate({
+                                    bookingId: booking.bookingId,
+                                    bookingStatus: "rejected"
+                                })
+                            }
                             icon={<CloseCircleOutlined />}
                         >
                             Reject
                         </Button>
                         <Button
                             type="primary"
-                            onClick={() => updateStatusMutation.mutate({ bookingId: booking.bookingId, bookingStatus: "accepted" })}
+                            loading={updateStatusMutation.isPending}
+                            onClick={() =>
+                                updateStatusMutation.mutate({
+                                    bookingId: booking.bookingId,
+                                    bookingStatus: "accepted"
+                                })
+                            }
                             icon={<CheckCircleOutlined />}
                         >
                             Approve

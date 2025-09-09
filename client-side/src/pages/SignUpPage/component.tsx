@@ -6,9 +6,18 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
-import { Button, Col, Form, Input, Row, Select, Spin, Typography } from "antd";
+import { Button, Form, Input, Flex, Select, Spin, Typography } from "antd";
 import { Option } from "antd/es/mentions";
-import { IdcardFilled, IdcardOutlined, LockFilled, LockOutlined, MailOutlined, TeamOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
+import {
+    IdcardFilled,
+    IdcardOutlined,
+    LockFilled,
+    LockOutlined,
+    MailOutlined,
+    TeamOutlined,
+    UserAddOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 
 export default function SignUp() {
     const setUser = useUserSetter()
@@ -83,69 +92,87 @@ export default function SignUp() {
     const { Title } = Typography
 
     return (
-        <Row 
-            justify="center" 
-            align="middle"
+        <Flex
+            vertical
+            justify="center"
+            align="center"
+            style={{ minHeight: "90vh" }}
         >
-            <Col lg={6}>
-                <Title level={2}>
+            <Flex vertical align="center">
+                <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
                     Sign Up
                 </Title>
                 <Form
                     name="basic"
-                    labelCol={{ span: 9 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 400 }}
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                    style={{
+                        maxWidth: 400,
+                        margin: "0 auto",
+                        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                        borderRadius: 16,
+                        border: "1px solid #e4e4e4",
+                        padding: 32,
+                        background: "#fff",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}
                     initialValues={{ remember: true }}
                     autoComplete="off"
                 >
                     <Form.Item
                         name="firstName"
                         rules={[{ required: true, message: 'Please input your first name!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input
                             placeholder="First name"
                             prefix={<IdcardOutlined />}
                             value={formData.firstName}
-                            onChange={handleChange} />
+                            onChange={handleChange}
+                        />
                     </Form.Item>
-
                     <Form.Item
                         name="lastName"
                         rules={[{ required: true, message: 'Please input your last name/surname!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input
                             placeholder="Last name"
                             prefix={<IdcardFilled />}
                             value={formData.lastName}
-                            onChange={handleChange} />
+                            onChange={handleChange}
+                        />
                     </Form.Item>
-
                     <Form.Item
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input
                             placeholder="Username"
                             prefix={<UserOutlined />}
                             value={formData.username}
-                            onChange={handleChange} />
+                            onChange={handleChange}
+                        />
                     </Form.Item>
-
                     <Form.Item
                         name="email"
                         rules={[{ required: true, message: 'Please input your email!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input
                             placeholder="Email"
                             prefix={<MailOutlined />}
                             value={formData.email}
-                            onChange={handleChange} />
+                            onChange={handleChange}
+                        />
                     </Form.Item>
-
                     <Form.Item
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input.Password
                             placeholder="Password"
@@ -155,10 +182,10 @@ export default function SignUp() {
                             onChange={handleChange}
                         />
                     </Form.Item>
-
                     <Form.Item
                         name="confirmPassword"
                         rules={[{ required: true, message: 'Please confirm your password!' }]}
+                        style={{ width: "100%" }}
                     >
                         <Input.Password
                             placeholder="Confirm password"
@@ -168,8 +195,7 @@ export default function SignUp() {
                             onChange={handleChange}
                         />
                     </Form.Item>
-
-                    <Form.Item name="role" rules={[{ required: true }]}>
+                    <Form.Item name="role" rules={[{ required: true }]} style={{ width: "100%" }}>
                         <Select
                             prefix={<TeamOutlined />}
                             placeholder="Select a role"
@@ -180,42 +206,44 @@ export default function SignUp() {
                             <Option value="coach">Coach</Option>
                         </Select>
                     </Form.Item>
-
-                    <Form.Item label={null}>
+                    <Form.Item label={null} style={{ width: "100%", marginTop: 16 }}>
                         <Button
                             style={{
                                 alignItems: "center",
                                 justifyContent: "center",
-                                display: "flex"
+                                display: "flex",
+                                width: "100%"
                             }}
                             type="primary"
                             htmlType="submit"
-                            onSubmit={handleSubmit}
+                            onClick={handleSubmit}
                             icon={<UserAddOutlined />}
                         >
                             Sign Up
                         </Button>
                     </Form.Item>
-
-                    <Button
-                        style={{
-                            textAlign: "center",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            display: "flex"
-                        }}
-                        type="link"
-                        onClick={() => navigate("/log-in")}
-                    >
-                        Already have an account? Log in!
-                    </Button>
+                    <Form.Item style={{ width: "100%" }}>
+                        <Button
+                            style={{
+                                textAlign: "center",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                display: "flex",
+                                width: "100%"
+                            }}
+                            type="link"
+                            onClick={() => navigate("/log-in")}
+                        >
+                            Already have an account? Log in!
+                        </Button>
+                    </Form.Item>
                 </Form>
                 <Spin
                     spinning={signUpUser.isPending}
                     size="large"
                     tip="Logging in..."
                 />
-            </Col>
-        </Row>
+            </Flex>
+        </Flex>
     )
 }

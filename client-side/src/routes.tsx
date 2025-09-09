@@ -151,8 +151,10 @@ export function AllRoutes() {
     return (
         <Layout
             style={{
-                height: 900,
-                textAlign: "center"
+                minHeight: "90vh",
+                textAlign: "center",
+                borderRadius: 10,
+                backgroundColor: "white"
             }}
         >
             {isUserLoggedIn && <NavBar routes={routes} />}
