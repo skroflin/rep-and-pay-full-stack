@@ -1,12 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
-import { Button, Col, Flex, Row, Select, Spin, theme, Typography } from "antd";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button, Col, Flex, Select, Spin, Table, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { CheckoutRequest } from "../../utils/types/Checkout";
-import { createCheckoutSession, confirmPayment } from "../../utils/api";
+import { createCheckoutSession, confirmPayment, getMyMemberships } from "../../utils/api";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { DollarOutlined, OrderedListOutlined } from "@ant-design/icons";
+import type { Membership } from "../../utils/types/Membership";
 
 export default function MembershipPage() {
     const {
@@ -18,6 +19,11 @@ export default function MembershipPage() {
     const queryParams = new URLSearchParams(location.search)
     const status = queryParams.get("status")
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
+
+    const { data: memberships, isLoading: membershipLoading } = useQuery<Membership[]>({
+        queryKey: ["memberships"],
+        queryFn: () => getMyMemberships()
+    })
 
     const checkoutMutation = useMutation({
         mutationFn: (req: CheckoutRequest) => createCheckoutSession(req),
@@ -63,6 +69,13 @@ export default function MembershipPage() {
         "September", "October", "November", "December"
     ]
 
+    const columns = [
+        { title: "Start Date", dataIndex: "startDate", key: "startDate" },
+        { title: "End Date", dataIndex: "endDate", key: "endDate" },
+        { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice" },
+        { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate" },
+    ]
+
     return (
         <Content
             style={{
@@ -73,40 +86,31 @@ export default function MembershipPage() {
                 borderRadius: borderRadiusLG,
             }}
         >
-            <Row justify="center" align="middle" style={{ height: "100%" }}>
-                <Col
-                    style={{
-                        textAlign: "center"
-                    }}
-                >
-                    <Title>Membership</Title>
-                    <Text>Choose your membership month and continue via Stripe</Text>
+            <Flex
+                justify="center"
+                align="center"
+                wrap
+                gap={32}
+                style={{ minHeight: 280 }}
+            >
+                <Col xs={24} sm={20} md={12} lg={8} style={{ textAlign: "center", marginBottom: 24 }}>
+                    <Title level={3}>Membership</Title>
+                    <Text strong>Choose your membership month and continue via Stripe</Text>
                 </Col>
-                <Col>
-                    <Row>
+                <Col xs={24} sm={20} md={12} lg={8} style={{ textAlign: "center" }}>
+                    <Flex vertical gap={16} align="center">
                         <Select
                             placeholder="Select month"
-                            style={{
-                                width: 200
-                            }}
+                            style={{ width: 200 }}
                             onChange={(val) => setSelectedMonth(val)}
-                            prefix={
-                                <OrderedListOutlined />
-                            }
+                            prefix={<OrderedListOutlined />}
                         >
                             {months.map((m, idx) => (
-                                <Select.Option key={idx + 1} value={idx - 1}>
+                                <Select.Option key={idx + 1} value={idx + 1}>
                                     {m}
                                 </Select.Option>
                             ))}
                         </Select>
-                    </Row>
-                    <Flex
-                        style={{
-                            width: 200,
-                            marginTop: 10
-                        }}
-                    >
                         {checkoutMutation.isPending || confirmMutation.isPending ? (
                             <Spin tip="Loading..." />
                         ) : (
@@ -114,16 +118,35 @@ export default function MembershipPage() {
                                 type="primary"
                                 size="middle"
                                 onClick={() => checkoutMutation.mutate({ price: 3000, month: selectedMonth })}
-                                icon={
-                                    <DollarOutlined />
-                                }
+                                icon={<DollarOutlined />}
+                                disabled={selectedMonth === null}
+                                style={{ width: 200 }}
                             >
                                 Pay for membership
                             </Button>
                         )}
                     </Flex>
                 </Col>
-            </Row>
+            </Flex>
+            <Col xs={24} sm={20} md={16} lg={12} style={{ margin: "0 auto", marginTop: 32 }}>
+                <Flex vertical gap={16} align="center">
+                    <Title level={4}>
+                        Payment history
+                    </Title>
+                    {membershipLoading ? (
+                        <Spin />
+                    ) : (
+                        <Table
+                            columns={columns}
+                            dataSource={memberships || []}
+                            rowKey="id"
+                            pagination={{ pageSize: 5 }}
+                            scroll={{ x: true }}
+                            style={{ width: "100%" }}
+                        />
+                    )}
+                </Flex>
+            </Col>
         </Content>
     )
 }

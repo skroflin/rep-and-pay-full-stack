@@ -98,7 +98,12 @@ export default function UserPage() {
                     <List bordered>
                         {memberships.map((m, idx) => (
                             <List.Item key={idx}>
-                                <Text>Start: {dayjs(m.startDate).format("DD.MM.YYYY")}, End: {dayjs(m.endDate).format("DD.MM.YYYY")}, Price: {m.membershipPrice}</Text>
+                                <Text>
+                                    Start: {dayjs(m.startDate).format("DD.MM.YYYY")}, 
+                                    End: {dayjs(m.endDate).format("DD.MM.YYYY")}, 
+                                    Price: {m.membershipPrice}, 
+                                    Paid: {dayjs(m.paymentDate).format("DD.MM.YYYY")}
+                                </Text>
                             </List.Item>
                         ))}
                     </List>

@@ -80,7 +80,8 @@ export default function TrainingSessionPage() {
             trainingType: values.trainingType,
             trainingLevel: values.trainingLevel,
             beginningOfSession,
-            endOfSession
+            endOfSession,
+            alreadyBooked
         }
         createSessionMutation.mutate(request)
     }

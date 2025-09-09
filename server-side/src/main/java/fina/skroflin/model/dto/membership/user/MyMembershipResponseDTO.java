@@ -1,8 +1,8 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fina.skroflin.model.dto.membership;
+package fina.skroflin.model.dto.membership.user;
 
 import java.time.LocalDate;
 
@@ -10,14 +10,10 @@ import java.time.LocalDate;
  *
  * @author skroflin
  */
-public record MembershipResponseDTO(
-        Integer id,
-        String firstName,
-        String lastName,
+public record MyMembershipResponseDTO(
         LocalDate startDate,
         LocalDate endDate,
         long membershipPrice,
         LocalDate paymentDate
         ) {
-
 }

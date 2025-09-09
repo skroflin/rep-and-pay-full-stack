@@ -33,6 +33,8 @@ public class Membership extends MainEntity {
     private LocalDate endDate;
     @Column(name = "membership_price", columnDefinition = "int")
     private long membershipPrice;
+    @Column(name = "payment_date")
+    private LocalDate paymentDate;
 
     public Membership() {
     }
@@ -42,6 +44,7 @@ public class Membership extends MainEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.membershipPrice = membershipPrice;
+        this.paymentDate = LocalDate.now();
     }
 
     public User getUser() {
@@ -75,6 +78,12 @@ public class Membership extends MainEntity {
     public void setMembershipPrice(long membershipPrice) {
         this.membershipPrice = membershipPrice;
     }
-    
-    
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 }

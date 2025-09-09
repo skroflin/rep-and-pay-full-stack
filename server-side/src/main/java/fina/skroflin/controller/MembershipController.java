@@ -5,6 +5,7 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.membership.user.MyMembershipResponseDTO;
 import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
 import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
 import fina.skroflin.service.MembershipService;
@@ -38,7 +39,7 @@ public class MembershipController {
     private final MembershipService membershipService;
 
     public MembershipController(
-            UserService userService,    
+            UserService userService,
             MembershipService membershipService
     ) {
         this.userService = userService;
@@ -78,46 +79,42 @@ public class MembershipController {
                     + userId + " " + "doesn't exist!"
             );
         }
-        
-        log.info("Svi membershipi: "+memberships);
+
+        log.info("Svi membershipi: " + memberships);
         //return new ResponseEntity<>(memberships, HttpStatus.OK);
         return ResponseEntity.ok(memberships);
     }
-    
+
     @GetMapping("/hasActiveMembership")
     public ResponseEntity<Boolean> hasActiveMembership(
-            @RequestHeader
-            HttpHeaders headers
-    ){
+            @RequestHeader HttpHeaders headers
+    ) {
         boolean activeMembership = membershipService.hasActiveMembership(headers);
         return new ResponseEntity<>(activeMembership, HttpStatus.OK);
     }
-    
+
     @PostMapping("/createCheckoutSession")
     public ResponseEntity<String> createCheckoutSession(
-            @RequestHeader
-            HttpHeaders headers,
-            @RequestBody
-            CheckoutSessionRequestDTO dto
-    ){
+            @RequestHeader HttpHeaders headers,
+            @RequestBody CheckoutSessionRequestDTO dto
+    ) {
         String checkoutUrl = membershipService.createCheckoutSession(headers, dto);
         return new ResponseEntity<>(checkoutUrl, HttpStatus.OK);
     }
-    
+
     @GetMapping("/success")
-    public ResponseEntity<String> paymentSuccess(){
+    public ResponseEntity<String> paymentSuccess() {
         return new ResponseEntity<>("Payment successful!", HttpStatus.OK);
     }
-    
+
     @GetMapping("/cancel")
-    public ResponseEntity<String> paymentCancelled(){
+    public ResponseEntity<String> paymentCancelled() {
         return new ResponseEntity<>("Payment cancelled!", HttpStatus.OK);
     }
-    
+
     @GetMapping("/confirm")
     public ResponseEntity<String> confirmPayment(
-            @RequestParam
-            String status
+            @RequestParam String status
     ) {
         if ("success".equals(status)) {
             return new ResponseEntity<>("Payment confirmed", HttpStatus.OK);
@@ -125,5 +122,13 @@ public class MembershipController {
             return new ResponseEntity<>("Payment cancelled", HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid status", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/getMyMemberships")
+    public ResponseEntity<List<MyMembershipResponseDTO>> getMyMemberships(
+            @RequestHeader HttpHeaders headers
+    ) {
+        List<MyMembershipResponseDTO> myMemberships = membershipService.getMyMemberships(headers);
+        return new ResponseEntity<>(myMemberships, HttpStatus.OK);
     }
 }

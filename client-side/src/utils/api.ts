@@ -95,7 +95,6 @@ export const updateBooking = (req: BookingRequest, bookingId: string) => apiPutC
 export const deleteBooking = (bookingId: string) => apiDeleteCall(`booking/delete?id=${bookingId}`)
 export const getTrainerBookings = () => apiGetCall("booking/getTrainerBookings")
 export const updateBookingStatus = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/updateBookingStatus?id=${bookingId}`, req)
-console.log(updateBookingStatus)
 
 //training session methods
 export const getTrainingSessions = () => apiGetCall("trainingSessions/get")
@@ -135,6 +134,7 @@ export const getNumOfMyUserTrainingSessions = () => apiGetCall("trainingSession/
 export const createCheckoutSession = (req: CheckoutRequest) => apiPostCall("membership/createCheckoutSession", req)
 export const hasActiveMembership = () => apiGetCall("membership/hasActiveMembership")
 export const confirmPayment = (status: string) => apiGetCall(`membership/confirm?status=${status}`)
+export const getMyMemberships = () => apiGetCall("membership/getMyMemberships")
 
 //stripe membership methods (superuser)
 export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?userId=${userId}`)

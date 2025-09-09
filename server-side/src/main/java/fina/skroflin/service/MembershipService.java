@@ -10,6 +10,7 @@ import fina.skroflin.model.Membership;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.membership.MembershipRequestDTO;
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.membership.user.MyMembershipResponseDTO;
 import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
 import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
@@ -50,8 +51,45 @@ public class MembershipService extends MainService {
                 membership.getUser().getLastName(),
                 membership.getStartDate(),
                 membership.getEndDate(),
-                membership.getMembershipPrice()
+                membership.getMembershipPrice(),
+                membership.getPaymentDate()
         );
+    }
+
+    @Transactional
+    public MyMembershipResponseDTO convertToMyResponse(Membership membership) {
+        if (membership == null) {
+            return null;
+        }
+
+        return new MyMembershipResponseDTO(
+                membership.getStartDate(),
+                membership.getEndDate(),
+                membership.getMembershipPrice(),
+                membership.getPaymentDate()
+        );
+    }
+
+    public List<MyMembershipResponseDTO> getMyMemberships(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User user = (User) session.get(User.class, userId);
+            if (user == null) {
+                throw new NoResultException("User not found!");
+            }
+            List<Membership> memberships = session.createQuery(
+                    "from Membership m", Membership.class)
+                    .list();
+            return memberships.stream()
+                    .map(this::convertToMyResponse)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching memberships:"
+                    + " " + e.getMessage(), e);
+        }
     }
 
     public void post(MembershipRequestDTO o) {
@@ -128,21 +166,7 @@ public class MembershipService extends MainService {
 
     public List<MembershipResponseDTO> getMembershipByUser(int userId) {
         try {
-            String query = """
-                            select
-                            	m.membership_id as "id",
-                            	u.first_name as "firstName", 
-                            	u.last_name as "lastName",
-                            	m.start_date as "startDate",
-                            	m.end_date as "endDate",
-                            	m.membership_price as "membershipPrice"
-                            from
-                            	membership m
-                            left join user u on
-                            	m.user_id = u.id
-                            where
-                            	u.id = :userId
-                            """;
+
             List<Membership> memberships = session.createQuery(
                     "select m from Membership m "
                     + "left join fetch m.user u "
@@ -158,13 +182,10 @@ public class MembershipService extends MainService {
                         + " " + "has no memberships!"
                 );
             }
-            System.out.println("Vraćam listu membershipa");
             return memberships.stream()
                     .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            System.out.println("Dogodila se greška prilikom fetchanja membershipa po userId-ju "+userId);
-            e.printStackTrace();
             throw new RuntimeException(
                     "Error upon fetching memberships"
                     + " " + e.getMessage(),
@@ -233,8 +254,6 @@ public class MembershipService extends MainService {
                             )
                             .build();
             Session sessionStripe = Session.create(params);
-            System.out.println("Stripe session created" + " " + sessionStripe.getUrl());
-            // return sessionStripe.getUrl();
             return sessionStripe.getUrl();
         } catch (Exception e) {
             throw new RuntimeException("Error upon creating checkout session!"
