@@ -25,7 +25,6 @@ import {
     FireOutlined,
     FormOutlined,
     PlusCircleFilled,
-    SettingFilled,
     SettingOutlined,
     SnippetsOutlined
 } from "@ant-design/icons";

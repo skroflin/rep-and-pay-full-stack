@@ -14,7 +14,6 @@ import {
     getNumOfTrainerBookings
 } from "../../utils/api";
 import { getRole } from "../../utils/helper";
-import type { BookingResponse } from "../../utils/types/Booking";
 import CountUp from "react-countup";
 import type { MyBookingResponse } from "../../utils/types/user-authenticated/MyBooking";
 import dayjs from "dayjs";

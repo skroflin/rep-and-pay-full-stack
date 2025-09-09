@@ -296,4 +296,16 @@ public class MembershipService extends MainService {
         session.persist(newMembership);
         session.getTransaction().commit();
     }
+
+    public Long getNumOfMemberships() {
+        try {
+            Long numOfMemberships = session.createQuery(
+                    "select count(m.id) from Membership m", Long.class)
+                    .getSingleResult();
+            return numOfMemberships;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of memberships"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
 }

@@ -1,40 +1,41 @@
-import { Table, Tag, theme } from "antd";
+import { Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
 import type { UserRequest } from "../../utils/types/User";
 import { getCoaches } from "../../utils/api";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CoachPage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
 
-    const [coaches, setCoaches] = useState<UserRequest[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
-    useEffect(() => {
-        getCoaches()
-            .then((data) => setCoaches((data)))
-            .catch((err) => toast.error(`Error upon fetching coaches: ${err}`))
-            .finally(() => setLoading(false))
-    }, [])
+
+    const { data: coaches = [], isLoading } = useQuery<UserRequest[], Error>({
+        queryKey: ["coaches"],
+        queryFn: getCoaches
+    })
 
     const columns = [
         { title: "First name", dataIndex: "firstName", key: "firstName" },
         { title: "Last name", dataIndex: "lastName", key: "lastName" },
         { title: "Username", dataIndex: "username", key: "username" },
         { title: "Email", dataIndex: "email", key: "email" },
-        { 
+        {
             title: "Role",
             dataIndex: "role",
             key: "role",
             render: (role: string) => {
-                let color = role === "coach" ? "blue" : "green"
+                let color = role === "coach" ? "blue" : "cyan"
                 return <Tag color={color}>{role.toUpperCase()}</Tag>
             }
         }
     ]
+
+    const { Title } = Typography
 
     return (
         <Content
@@ -47,14 +48,14 @@ export default function CoachPage() {
                 borderRadius: borderRadiusLG,
             }}
         >
-            <h2>
+            <Title>
                 Coaches
-            </h2>
+            </Title>
             <Table
                 dataSource={coaches}
                 columns={columns}
-                rowKey="username"
-                loading={loading}
+                rowKey="id"
+                loading={isLoading}
                 pagination={{ pageSize: 5 }}
             />
         </Content>

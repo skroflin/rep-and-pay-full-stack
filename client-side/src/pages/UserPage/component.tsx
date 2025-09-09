@@ -44,7 +44,7 @@ export default function UserPage() {
             dataIndex: "role",
             key: "role",
             render: (role: string) => {
-                let color = role === "user" ? "green" : "blue"
+                let color = role === "user" ? "cyan" : "blue"
                 return <Tag color={color}>{role.toUpperCase()}</Tag>
             }
         },
@@ -65,7 +65,7 @@ export default function UserPage() {
         }
     ]
 
-    const { Text } = Typography
+    const { Text, Title } = Typography
 
     return (
         <Content
@@ -77,9 +77,9 @@ export default function UserPage() {
                 borderRadius: borderRadiusLG,
             }}
         >
-            <h2>
+            <Title>
                 Users
-            </h2>
+            </Title>
             <Table
                 dataSource={users}
                 columns={columns}

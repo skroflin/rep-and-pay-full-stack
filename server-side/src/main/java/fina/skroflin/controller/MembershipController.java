@@ -131,4 +131,10 @@ public class MembershipController {
         List<MyMembershipResponseDTO> myMemberships = membershipService.getMyMemberships(headers);
         return new ResponseEntity<>(myMemberships, HttpStatus.OK);
     }
+    
+    @GetMapping("/getNumOfMemberships")
+    public ResponseEntity<Long> getNumOfMemberships() {
+        Long numOfMyMemberships = membershipService.getNumOfMemberships();
+        return new ResponseEntity<>(numOfMyMemberships, HttpStatus.OK);
+    }
 }
