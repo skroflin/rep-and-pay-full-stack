@@ -18,6 +18,7 @@ import type { BookingResponse } from "../../utils/types/Booking";
 import CountUp from "react-countup";
 import type { MyBookingResponse } from "../../utils/types/user-authenticated/MyBooking";
 import dayjs from "dayjs";
+import { ClockCircleFilled, ClockCircleOutlined } from "@ant-design/icons";
 
 export default function HomePage() {
 
@@ -191,8 +192,11 @@ export default function HomePage() {
                                                     <Descriptions.Item>
                                                         <Text>{booking.trainerFirstName} {booking.trainerLastName}</Text>
                                                     </Descriptions.Item>
-                                                    <Descriptions.Item>
-                                                        <Text>From {dayjs(booking.beginningOfSession).format("HH:MM")} to {dayjs(booking.endOfSession).format("HH:MM")}</Text>
+                                                    <Descriptions.Item label={<ClockCircleFilled style={{ fontSize: "12px" }} />}>
+                                                        <Text>From {dayjs(booking.startOfSession).format("HH:mm")}</Text>
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item label={<ClockCircleOutlined style={{ fontSize: "12px" }} />}>
+                                                        <Text>To {dayjs(booking.endOfSession).format("HH:mm")}</Text>
                                                     </Descriptions.Item>
                                                     <Descriptions.Item>
                                                         <Text>

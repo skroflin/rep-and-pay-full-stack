@@ -180,7 +180,6 @@ public class BookingController {
         }
 
         bookingService.post(dto);
-        System.out.println(dto);
         return new ResponseEntity<>("New booking added!", HttpStatus.CREATED);
     }
 

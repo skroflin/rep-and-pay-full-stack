@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import type { MyTrainingSessionRequest } from "../../utils/types/user-authenticated/MyTrainingSession";
 import { createMyTrainingSession, getAvailableTrainingSessions } from "../../utils/api";
 import { formatDate } from "../../misc/formatDate";
-import { 
+import {
     ClockCircleFilled,
     ClockCircleOutlined,
     FireOutlined,
@@ -216,6 +216,7 @@ export default function TrainingSessionPage() {
                             <Spin />
                         ) : sessions && sessions.length > 0 ? (
                             <List
+                                pagination={{ pageSize: 1 }}
                                 bordered
                                 dataSource={sessions}
                                 renderItem={(session) => (
@@ -228,10 +229,10 @@ export default function TrainingSessionPage() {
                                                 <Text><ClockCircleFilled /> {dayjs(session.endOfSession).format("HH:mm")}</Text>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Type">
-                                                <Text style={{ textTransform: "capitalize" }}><SettingOutlined /> {session.trainingType}</Text>
+                                                <Text style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Level">
-                                                <Text style={{ textTransform: "capitalize" }}><SettingFilled /> {session.trainingLevel}</Text>
+                                                <Text style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
                                             </Descriptions.Item>
                                         </Descriptions>
                                     </List.Item>

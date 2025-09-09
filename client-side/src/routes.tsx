@@ -28,6 +28,7 @@ import {
 import TrainingSessionPage from "./pages/TrainingSessionPage/component";
 import NotificationsPage from "./pages/NotificationsPage/component";
 import MembershipPage from "./pages/MembershipPage/component";
+import Footer from "./misc/Footer/component";
 
 export interface RouteElement {
     key: string
@@ -149,40 +150,43 @@ export function AllRoutes() {
     const isUserLoggedIn = isLoggedIn()
 
     return (
-        <Layout
-            style={{
-                minHeight: "90vh",
-                textAlign: "center",
-                borderRadius: 10,
-                backgroundColor: "white"
-            }}
-        >
-            {isUserLoggedIn && <NavBar routes={routes} />}
-            <Routes>
-                {routes.map((route) => (
-                    <Route
-                        key={route.key}
-                        element={<PrivateRoute
-                            reqLogin={route.reqLogin}
-                            allowedRoles={route.allowedRoles}
-                        />}
-                    >
-                        <Route path={route.path} element={route.element} />
-                    </Route>
-                ))}
-            </Routes>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
-        </Layout>
+        <>
+            <Layout
+                style={{
+                    minHeight: "90vh",
+                    textAlign: "center",
+                    borderRadius: 10,
+                    backgroundColor: "white"
+                }}
+            >
+                {isUserLoggedIn && <NavBar routes={routes} />}
+                <Routes>
+                    {routes.map((route) => (
+                        <Route
+                            key={route.key}
+                            element={<PrivateRoute
+                                reqLogin={route.reqLogin}
+                                allowedRoles={route.allowedRoles}
+                            />}
+                        >
+                            <Route path={route.path} element={route.element} />
+                        </Route>
+                    ))}
+                </Routes>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored"
+                />
+            </Layout>
+            <Footer />
+        </>
     )
 }

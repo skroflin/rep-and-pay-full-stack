@@ -40,7 +40,7 @@ export default function LoginIn() {
         },
     })
 
-    const { Title } = Typography
+    const { Title, Text } = Typography
 
     return <>
         {
@@ -107,12 +107,21 @@ export default function LoginIn() {
                                 </Button>
                             </Form.Item>
                             <Form.Item>
+                                <Text>
+                                    Don't have an account?
+                                </Text>
                                 <Button
+                                    style={{
+                                        textAlign: "center",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        display: "flex",
+                                        width: "100%"
+                                    }}
                                     type="link"
                                     onClick={() => navigate("/sign-up")}
-                                    style={{ width: "100%" }}
                                 >
-                                    Don't have an account? Sign up!
+                                    Sign up!
                                 </Button>
                             </Form.Item>
                         </Form>

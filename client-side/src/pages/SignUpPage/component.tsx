@@ -89,7 +89,7 @@ export default function SignUp() {
         }
     }
 
-    const { Title } = Typography
+    const { Title, Text } = Typography
 
     return (
         <Flex
@@ -223,6 +223,9 @@ export default function SignUp() {
                         </Button>
                     </Form.Item>
                     <Form.Item style={{ width: "100%" }}>
+                        <Text>
+                            Already have an account?
+                        </Text>
                         <Button
                             style={{
                                 textAlign: "center",
@@ -234,7 +237,7 @@ export default function SignUp() {
                             type="link"
                             onClick={() => navigate("/log-in")}
                         >
-                            Already have an account? Log in!
+                            Log in!
                         </Button>
                     </Form.Item>
                 </Form>

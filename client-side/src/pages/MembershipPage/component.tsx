@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { DollarOutlined, OrderedListOutlined } from "@ant-design/icons";
 import type { Membership } from "../../utils/types/Membership";
+import dayjs from "dayjs";
 
 export default function MembershipPage() {
     const {
@@ -70,10 +71,10 @@ export default function MembershipPage() {
     ]
 
     const columns = [
-        { title: "Start Date", dataIndex: "startDate", key: "startDate" },
-        { title: "End Date", dataIndex: "endDate", key: "endDate" },
+        { title: "Start Date", dataIndex: "startDate", key: "startDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
+        { title: "End Date", dataIndex: "endDate", key: "endDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
         { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice" },
-        { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate" },
+        { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
     ]
 
     return (
@@ -140,7 +141,7 @@ export default function MembershipPage() {
                             columns={columns}
                             dataSource={memberships || []}
                             rowKey="id"
-                            pagination={{ pageSize: 5 }}
+                            pagination={{ pageSize: 2 }}
                             scroll={{ x: true }}
                             style={{ width: "100%" }}
                         />
