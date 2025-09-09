@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Card, Descriptions, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
+import { Card, Descriptions, Divider, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
     getMyBookings,
@@ -115,6 +115,7 @@ export default function HomePage() {
                             />
                         </Card>
                     </Flex>
+                    <Divider />
                     <Flex gap={24}>
                         <Card variant="borderless" style={{ width: 350 }}>
                             <Statistic
@@ -132,6 +133,7 @@ export default function HomePage() {
                             />
                         </Card>
                     </Flex>
+                    <Divider />
                     <Flex gap={24}>
                         <Card variant="borderless" style={{ width: 350 }}>
                             <Statistic
@@ -173,6 +175,7 @@ export default function HomePage() {
                             />
                         </Card>
                     </Flex>
+                    <Divider />
                     <Flex>
                         <Card variant="borderless" style={{ width: 350 }} title="My bookings">
                             <Content>

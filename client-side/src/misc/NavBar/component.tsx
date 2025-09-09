@@ -74,7 +74,7 @@ export default function NavBar({ routes }: NavBarProps) {
                     fontStyle: "italic"
                 }}
             >
-                {!collapsed && "Rep & Pay "}
+                {collapsed ? "R&P" : "Rep & Pay"}
             </Title>
             <Button
                 type="text"

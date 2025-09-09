@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
-import { Button, Form, Input, Flex, Select, Spin, Typography } from "antd";
+import { Button, Form, Input, Flex, Select, Spin, Typography, Divider } from "antd";
 import { Option } from "antd/es/mentions";
 import {
     IdcardFilled,
@@ -222,6 +222,7 @@ export default function SignUp() {
                             Sign Up
                         </Button>
                     </Form.Item>
+                    <Divider />
                     <Form.Item style={{ width: "100%" }}>
                         <Text>
                             Already have an account?

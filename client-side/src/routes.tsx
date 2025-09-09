@@ -23,6 +23,7 @@ import {
     HomeOutlined,
     NotificationOutlined,
     TeamOutlined,
+    UserOutlined,
     WalletOutlined
 } from "@ant-design/icons";
 import TrainingSessionPage from "./pages/TrainingSessionPage/component";
@@ -73,7 +74,7 @@ const routes: RouteElement[] = [
         onNavBar: true,
         reqLogin: true,
         allowedRoles: ["superuser"],
-        icon: <TeamOutlined />
+        icon: <UserOutlined />
     },
     {
         key: "Users",

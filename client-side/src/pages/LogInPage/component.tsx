@@ -6,7 +6,7 @@ import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
 import { toast } from "react-toastify"
 import { AxiosError } from "axios"
-import { Button, Flex, Form, Input, Spin, Typography } from "antd"
+import { Button, Divider, Flex, Form, Input, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 
 export default function LoginIn() {
@@ -106,6 +106,7 @@ export default function LoginIn() {
                                     Log In
                                 </Button>
                             </Form.Item>
+                            <Divider />
                             <Form.Item>
                                 <Text>
                                     Don't have an account?

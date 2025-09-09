@@ -3,6 +3,7 @@ import {
     Button,
     Calendar,
     Descriptions,
+    Divider,
     List,
     Spin,
     Typography
@@ -56,7 +57,7 @@ export default function BookingPage() {
             })
     }
 
-    const { Text } = Typography
+    const { Text, Title } = Typography
 
     return (
         <div
@@ -71,7 +72,7 @@ export default function BookingPage() {
                 fullscreen={false}
                 onChange={handleDataChange}
             />
-            <h2><OrderedListOutlined /> Available sessions for {formatDate(selectedDate)}</h2>
+            <Title level={4}><OrderedListOutlined /> Available sessions for {formatDate(selectedDate)} <Divider /></Title>
 
             {isLoading ? (
                 <Spin />

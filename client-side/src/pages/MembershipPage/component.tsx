@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Col, Flex, Select, Spin, Table, theme, Typography } from "antd";
+import { Button, Col, Divider, Flex, Select, Spin, Table, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { CheckoutRequest } from "../../utils/types/Checkout";
 import { createCheckoutSession, confirmPayment, getMyMemberships } from "../../utils/api";
@@ -129,6 +129,7 @@ export default function MembershipPage() {
                     </Flex>
                 </Col>
             </Flex>
+            <Divider />
             <Col xs={24} sm={20} md={16} lg={12} style={{ margin: "0 auto", marginTop: 32 }}>
                 <Flex vertical gap={16} align="center">
                     <Title level={4}>
