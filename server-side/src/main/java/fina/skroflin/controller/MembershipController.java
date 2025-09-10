@@ -80,9 +80,7 @@ public class MembershipController {
             );
         }
 
-        log.info("Svi membershipi: " + memberships);
-        //return new ResponseEntity<>(memberships, HttpStatus.OK);
-        return ResponseEntity.ok(memberships);
+        return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 
     @GetMapping("/hasActiveMembership")
@@ -131,22 +129,28 @@ public class MembershipController {
         List<MyMembershipResponseDTO> myMemberships = membershipService.getMyMemberships(headers);
         return new ResponseEntity<>(myMemberships, HttpStatus.OK);
     }
-    
+
     @GetMapping("/getNumOfMemberships")
     public ResponseEntity<Long> getNumOfMemberships() {
         Long numOfMyMemberships = membershipService.getNumOfMemberships();
         return new ResponseEntity<>(numOfMyMemberships, HttpStatus.OK);
     }
-    
+
     @GetMapping("/getNumOfActiveMemberships")
     public ResponseEntity<Long> getNumOfActiveMemberships() {
         Long numOfMyActiveMemberships = membershipService.getNumOfActiveMemberships();
         return new ResponseEntity<>(numOfMyActiveMemberships, HttpStatus.OK);
     }
-    
+
     @GetMapping("/getNumOfExpiredMemberships")
     public ResponseEntity<Long> getNumOfExpiredMemberships() {
         Long numOfExpiredMemberships = membershipService.getNumOfExpiredMemberships();
         return new ResponseEntity<>(numOfExpiredMemberships, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllMemberships")
+    public ResponseEntity<List<MembershipResponseDTO>> getAllMemberships() {
+        List<MembershipResponseDTO> memberships = membershipService.getAllMemberships();
+        return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 }

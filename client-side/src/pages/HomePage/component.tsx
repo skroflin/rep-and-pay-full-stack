@@ -24,6 +24,7 @@ import { ClockCircleFilled, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import ActiveMembershipDetails from "./ActiveMembershipDetails";
 import ExpiredMembershipDetails from "./ExpiredMembershipDetails";
+import AllMembershipDetails from "./AllMembershipDetails";
 
 export default function HomePage() {
 
@@ -31,6 +32,25 @@ export default function HomePage() {
 
     const [activeDrawerOpen, setActiveDrawerOpen] = useState(false)
     const [expiredDrawerOpen, setExpiredDrawerOpen] = useState(false)
+    const [membershipsDrawerOpen, setMembershipsDrawerOpen] = useState(false)
+
+    const openActiveDrawer = () => {
+        setExpiredDrawerOpen(false)
+        setActiveDrawerOpen(true)
+        setMembershipsDrawerOpen(false)
+    }
+
+    const openExpiredDrawer = () => {
+        setExpiredDrawerOpen(true)
+        setActiveDrawerOpen(false)
+        setMembershipsDrawerOpen(false)
+    }
+
+    const openMembershipDrawer = () => {
+        setExpiredDrawerOpen(false)
+        setActiveDrawerOpen(false)
+        setMembershipsDrawerOpen(true)
+    }
 
     const results = useQueries({
         queries: [
@@ -118,7 +138,7 @@ export default function HomePage() {
         numOfExpiredMemberships
     ] = results.map((r: { data: any; }) => r.data);
 
-    const { Text, Title } = Typography
+    const { Text } = Typography
 
     return (
         <>
@@ -251,14 +271,14 @@ export default function HomePage() {
                 {role === "superuser" && (
                     <>
                         <Flex gap={16}>
-                            <Card variant="borderless" style={{ width: 350 }}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openMembershipDrawer}>View details</Button>}>
                                 <Statistic
                                     title="Number of memberships"
                                     value={numOfMemberships ?? 0}
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setActiveDrawerOpen(true)}>View details</Button>}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openActiveDrawer}>View details</Button>}>
                                 <Statistic
                                     title="Number of active memberships"
                                     value={numOfActiveMemberships ?? 0}
@@ -266,7 +286,7 @@ export default function HomePage() {
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setExpiredDrawerOpen(true)}>View details</Button>}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openExpiredDrawer}>View details</Button>}>
                                 <Statistic
                                     title="Number of expired memberships"
                                     value={numOfExpiredMemberships ?? 0}
@@ -287,6 +307,11 @@ export default function HomePage() {
             <ExpiredMembershipDetails
                 open={expiredDrawerOpen}
                 onClose={() => setExpiredDrawerOpen(false)} 
+            />
+
+            <AllMembershipDetails
+                open={membershipsDrawerOpen}
+                onClose={() => setMembershipsDrawerOpen(false)}
             />
         </>
     )

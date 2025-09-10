@@ -143,3 +143,4 @@ export const getExpiredMemberships = () => apiGetCall("membership/getExpiredMemb
 export const getNumOfMemberships = () => apiGetCall("membership/getNumOfMemberships")
 export const getNumOfActiveMemberships = () => apiGetCall("membership/getNumOfActiveMemberships")
 export const getNumOfExpiredMemberships = () => apiGetCall("membership/getNumOfExpiredMemberships")
+export const getAllMemberships = () => apiGetCall("memberships/getAllMemberships")

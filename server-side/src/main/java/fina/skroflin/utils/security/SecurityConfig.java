@@ -123,6 +123,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getNumOfMemberships").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getNumOfActiveMemberships").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getNumOfExpiredMemberships").hasAnyAuthority(Role.superuser.name())
+                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getAllMemberships").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers("/api/fina/skroflin/membership/success").permitAll()
                         .requestMatchers("/api/fina/skroflin/membership/cancel").permitAll()
                         .requestMatchers("/api/fina/skroflin/membership/confirm").permitAll()

@@ -337,4 +337,19 @@ public class MembershipService extends MainService {
                     + " " + e.getMessage(), e);
         }
     }
+    
+    public List<MembershipResponseDTO> getAllMemberships() {
+        try {
+            List<Membership> memberships = session.createQuery(
+                    "select m from Membership m "
+                    + "left join fetch m.user ", Membership.class)
+                    .list();
+            return memberships.stream()
+                    .map(this::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching memberships:"
+                    + " " + e.getMessage(), e);
+        }
+    }
 }
