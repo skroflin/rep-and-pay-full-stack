@@ -1,17 +1,13 @@
 import { Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useEffect, useState } from "react";
 import type { UserRequest } from "../../utils/types/User";
 import { getCoaches } from "../../utils/api";
-import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 
 export default function CoachPage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
-
-    const [loading, setLoading] = useState<boolean>(true)
 
 
     const { data: coaches = [], isLoading } = useQuery<UserRequest[], Error>({

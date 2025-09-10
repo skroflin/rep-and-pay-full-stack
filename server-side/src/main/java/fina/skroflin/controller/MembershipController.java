@@ -137,4 +137,16 @@ public class MembershipController {
         Long numOfMyMemberships = membershipService.getNumOfMemberships();
         return new ResponseEntity<>(numOfMyMemberships, HttpStatus.OK);
     }
+    
+    @GetMapping("/getNumOfActiveMemberships")
+    public ResponseEntity<Long> getNumOfActiveMemberships() {
+        Long numOfMyActiveMemberships = membershipService.getNumOfActiveMemberships();
+        return new ResponseEntity<>(numOfMyActiveMemberships, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getNumOfExpiredMemberships")
+    public ResponseEntity<Long> getNumOfExpiredMemberships() {
+        Long numOfExpiredMemberships = membershipService.getNumOfExpiredMemberships();
+        return new ResponseEntity<>(numOfExpiredMemberships, HttpStatus.OK);
+    }
 }

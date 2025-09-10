@@ -34,7 +34,7 @@ export default function BookingReviewDrawer({
         }
     })
 
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0)
 
     useEffect(() => {
         if (open) setCurrentIndex(0)

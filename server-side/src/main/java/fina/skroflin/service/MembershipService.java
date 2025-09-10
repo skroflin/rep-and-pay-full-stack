@@ -308,4 +308,33 @@ public class MembershipService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
+    
+    public Long getNumOfActiveMemberships() {
+        try {
+            Long numOfActiveMemberships = session.createQuery(
+                    "select count(m.id) from Membership m "
+                    + "where m.startDate <= :today "
+                    + "and m.endDate >= :today", Long.class)
+                    .setParameter("today", LocalDate.now())
+                    .uniqueResult();
+            return numOfActiveMemberships;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching memberships:"
+                    + " " + e.getMessage(), e);
+        }
+    }
+
+    public Long getNumOfExpiredMemberships() {
+        try {
+            Long numOfExpiredMemberships = session.createQuery(
+                    "select count(m.id) from Membership m "
+                    + "where m.endDate < :today", Long.class)
+                    .setParameter("today", LocalDate.now())
+                    .uniqueResult();
+            return numOfExpiredMemberships;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching memberships:"
+                    + " " + e.getMessage(), e);
+        }
+    }
 }
