@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Card, Descriptions, Divider, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
+import { Button, Card, Descriptions, Divider, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import {
     getMyBookings,
@@ -29,7 +29,8 @@ export default function HomePage() {
 
     const role = getRole()
 
-    const [drawerOpen, setDrawerOpen] = useState(false)
+    const [activeDrawerOpen, setActiveDrawerOpen] = useState(false)
+    const [expiredDrawerOpen, setExpiredDrawerOpen] = useState(false)
 
     const results = useQueries({
         queries: [
@@ -216,7 +217,7 @@ export default function HomePage() {
                                                 <List.Item>
                                                     <Descriptions column={1} size="small" style={{ width: "100%" }}>
                                                         <Descriptions.Item>
-                                                            <Title level={5}>{booking.trainingType.toUpperCase()} - {booking.trainingLevel.toUpperCase()}</Title>
+                                                            <Text strong>{booking.trainingType.toUpperCase()} - {booking.trainingLevel.toUpperCase()}</Text>
                                                         </Descriptions.Item>
                                                         <Descriptions.Item>
                                                             <Text>{booking.trainerFirstName} {booking.trainerLastName}</Text>
@@ -257,7 +258,7 @@ export default function HomePage() {
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setActiveDrawerOpen(true)}>View details</Button>}>
                                 <Statistic
                                     title="Number of active memberships"
                                     value={numOfActiveMemberships ?? 0}
@@ -265,7 +266,7 @@ export default function HomePage() {
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setExpiredDrawerOpen(true)}>View details</Button>}>
                                 <Statistic
                                     title="Number of expired memberships"
                                     value={numOfExpiredMemberships ?? 0}
@@ -279,13 +280,13 @@ export default function HomePage() {
             </Flex>
 
             <ActiveMembershipDetails
-                open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
+                open={activeDrawerOpen}
+                onClose={() => setActiveDrawerOpen(false)}
             />
 
             <ExpiredMembershipDetails
-                open={drawerOpen}
-                onClose={() => setDrawerOpen(false)} 
+                open={expiredDrawerOpen}
+                onClose={() => setExpiredDrawerOpen(false)} 
             />
         </>
     )

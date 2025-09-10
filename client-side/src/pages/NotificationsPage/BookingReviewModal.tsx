@@ -143,9 +143,9 @@ export default function BookingReviewDrawer({
                             {booking.bookingStatus === "pending" ? (
                                 <Text type="warning">Pending</Text>
                             ) : booking.bookingStatus === "accepted" ? (
-                                <Text type="danger">Approved</Text>
+                                <Text type="success">Approved</Text>
                             ) : booking.bookingStatus === "rejected" ? (
-                                <Text type="success">Rejected</Text>
+                                <Text type="danger">Rejected</Text>
                             ) : null}
                         </Text>
                     </Descriptions.Item>

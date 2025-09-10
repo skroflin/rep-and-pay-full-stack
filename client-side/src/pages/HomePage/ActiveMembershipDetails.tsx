@@ -85,8 +85,11 @@ export default function ActiveMembershipDetails({
                         <Descriptions.Item label="User">
                             <Text>{membership.firstName} {membership.lastName}</Text>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Start and end date of membership">
-                            <Text>{dayjs(membership.startDate).format("DD.MM.YYYY")} - {dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
+                        <Descriptions.Item label="Start date formembership">
+                            <Text>{dayjs(membership.startDate).format("DD.MM.YYYY")}</Text>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="End date for membership">
+                            <Text>{dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
                         </Descriptions.Item>
                         <Descriptions.Item label="Membership price">
                             <Text>{membership.membershipPrice}</Text>

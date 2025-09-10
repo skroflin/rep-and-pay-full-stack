@@ -9,6 +9,7 @@ import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.booking.BookingRequestDTO;
 import fina.skroflin.model.dto.booking.BookingResponseDTO;
+import fina.skroflin.model.dto.booking.UpdateBookingStatusRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingRequestDTO;
 import fina.skroflin.model.dto.booking.user.MyBookingResponseDTO;
 import fina.skroflin.model.dto.booking.user.TrainerBookingResponseDTO;
@@ -414,7 +415,7 @@ public class BookingService extends MainService {
 
     public void updateBookingStatus(
             int id,
-            BookingStatus newBookingStatus,
+            UpdateBookingStatusRequestDTO o,
             HttpHeaders headers
     ) {
         try {
@@ -432,10 +433,10 @@ public class BookingService extends MainService {
             Integer trainerId = booking.getTrainingSession().getTrainer().getId();
             if (!trainerId.equals(userId)) {
                 throw new SecurityException("You are not authorized to"
-                        + " " + "delete this booking!");
+                        + " " + "update this booking!");
             }
 
-            booking.setBookingStatus(newBookingStatus);
+            booking.setBookingStatus(o.bookingStatus());
             session.beginTransaction();
             session.merge(booking);
             session.getTransaction().commit();

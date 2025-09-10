@@ -368,7 +368,7 @@ public class BookingController {
             @RequestBody UpdateBookingStatusRequestDTO o,
             @RequestHeader HttpHeaders headers
     ) {
-        bookingService.updateBookingStatus(id, BookingStatus.pending, headers);
+        bookingService.updateBookingStatus(id, o, headers);
         return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "changed!", HttpStatus.OK);
     }
     
