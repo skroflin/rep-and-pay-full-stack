@@ -4,6 +4,7 @@
  */
 package fina.skroflin.service;
 
+import fina.skroflin.model.Booking;
 import fina.skroflin.model.TrainingSession;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
@@ -75,20 +76,20 @@ public class TrainingSessionService extends MainService {
     
     @Transactional
     public UserTrainingSessionResponseDTO convertToUserResponseDTO(
-            TrainingSession trainingSession
+            Booking booking
     ) {
-        if (trainingSession == null) {
+        if (booking.getTrainingSession() == null) {
             return null;
         }
         
         return new UserTrainingSessionResponseDTO(
-                trainingSession.getId(), 
-                trainingSession.getTrainingType(), 
-                trainingSession.getTrainingLevel(), 
-                trainingSession.getTrainer().getFirstName(), 
-                trainingSession.getTrainer().getLastName(), 
-                trainingSession.getBeginningOfSession(),
-                trainingSession.getEndOfSession()
+                booking.getTrainingSession().getId(), 
+                booking.getTrainingSession().getTrainingType(), 
+                booking.getTrainingSession().getTrainingLevel(), 
+                booking.getTrainingSession().getTrainer().getFirstName(), 
+                booking.getTrainingSession().getTrainer().getLastName(), 
+                booking.getTrainingSession().getBeginningOfSession(),
+                booking.getTrainingSession().getEndOfSession()
         );
     }
 
@@ -159,21 +160,17 @@ public class TrainingSessionService extends MainService {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
-            List<TrainingSession> trainingSessions = session.createQuery(
-                    "select b.trainingSession.trainer.firstName, "
-                            + "b.trainingSession.trainer.lastName, "
-                            + "b.trainingSession.beginningOfSession, "
-                            + "b.trainingSession.endOfSession, "
-                            + "b.bookingStatus from Booking b "
+            List<Booking> bookings = session.createQuery(
+                    "select b from Booking b "
                     + "left join fetch b.user u "
                     + "left join fetch b.trainingSession ts "
                     + "where u.id = :userId "
-                    + "and b.bookingStatus = accepted", TrainingSession.class)
+                    + "and b.bookingStatus = accepted", Booking.class)
                     .setParameter("userId", userId)
                     .list();
             
-            System.out.println("Popis korisnikovih treninga" + " " + trainingSessions);
-            return trainingSessions.stream()
+            System.out.println("Popis korisnikovih treninga" + " " + bookings);
+            return bookings.stream()
                     .map(this::convertToUserResponseDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
