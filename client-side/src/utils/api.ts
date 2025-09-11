@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAuthToken } from "./helper";
+import { getAuthToken, setAuthToken, setRole, setUsername } from "./helper";
 import type { UserRequest } from "./types/User";
 import type { RegistrationUserRequest } from "./types/Register";
 import type { LoginUserRequest } from "./types/Login";
@@ -9,6 +9,7 @@ import type { PasswordUserRequest } from "./types/Password";
 import type { MyTrainingSessionRequest } from "./types/user-authenticated/MyTrainingSession";
 import type { MyBookingRequest } from "./types/user-authenticated/MyBooking";
 import type { CheckoutRequest } from "./types/Checkout";
+import type { JwtResponse } from "./types/JwtResponse";
 
 const BASE_URL = 'http://localhost:8080'
 
@@ -82,7 +83,15 @@ export const getCoaches = () => apiGetCall("user/getCoaches")
 export const getRegularUsers = () => apiGetCall("user/getUsers")
 export const getUserById = (userId: string) => apiGetCall(`user/getById?id=${userId}`)
 export const registerUser = (req: RegistrationUserRequest) => apiPostCall<RegistrationUserRequest>("user/register", req)
-export const loginUser = (req: LoginUserRequest) => apiPostCall<LoginUserRequest>("user/login", req)
+export const loginUser = async (req: LoginUserRequest): Promise<JwtResponse> => {
+    const res: JwtResponse = await apiPostCall<LoginUserRequest>("user/login", req)
+    
+    setAuthToken(res.jwt)
+    setUsername(res.username)
+    setRole(res.role)
+
+    return res
+}
 export const updateUser = (req: UserRequest, userId: string) => apiPutCall<UserRequest>(`user/put?id=${userId}`, req)
 export const deleteUser = (userId: string) => apiDeleteCall(`user/delete?id=${userId}`)
 export const changeUserPassword = (req: PasswordUserRequest) => apiPutCall<PasswordUserRequest>("user/changePassword", req)

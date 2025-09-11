@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Navigate, useNavigate } from "react-router"
-import { useUsername, useUserSetter } from "../../user-context/User"
+import { isLoggedIn, useUsername, useUserSetter } from "../../user-context/User"
 import { useMutation } from "@tanstack/react-query"
 import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
@@ -9,6 +9,8 @@ import { AxiosError } from "axios"
 import { Button, Divider, Flex, Form, Input, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 import LogInLogo from "../../misc/Logo/LogInLogo"
+import type { JwtResponse } from "../../utils/types/JwtResponse"
+import type { LoginUserRequest } from "../../utils/types/Login"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")
@@ -16,16 +18,19 @@ export default function LoginIn() {
 
     const navigate = useNavigate()
     const setUser = useUserSetter()
-    const isUserLoggedIn = useUsername()
+    const userLoggedIn = isLoggedIn()
 
-    const signInUser = useMutation({
+    const signInUser = useMutation<JwtResponse, AxiosError, LoginUserRequest>({
         mutationFn: loginUser,
         onSuccess: (response) => {
             const { jwt, username, role } = response
-            toast.success(`${username} welcome back!`)
+            
             setAuthToken(jwt)
+            setUsername(username)
             setRole(role)
             setUser(username, role, true)
+
+            toast.success(`${username} welcome back!`)
             navigate("/")
         },
         onError: (error) => {
@@ -45,7 +50,7 @@ export default function LoginIn() {
 
     return <>
         {
-            isUserLoggedIn ? <Navigate to="/" /> :
+            userLoggedIn ? <Navigate to="/" /> :
                 <Flex vertical justify="center" align="center" style={{ minHeight: "90vh" }}>
                     <Flex vertical align="center">
                         <Title level={2} style={{ textAlign: "center" }}>Log In</Title>

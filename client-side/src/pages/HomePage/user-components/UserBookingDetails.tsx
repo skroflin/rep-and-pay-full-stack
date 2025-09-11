@@ -36,7 +36,6 @@ export default function UserBookingDetails({
     const { Text, Title } = Typography
 
     const username = getUsername()
-    console.log(username)
 
     return (
         <Drawer
