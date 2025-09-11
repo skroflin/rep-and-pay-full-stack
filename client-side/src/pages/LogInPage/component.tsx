@@ -8,6 +8,7 @@ import { toast } from "react-toastify"
 import { AxiosError } from "axios"
 import { Button, Divider, Flex, Form, Input, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
+import LogInLogo from "../../misc/Logo/LogInLogo"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")

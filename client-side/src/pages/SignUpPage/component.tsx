@@ -18,6 +18,7 @@ import {
     UserAddOutlined,
     UserOutlined
 } from "@ant-design/icons";
+import SignUpLogo from "../../misc/Logo/SignUpLogo";
 
 export default function SignUp() {
     const setUser = useUserSetter()
