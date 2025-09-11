@@ -22,9 +22,10 @@ import type { MyBookingResponse } from "../../utils/types/user-authenticated/MyB
 import dayjs from "dayjs";
 import { ClockCircleFilled, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import ActiveMembershipDetails from "./ActiveMembershipDetails";
-import ExpiredMembershipDetails from "./ExpiredMembershipDetails";
-import AllMembershipDetails from "./AllMembershipDetails";
+import ActiveMembershipDetails from "./admin-components/ActiveMembershipDetails";
+import ExpiredMembershipDetails from "./admin-components/ExpiredMembershipDetails";
+import AllMembershipDetails from "./admin-components/AllMembershipDetails";
+import UserTrainingSessionDetails from "./user-components/UserTrainingSessionDetails";
 
 export default function HomePage() {
 
@@ -33,6 +34,8 @@ export default function HomePage() {
     const [activeDrawerOpen, setActiveDrawerOpen] = useState(false)
     const [expiredDrawerOpen, setExpiredDrawerOpen] = useState(false)
     const [membershipsDrawerOpen, setMembershipsDrawerOpen] = useState(false)
+
+    const [userTrainingsDrawerOpen, setUserTrainingDrawerOpen] = useState(false)
 
     const openActiveDrawer = () => {
         setExpiredDrawerOpen(false)
@@ -214,7 +217,7 @@ export default function HomePage() {
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setUserTrainingDrawerOpen(true)}>View details</Button>}>
                                 <Statistic
                                     title="Number of my training sessions"
                                     value={numOfUserTrainingSessions}
@@ -312,6 +315,11 @@ export default function HomePage() {
             <AllMembershipDetails
                 open={membershipsDrawerOpen}
                 onClose={() => setMembershipsDrawerOpen(false)}
+            />
+
+            <UserTrainingSessionDetails 
+                open={userTrainingsDrawerOpen}
+                onClose={() => setUserTrainingDrawerOpen(false)}
             />
         </>
     )

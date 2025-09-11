@@ -169,7 +169,6 @@ public class TrainingSessionService extends MainService {
                     .setParameter("userId", userId)
                     .list();
             
-            System.out.println("Popis korisnikovih treninga" + " " + bookings);
             return bookings.stream()
                     .map(this::convertToUserResponseDTO)
                     .collect(Collectors.toList());

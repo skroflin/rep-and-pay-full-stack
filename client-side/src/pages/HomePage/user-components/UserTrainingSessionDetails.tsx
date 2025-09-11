@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import type { MembershipResponse } from "../../utils/types/Membership";
-import { getActiveMemberships } from "../../utils/api";
-import { getRole } from "../../utils/helper";
+import { getUserTrainingSessions } from "../../../utils/api";
+import { getRole, getUsername } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Typography } from "antd";
+import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import type { UserTrainingSessionResponse } from "../../../utils/types/user-authenticated/UserTrainingSessions";
 
-export default function ActiveMembershipDetails({
+export default function UserTrainingSessionDetails({
     open,
     onClose
 }: {
@@ -17,23 +17,26 @@ export default function ActiveMembershipDetails({
 
     const role = getRole()
 
-    const { data: memberships, isLoading: activeMembershipsLoading } = useQuery<MembershipResponse[]>({
-        queryKey: ["active-memberships"],
-        queryFn: getActiveMemberships,
-        enabled: role === "superuser"
+    const { data: trainingSessions, isLoading: trainingSessionsLoading } = useQuery<UserTrainingSessionResponse[]>({
+        queryKey: ["user-training-sessions"],
+        queryFn: getUserTrainingSessions,
+        enabled: role === "user"
     })
 
     const [currentIndex, setCurrentIndex] = useState(0)
 
     useEffect(() => {
         if (open) setCurrentIndex(0)
-    }, [open, memberships])
+    }, [open, trainingSessions])
 
-    if (!memberships || memberships.length === 0) return null
+    if (!trainingSessions || trainingSessions.length === 0) return null
 
-    const membership = memberships[currentIndex]
+    const trainingSession = trainingSessions[currentIndex]
 
     const { Text, Title } = Typography
+
+    const username = getUsername()
+    console.log(username)
 
     return (
         <Drawer
@@ -42,10 +45,10 @@ export default function ActiveMembershipDetails({
             title={
                 <span>
                     <Title level={4}>
-                        Active memberships
+                        Training sessions for {username}
                     </Title>
                     <Text style={{ float: "right" }}>
-                        {currentIndex + 1} of {memberships.length}
+                        {currentIndex + 1} of {trainingSessions.length}
                     </Text>
                 </span>
             }
@@ -61,7 +64,7 @@ export default function ActiveMembershipDetails({
                         Back
                     </Button>
                     <Button
-                        disabled={currentIndex === memberships.length - 1}
+                        disabled={currentIndex === trainingSessions.length - 1}
                         onClick={() => setCurrentIndex((i) => i + 1)}
                         icon={
                             <ArrowRightOutlined />
@@ -73,29 +76,29 @@ export default function ActiveMembershipDetails({
             }
             placement="right"
         >
-            {activeMembershipsLoading ? (
+            {trainingSessionsLoading ? (
                 <Spin />
             ) : (
-                memberships && (
+                trainingSessions && (
                     <Descriptions
                         column={1}
                         bordered
                         size="small"
                     >
-                        <Descriptions.Item label="User">
-                            <Text>{membership.firstName} {membership.lastName}</Text>
+                        <Descriptions.Item label="Trainer">
+                            <Text strong>{trainingSession.trainerFirstName} {trainingSession.trainerLastName}</Text>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Start date for membership">
-                            <Text>{dayjs(membership.startDate).format("DD.MM.YYYY")}</Text>
+                        <Descriptions.Item label="Start of session">
+                            <Text strong>{dayjs(trainingSession.beginningOfSession).format("HH:mm")}</Text>
                         </Descriptions.Item>
-                        <Descriptions.Item label="End date for membership">
-                            <Text>{dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
+                        <Descriptions.Item label="End of session">
+                            <Text strong>{dayjs(trainingSession.endOfSession).format("HH:mm")}</Text>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Membership price">
-                            <Text>{membership.membershipPrice}</Text>
+                        <Descriptions.Item label="Training type">
+                            <Tag color="blue">{trainingSession.trainingType.toUpperCase()}</Tag>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Membership payment date">
-                            <Text>{dayjs(membership.paymentDate).format("DD.MM.YYYY")}</Text>
+                        <Descriptions.Item label="Training level">
+                            <Tag color="geekblue">{trainingSession.trainingLevel.toUpperCase()}</Tag>
                         </Descriptions.Item>
                     </Descriptions>
                 )

@@ -103,6 +103,7 @@ export const createTrainingSession = (req: TrainingSessionRequest) => apiPostCal
 export const updateTrainingSession = (req: TrainingSessionRequest, trainingSessionId: string) => apiPutCall<TrainingSessionRequest>(`trainingSession/put?=${trainingSessionId}`, req)
 export const deleteTrainingSession = (trainingsessionId: string) => apiDeleteCall(`trainingSession/delete?id=${trainingsessionId}`)
 export const getAvailableTrainingSessions = (date: string) => apiGetCall(`trainingSession/getAvailableTrainingSessionsByDate?date=${date}`)
+export const getUserTrainingSessions = () => apiGetCall("trainingSession/getUserTrainingSessions")
 
 //user-authenticated methods (user, trainingSesions and bookings)
 export const getMyProfile = () => apiGetCall("user/getMyProfile")

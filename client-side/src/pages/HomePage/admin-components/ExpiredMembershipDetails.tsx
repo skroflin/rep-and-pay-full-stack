@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import type { MembershipResponse } from "../../utils/types/Membership";
-import { getAllMemberships } from "../../utils/api";
-import { getRole } from "../../utils/helper";
+import type { MembershipResponse } from "../../../utils/types/Membership";
+import { getExpiredMemberships } from "../../../utils/api";
+import { getRole } from "../../../utils/helper";
 import { useEffect, useState } from "react";
 import { Button, Descriptions, Drawer, Space, Spin, Typography } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
-export default function AllMembershipDetails({
+export default function ExpiredMembershipDetails({
     open,
     onClose
 }: {
@@ -17,9 +17,9 @@ export default function AllMembershipDetails({
 
     const role = getRole()
 
-    const { data: memberships, isLoading: allMembershipsLoading } = useQuery<MembershipResponse[]>({
-        queryKey: ["all-memberships"],
-        queryFn: getAllMemberships,
+    const { data: memberships, isLoading: expiredMembershipLoading } = useQuery<MembershipResponse[]>({
+        queryKey: ["expired-memberships"],
+        queryFn: getExpiredMemberships,
         enabled: role === "superuser"
     })
 
@@ -42,7 +42,7 @@ export default function AllMembershipDetails({
             title={
                 <span>
                     <Title level={4}>
-                        All memberships
+                        Expired memberships
                     </Title>
                     <Text style={{ float: "right" }}>
                         {currentIndex + 1} of {memberships.length}
@@ -73,7 +73,7 @@ export default function AllMembershipDetails({
             }
             placement="right"
         >
-            {allMembershipsLoading ? (
+            {expiredMembershipLoading ? (
                 <Spin />
             ) : (
                 memberships && (
