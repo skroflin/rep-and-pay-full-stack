@@ -1,6 +1,5 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
-import { Button, Card, Descriptions, Divider, Flex, List, Spin, Statistic, Tag, Typography } from "antd";
-import { Content } from "antd/es/layout/layout";
+import { useQueries } from "@tanstack/react-query";
+import { Button, Card, Divider, Flex, Statistic } from "antd";
 import {
     getMyBookings,
     getNumOfAcceptedTrainerBookings,
@@ -18,14 +17,12 @@ import {
 } from "../../utils/api";
 import { getRole } from "../../utils/helper";
 import CountUp from "react-countup";
-import type { MyBookingResponse } from "../../utils/types/user-authenticated/MyBooking";
-import dayjs from "dayjs";
-import { ClockCircleFilled, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import ActiveMembershipDetails from "./admin-components/ActiveMembershipDetails";
 import ExpiredMembershipDetails from "./admin-components/ExpiredMembershipDetails";
 import AllMembershipDetails from "./admin-components/AllMembershipDetails";
 import UserTrainingSessionDetails from "./user-components/UserTrainingSessionDetails";
+import UserBookingDetails from "./user-components/UserBookingDetails";
 
 export default function HomePage() {
 
@@ -36,6 +33,7 @@ export default function HomePage() {
     const [membershipsDrawerOpen, setMembershipsDrawerOpen] = useState(false)
 
     const [userTrainingsDrawerOpen, setUserTrainingDrawerOpen] = useState(false)
+    const [userBookingsDrawerOpen, setUserBookingsDrawerOpen] = useState(false)
 
     const openActiveDrawer = () => {
         setExpiredDrawerOpen(false)
@@ -120,12 +118,6 @@ export default function HomePage() {
         ]
     });
 
-    const { data: bookings, isLoading } = useQuery<MyBookingResponse[]>({
-        queryKey: ["my-booking-request"],
-        queryFn: () => getMyBookings(),
-        enabled: role === "user"
-    })
-
     const [
         numOfMyTrainingSessions,
         numOfTrainerBookings,
@@ -140,8 +132,6 @@ export default function HomePage() {
         numOfActiveMemberships,
         numOfExpiredMemberships
     ] = results.map((r: { data: any; }) => r.data);
-
-    const { Text } = Typography
 
     return (
         <>
@@ -210,7 +200,7 @@ export default function HomePage() {
                 {role === "user" && (
                     <>
                         <Flex gap={16}>
-                            <Card variant="borderless" style={{ width: 350 }}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setUserBookingsDrawerOpen(true)}>View details</Button>}>
                                 <Statistic
                                     title="Number of my bookings"
                                     value={numOfUserBookings ?? 0}
@@ -223,50 +213,6 @@ export default function HomePage() {
                                     value={numOfUserTrainingSessions}
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
-                            </Card>
-                        </Flex>
-                        <Divider />
-                        <Flex>
-                            <Card variant="borderless" style={{ width: 350 }} title="My bookings">
-                                <Content>
-                                    {isLoading ? (
-                                        <Spin />
-                                    ) : bookings && bookings.length > 0 ? (
-                                        <List
-                                            pagination={{ pageSize: 3 }}
-                                            bordered
-                                            dataSource={bookings}
-                                            renderItem={(booking) => (
-                                                <List.Item>
-                                                    <Descriptions column={1} size="small" style={{ width: "100%" }}>
-                                                        <Descriptions.Item>
-                                                            <Text strong>{booking.trainingType.toUpperCase()} - {booking.trainingLevel.toUpperCase()}</Text>
-                                                        </Descriptions.Item>
-                                                        <Descriptions.Item>
-                                                            <Text>{booking.trainerFirstName} {booking.trainerLastName}</Text>
-                                                        </Descriptions.Item>
-                                                        <Descriptions.Item label={<ClockCircleFilled style={{ fontSize: "12px" }} />}>
-                                                            <Text>From {dayjs(booking.startOfSession).format("HH:mm")}</Text>
-                                                        </Descriptions.Item>
-                                                        <Descriptions.Item label={<ClockCircleOutlined style={{ fontSize: "12px" }} />}>
-                                                            <Text>To {dayjs(booking.endOfSession).format("HH:mm")}</Text>
-                                                        </Descriptions.Item>
-                                                        <Descriptions.Item>
-                                                            <Text>
-                                                                {booking.bookingStatus === "accepted" && <Tag color="green">{booking.bookingStatus.toUpperCase()}</Tag>}
-                                                                {booking.bookingStatus === "rejected" && <Tag color="red">{booking.bookingStatus.toUpperCase()}</Tag>}
-                                                                {booking.bookingStatus === "pending" && <Tag color="yellow">{booking.bookingStatus.toUpperCase()}</Tag>}
-                                                            </Text>
-                                                        </Descriptions.Item>
-                                                    </Descriptions>
-                                                </List.Item>
-                                            )}
-                                        >
-                                        </List>
-                                    ) : (
-                                        <Text></Text>
-                                    )}
-                                </Content>
                             </Card>
                         </Flex>
                     </>
@@ -320,6 +266,11 @@ export default function HomePage() {
             <UserTrainingSessionDetails 
                 open={userTrainingsDrawerOpen}
                 onClose={() => setUserTrainingDrawerOpen(false)}
+            />
+
+            <UserBookingDetails 
+                open={userBookingsDrawerOpen}
+                onClose={() => setUserBookingsDrawerOpen(false)}
             />
         </>
     )
