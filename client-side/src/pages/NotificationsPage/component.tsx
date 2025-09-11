@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Badge, Calendar, Spin } from "antd";
 import { BookOutlined, PlusOutlined, ScheduleOutlined } from "@ant-design/icons";
 import BookingReviewModal from "./BookingReviewModal";
+import { getUsername } from "../../utils/helper";
 
 export default function NotificationsPage() {
     const [selectedBooking, setSelectedBooking] = useState<TrainerBookingResponse[]>([])
@@ -29,6 +30,8 @@ export default function NotificationsPage() {
             setDrawerOpen(false)
         }
     }
+
+    const username = getUsername()
 
     const dateCellRender = (value: dayjs.Dayjs) => {
         const bookingsForDate = bookings?.filter((b) => dayjs(b.startOfSession).isSame(value, "day")) || []
@@ -97,7 +100,7 @@ export default function NotificationsPage() {
                 padding: 20
             }}>
             <h1>
-                Booking requests <BookOutlined />
+                Booking requests for {username}<BookOutlined />
             </h1>
             {isLoading && <Spin />}
 

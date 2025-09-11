@@ -67,14 +67,14 @@ export default function NavBar({ routes }: NavBarProps) {
             }}
         >
             <Title
-                level={4}
+                level={5}
                 style={{
                     color: "#fff",
                     margin: 0,
                     fontStyle: "italic"
                 }}
             >
-                {collapsed ? "R&P" : "Rep & Pay"}
+                {collapsed ? "R&P" : `Rep & Pay - ${role}`}
             </Title>
             <Button
                 type="text"
