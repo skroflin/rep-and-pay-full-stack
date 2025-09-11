@@ -10,10 +10,14 @@ import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
+import fina.skroflin.model.dto.training.user.UserTrainingSessionResponseDTO;
+import fina.skroflin.model.enums.TrainingLevel;
+import fina.skroflin.model.enums.TrainingType;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
@@ -66,6 +70,25 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getBeginningOfSession(),
                 trainingSession.getEndOfSession(),
                 trainingSession.isAlreadyBooked()
+        );
+    }
+    
+    @Transactional
+    public UserTrainingSessionResponseDTO convertToUserResponseDTO(
+            TrainingSession trainingSession
+    ) {
+        if (trainingSession == null) {
+            return null;
+        }
+        
+        return new UserTrainingSessionResponseDTO(
+                trainingSession.getId(), 
+                trainingSession.getTrainingType(), 
+                trainingSession.getTrainingLevel(), 
+                trainingSession.getTrainer().getFirstName(), 
+                trainingSession.getTrainer().getLastName(), 
+                trainingSession.getBeginningOfSession(),
+                trainingSession.getEndOfSession()
         );
     }
 
@@ -125,6 +148,36 @@ public class TrainingSessionService extends MainService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching training sessions:"
+                    + " " + e.getMessage(), e);
+        }
+    }
+    
+    public List<UserTrainingSessionResponseDTO> getUserTrainingSessions(
+            HttpHeaders headers
+    ) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+            List<TrainingSession> trainingSessions = session.createQuery(
+                    "select b.trainingSession.trainer.firstName, "
+                            + "b.trainingSession.trainer.lastName, "
+                            + "b.trainingSession.beginningOfSession, "
+                            + "b.trainingSession.endOfSession, "
+                            + "b.bookingStatus from Booking b "
+                    + "left join fetch b.user u "
+                    + "left join fetch b.trainingSession ts "
+                    + "where u.id = :userId "
+                    + "and b.bookingStatus = accepted", TrainingSession.class)
+                    .setParameter("userId", userId)
+                    .list();
+            
+            System.out.println("Popis korisnikovih treninga" + " " + trainingSessions);
+            return trainingSessions.stream()
+                    .map(this::convertToUserResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching user training sessions:"
                     + " " + e.getMessage(), e);
         }
     }

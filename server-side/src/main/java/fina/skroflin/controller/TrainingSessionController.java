@@ -10,6 +10,7 @@ import fina.skroflin.model.dto.training.TrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.TrainingSessionResponseDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionRequestDTO;
 import fina.skroflin.model.dto.training.user.MyTrainingSessionResponseDTO;
+import fina.skroflin.model.dto.training.user.UserTrainingSessionResponseDTO;
 import fina.skroflin.service.TrainingSessionService;
 import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -423,5 +424,15 @@ public class TrainingSessionController {
         Long numOfBeginnerTrainingSessions
                 = trainingSessionService.getNumOfAdvancedTrainingSessions(headers);
         return new ResponseEntity<>(numOfBeginnerTrainingSessions, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getUserTrainingSessions")
+    public ResponseEntity<List<UserTrainingSessionResponseDTO>> getUserTrainingSessions(
+            @RequestHeader
+            HttpHeaders headers
+    ) {
+        List<UserTrainingSessionResponseDTO> userTrainingSessions = 
+                trainingSessionService.getUserTrainingSessions(headers);
+        return new ResponseEntity<>(userTrainingSessions, HttpStatus.OK);
     }
 }

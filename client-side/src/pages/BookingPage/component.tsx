@@ -6,13 +6,15 @@ import {
     Divider,
     List,
     Spin,
+    Tooltip,
     Typography
 } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import {
     createMyBooking,
-    getAvailableTrainingSessions
+    getAvailableTrainingSessions,
+    hasActiveMembership
 } from "../../utils/api";
 import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
@@ -30,6 +32,11 @@ export default function BookingPage() {
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
+    const { data: activeMembership, isLoading: activeMembershipLoading } = useQuery({
+        queryKey: ["has-active-membership"],
+        queryFn: hasActiveMembership
+    })
+
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
         onSuccess: () => {
@@ -45,6 +52,11 @@ export default function BookingPage() {
     }
 
     const handleBooking = (session: TrainingSessionResponse) => {
+
+        if (!activeMembership) {
+            toast.warning("Please pay for your membership in order to book a training session!")
+            return
+        }
 
         setPendingSession(prev => [...prev, session.id])
         bookingMutation.mutate({
@@ -99,16 +111,25 @@ export default function BookingPage() {
                                     <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
                                 </Descriptions.Item>
                                 <Descriptions.Item>
-                                    <Button
-                                        type="primary"
-                                        onClick={() => handleBooking(session)}
-                                        loading={bookingMutation.isPending}
-                                        disabled={pendingSession.includes(session.id) || session.alreadyBooked}
-                                        icon={<PlusCircleFilled />}
-                                        size="large"
+                                    <Tooltip
+                                        title={!activeMembership ? "You need an active membership in order to book a training session!" : ""}
                                     >
-                                        {session.alreadyBooked ? "Already booked" : "Book"}
-                                    </Button>
+                                        <Button
+                                            type="primary"
+                                            onClick={() => handleBooking(session)}
+                                            loading={bookingMutation.isPending}
+                                            disabled={
+                                                pendingSession.includes(session.id) || session.alreadyBooked || !activeMembership
+                                            }
+                                            icon={<PlusCircleFilled />}
+                                            size="small"
+                                            style={{
+                                                fontSize: "14px"
+                                            }}
+                                        >
+                                            {session.alreadyBooked ? "Already booked" : !activeMembership ? "Membership required" : "Book"}
+                                        </Button>
+                                    </Tooltip>
                                 </Descriptions.Item>
                             </Descriptions>
                         </List.Item>
