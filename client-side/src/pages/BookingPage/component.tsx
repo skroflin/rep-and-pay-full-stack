@@ -32,7 +32,7 @@ export default function BookingPage() {
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
-    const { data: activeMembership, isLoading: activeMembershipLoading } = useQuery({
+    const { data: activeMembership } = useQuery({
         queryKey: ["has-active-membership"],
         queryFn: hasActiveMembership
     })
@@ -84,7 +84,10 @@ export default function BookingPage() {
                 fullscreen={false}
                 onChange={handleDataChange}
             />
-            <Title level={4}><OrderedListOutlined /> Available sessions for {formatDate(selectedDate)} <Divider /></Title>
+            <Title level={4}>
+                <OrderedListOutlined /> Available sessions for {formatDate(selectedDate)}
+                <Divider />
+            </Title>
 
             {isLoading ? (
                 <Spin />

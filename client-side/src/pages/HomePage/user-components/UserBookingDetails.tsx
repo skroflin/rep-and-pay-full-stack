@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyBookings } from "../../../utils/api";
 import { getRole, getUsername } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
+import { Button, Descriptions, Drawer, Space, Spin, Tag, Tooltip, Typography } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { MyBookingResponse } from "../../../utils/types/user-authenticated/MyBooking";
@@ -79,34 +79,36 @@ export default function UserBookingDetails({
                 <Spin />
             ) : (
                 bookings && (
-                    <Descriptions
-                        column={1}
-                        bordered
-                        size="small"
-                    >
-                        <Descriptions.Item label="Trainer">
-                            <Text strong>{booking.trainerFirstName} {booking.trainerLastName}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Start of session">
-                            <Text strong>{dayjs(booking.startOfSession).format("HH:mm")}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="End of session">
-                            <Text strong>{dayjs(booking.endOfSession).format("HH:mm")}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Training type">
-                            <Tag color="blue">{booking.trainingType.toUpperCase()}</Tag>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Training level">
-                            <Tag color="geekblue">{booking.trainingLevel.toUpperCase()}</Tag>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Booking status">
-                            <Text>
-                                {booking.bookingStatus === "accepted" && <Tag color="green">{booking.bookingStatus.toUpperCase()}</Tag>}
-                                {booking.bookingStatus === "rejected" && <Tag color="red">{booking.bookingStatus.toUpperCase()}</Tag>}
-                                {booking.bookingStatus === "pending" && <Tag color="yellow">{booking.bookingStatus.toUpperCase()}</Tag>}
-                            </Text>
-                        </Descriptions.Item>
-                    </Descriptions>
+                    <Tooltip title={`Booking request for ${dayjs(booking.startOfSession).format("DD.MM.YYYY")}`}>
+                        <Descriptions
+                            column={1}
+                            bordered
+                            size="small"
+                        >
+                            <Descriptions.Item label="Trainer">
+                                <Text strong>{booking.trainerFirstName} {booking.trainerLastName}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Start of session">
+                                <Text strong>{dayjs(booking.startOfSession).format("HH:mm")}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="End of session">
+                                <Text strong>{dayjs(booking.endOfSession).format("HH:mm")}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Training type">
+                                <Tag color="blue">{booking.trainingType.toUpperCase()}</Tag>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Training level">
+                                <Tag color="geekblue">{booking.trainingLevel.toUpperCase()}</Tag>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Booking status">
+                                <Text>
+                                    {booking.bookingStatus === "accepted" && <Tag color="green">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                    {booking.bookingStatus === "rejected" && <Tag color="red">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                    {booking.bookingStatus === "pending" && <Tag color="yellow">{booking.bookingStatus.toUpperCase()}</Tag>}
+                                </Text>
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </Tooltip>
                 )
             )}
         </Drawer>

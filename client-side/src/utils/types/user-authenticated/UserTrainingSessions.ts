@@ -3,6 +3,6 @@ export interface UserTrainingSessionResponse {
     trainerLastName: string
     trainingType: "push" | "pull" | "legs" | "crossfit" | "conditioning" | "yoga" | "weightlifting"
     trainingLevel: "beginner" | "intermediate" | "advanced"
-    startOfSession: Date | string
+    beginningOfSession: Date | string
     endOfSession: Date | string
 }

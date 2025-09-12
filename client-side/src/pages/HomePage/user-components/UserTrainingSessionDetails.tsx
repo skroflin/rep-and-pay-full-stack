@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserTrainingSessions } from "../../../utils/api";
 import { getRole, getUsername } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
+import { Button, Descriptions, Drawer, Space, Spin, Tag, Tooltip, Typography } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { UserTrainingSessionResponse } from "../../../utils/types/user-authenticated/UserTrainingSessions";
@@ -43,7 +43,7 @@ export default function UserTrainingSessionDetails({
             onClose={onClose}
             title={
                 <span>
-                    <Title level={4}>
+                    <Title level={4} style={{ textAlign: "center" }}>
                         Training sessions for {username}
                     </Title>
                     <Text style={{ float: "right" }}>
@@ -79,27 +79,31 @@ export default function UserTrainingSessionDetails({
                 <Spin />
             ) : (
                 trainingSessions && (
-                    <Descriptions
-                        column={1}
-                        bordered
-                        size="small"
+                    <Tooltip
+                        title={`Training session for ${dayjs(trainingSession.beginningOfSession).format("DD.MM.YYYY")}`}
                     >
-                        <Descriptions.Item label="Trainer">
-                            <Text strong>{trainingSession.trainerFirstName} {trainingSession.trainerLastName}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Start of session">
-                            <Text strong>{dayjs(trainingSession.startOfSession).format("HH:mm")}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="End of session">
-                            <Text strong>{dayjs(trainingSession.endOfSession).format("HH:mm")}</Text>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Training type">
-                            <Tag color="blue">{trainingSession.trainingType.toUpperCase()}</Tag>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Training level">
-                            <Tag color="geekblue">{trainingSession.trainingLevel.toUpperCase()}</Tag>
-                        </Descriptions.Item>
-                    </Descriptions>
+                        <Descriptions
+                            column={1}
+                            bordered
+                            size="small"
+                        >
+                            <Descriptions.Item label="Trainer">
+                                <Text strong>{trainingSession.trainerFirstName} {trainingSession.trainerLastName}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Start of session">
+                                <Text strong>{dayjs(trainingSession.beginningOfSession).format("HH:mm")}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="End of session">
+                                <Text strong>{dayjs(trainingSession.endOfSession).format("HH:mm")}</Text>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Training type">
+                                <Tag color="blue">{trainingSession.trainingType.toUpperCase()}</Tag>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Training level">
+                                <Tag color="geekblue">{trainingSession.trainingLevel.toUpperCase()}</Tag>
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </Tooltip>
                 )
             )}
         </Drawer>
