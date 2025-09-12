@@ -43,7 +43,7 @@ export default function UserBookingDetails({
             onClose={onClose}
             title={
                 <span>
-                    <Title level={5}>
+                    <Title level={5} style={{ textAlign: "center" }}>
                         Training sessions bookings for {username}
                     </Title>
                     <Text style={{ float: "right" }}>

@@ -81,7 +81,8 @@ public class MembershipService extends MainService {
                 throw new NoResultException("User not found!");
             }
             List<Membership> memberships = session.createQuery(
-                    "from Membership m", Membership.class)
+                    "from Membership m where m.user.id = :userId", Membership.class)
+                    .setParameter("userId", userId)
                     .list();
             return memberships.stream()
                     .map(this::convertToMyResponse)
@@ -349,7 +350,7 @@ public class MembershipService extends MainService {
                 throw new NoResultException("User not found!");
             }
             List<Membership> memberships = session.createQuery(
-                    "select m from Membership m left join fetch m.user u where u.id = :userId", 
+                    "select m from Membership m left join fetch m.user", 
                     Membership.class)
                     .setParameter("userId", userId)
                     .list();
