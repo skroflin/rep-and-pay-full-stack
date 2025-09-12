@@ -5,6 +5,7 @@
 package fina.skroflin.controller;
 
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.membership.user.MonthOptionResponseDTO;
 import fina.skroflin.model.dto.membership.user.MyMembershipResponseDTO;
 import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
 import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
@@ -155,5 +156,14 @@ public class MembershipController {
     ) {
         List<MembershipResponseDTO> memberships = membershipService.getAllMemberships(headers);
         return new ResponseEntity<>(memberships, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getMonthOptions")
+    public ResponseEntity<List<MonthOptionResponseDTO>> getMonthOptions(
+            @RequestHeader
+            HttpHeaders headers
+    ) {
+        List<MonthOptionResponseDTO> monthOptions = membershipService.getMonthOptions(headers);
+        return new ResponseEntity<>(monthOptions, HttpStatus.OK);
     }
 }

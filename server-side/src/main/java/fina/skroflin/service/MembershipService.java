@@ -10,6 +10,7 @@ import fina.skroflin.model.Membership;
 import fina.skroflin.model.User;
 import fina.skroflin.model.dto.membership.MembershipRequestDTO;
 import fina.skroflin.model.dto.membership.MembershipResponseDTO;
+import fina.skroflin.model.dto.membership.user.MonthOptionResponseDTO;
 import fina.skroflin.model.dto.membership.user.MyMembershipResponseDTO;
 import fina.skroflin.model.dto.stripe.CheckoutSessionRequestDTO;
 import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
@@ -17,9 +18,13 @@ import fina.skroflin.utils.jwt.JwtTokenUtil;
 import fina.skroflin.utils.stripe.StripeConfig;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -68,6 +73,15 @@ public class MembershipService extends MainService {
                 membership.getMembershipPrice(),
                 membership.getPaymentDate()
         );
+    }
+
+    @Transactional
+    public MonthOptionResponseDTO convertToMonthOptionResponse(Membership membership, YearMonth month) {
+        boolean paid = YearMonth.from(membership.getStartDate()).equals(month);
+        BigDecimal price = BigDecimal.valueOf(membership.getMembershipPrice() / 100.0);
+        String label = month.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + month.getYear();
+
+        return new MonthOptionResponseDTO(label, price, paid, true);
     }
 
     public List<MyMembershipResponseDTO> getMyMemberships(HttpHeaders headers) {
@@ -350,7 +364,7 @@ public class MembershipService extends MainService {
                 throw new NoResultException("User not found!");
             }
             List<Membership> memberships = session.createQuery(
-                    "select m from Membership m left join fetch m.user", 
+                    "select m from Membership m left join fetch m.user",
                     Membership.class)
                     .setParameter("userId", userId)
                     .list();
@@ -359,6 +373,49 @@ public class MembershipService extends MainService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching memberships:"
+                    + " " + e.getMessage(), e);
+        }
+    }
+
+    public List<MonthOptionResponseDTO> getMonthOptions(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User user = (User) session.get(User.class, userId);
+            if (user == null) {
+                throw new NoResultException("User not found!");
+            }
+            List<Membership> memberships = session.createQuery(
+                    "select m from Membership m where m.user.id = :userId",
+                    Membership.class)
+                    .setParameter("userId", userId)
+                    .list();
+
+            LocalDate now = LocalDate.now();
+            YearMonth currentMonth = YearMonth.from(now);
+            YearMonth nextMonth = currentMonth.plusMonths(1);
+
+            List<YearMonth> allowedMonths = List.of(currentMonth, nextMonth);
+
+            return allowedMonths.stream()
+                    .map(month -> {
+                        Membership matchingMembership = memberships.stream()
+                                .filter(m -> YearMonth.from(m.getStartDate()).equals(m))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (matchingMembership != null) {
+                            return convertToMonthOptionResponse(matchingMembership, month);
+                        } else {
+                            String label = month.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + month.getYear();
+                            return  new MonthOptionResponseDTO(label, BigDecimal.valueOf(30.00), false, true);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching month options:"
                     + " " + e.getMessage(), e);
         }
     }

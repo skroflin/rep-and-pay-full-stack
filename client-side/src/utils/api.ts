@@ -1,15 +1,15 @@
 import axios from "axios";
 import { getAuthToken, setAuthToken, setRole, setUsername } from "./helper";
-import type { UserRequest } from "./types/User";
-import type { RegistrationUserRequest } from "./types/Register";
-import type { LoginUserRequest } from "./types/Login";
+import type { UserRequest } from "./types/user/User";
+import type { RegistrationUserRequest } from "./types/user/Register";
+import type { LoginUserRequest } from "./types/user/Login";
 import type { BookingRequest, UpdateBookingStatusRequest } from "./types/Booking";
 import type { TrainingSessionRequest } from "./types/TrainingSession";
-import type { PasswordUserRequest } from "./types/Password";
+import type { PasswordUserRequest } from "./types/user/Password";
 import type { MyTrainingSessionRequest } from "./types/user-authenticated/MyTrainingSession";
 import type { MyBookingRequest } from "./types/user-authenticated/MyBooking";
 import type { CheckoutRequest } from "./types/Checkout";
-import type { JwtResponse } from "./types/JwtResponse";
+import type { JwtResponse } from "./types/user/JwtResponse";
 
 const BASE_URL = 'http://localhost:8080'
 
@@ -145,6 +145,7 @@ export const createCheckoutSession = (req: CheckoutRequest) => apiPostCall("memb
 export const hasActiveMembership = () => apiGetCall("membership/hasActiveMembership")
 export const confirmPayment = (status: string) => apiGetCall(`membership/confirm?status=${status}`)
 export const getMyMemberships = () => apiGetCall("membership/getMyMemberships")
+export const getMonthOptions = () => apiGetCall("membership/getMonthOptions")
 
 //stripe membership methods (superuser)
 export const getMembershipByUser = (userId: string) =>apiGetCall(`membership/getMembershipByUser?userId=${userId}`)

@@ -2,13 +2,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Col, Divider, Flex, Select, Spin, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { CheckoutRequest } from "../../utils/types/Checkout";
-import { createCheckoutSession, confirmPayment, getMyMemberships } from "../../utils/api";
+import { createCheckoutSession, confirmPayment, getMyMemberships, getMonthOptions } from "../../utils/api";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { DollarOutlined, OrderedListOutlined } from "@ant-design/icons";
 import type { Membership } from "../../utils/types/Membership";
 import dayjs from "dayjs";
+import type { MonthOptionResponse } from "../../utils/types/MonthOptions";
 
 export default function MembershipPage() {
     const {
@@ -24,6 +25,11 @@ export default function MembershipPage() {
     const { data: memberships, isLoading: membershipLoading } = useQuery<Membership[]>({
         queryKey: ["memberships"],
         queryFn: () => getMyMemberships()
+    })
+
+    const { data: monthOptions, isLoading: monthOptionsLoading } = useQuery<MonthOptionResponse[]>({
+        queryKey: ["month-options"],
+        queryFn: () => getMonthOptions()
     })
 
     const checkoutMutation = useMutation({
@@ -73,7 +79,7 @@ export default function MembershipPage() {
     const columns = [
         { title: "Start Date", dataIndex: "startDate", key: "startDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
         { title: "End Date", dataIndex: "endDate", key: "endDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
-        { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice", render: (membershipPrice: number) => <Tag color="green" style={{float: "right"}}>{membershipPrice}</Tag> },
+        { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice", render: (membershipPrice: number) => <Tag color="green" style={{ float: "right" }}>{membershipPrice}</Tag> },
         { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
     ]
 

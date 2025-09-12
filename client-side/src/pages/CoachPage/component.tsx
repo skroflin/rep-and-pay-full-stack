@@ -1,6 +1,6 @@
 import { Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
-import type { UserRequest } from "../../utils/types/User";
+import type { UserRequest } from "../../utils/types/user/User";
 import { getCoaches } from "../../utils/api";
 import { useQuery } from "@tanstack/react-query";
 

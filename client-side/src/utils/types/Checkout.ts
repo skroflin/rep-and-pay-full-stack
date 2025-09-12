@@ -1,6 +1,6 @@
 export interface CheckoutRequest {
     price: number
-    month: number | null
+    month: string
 }
 
 export interface StripeCheckoutResponse {

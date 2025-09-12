@@ -9,8 +9,8 @@ import { AxiosError } from "axios"
 import { Button, Divider, Flex, Form, Input, Spin, Typography } from "antd"
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons"
 import LogInLogo from "../../misc/Logo/LogInLogo"
-import type { JwtResponse } from "../../utils/types/JwtResponse"
-import type { LoginUserRequest } from "../../utils/types/Login"
+import type { JwtResponse } from "../../utils/types/user/JwtResponse"
+import type { LoginUserRequest } from "../../utils/types/user/Login"
 
 export default function LoginIn() {
     const [username, setUsername] = useState<string>("")

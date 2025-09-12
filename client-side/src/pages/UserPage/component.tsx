@@ -1,7 +1,7 @@
 import { Button, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
-import type { UserRequest } from "../../utils/types/User";
+import type { UserRequest } from "../../utils/types/user/User";
 import { getMembershipByUser, getRegularUsers } from "../../utils/api";
 import { toast } from "react-toastify";
 import type { Membership } from "../../utils/types/Membership";
