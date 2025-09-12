@@ -308,7 +308,7 @@ public class MembershipService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
-    
+
     public Long getNumOfActiveMemberships() {
         try {
             Long numOfActiveMemberships = session.createQuery(
@@ -337,12 +337,21 @@ public class MembershipService extends MainService {
                     + " " + e.getMessage(), e);
         }
     }
-    
-    public List<MembershipResponseDTO> getAllMemberships() {
+
+    public List<MembershipResponseDTO> getAllMemberships(HttpHeaders headers) {
         try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User user = (User) session.get(User.class, userId);
+            if (user == null) {
+                throw new NoResultException("User not found!");
+            }
             List<Membership> memberships = session.createQuery(
-                    "select m from Membership m "
-                    + "left join fetch m.user ", Membership.class)
+                    "select m from Membership m left join fetch m.user u where u.id = :userId", 
+                    Membership.class)
+                    .setParameter("userId", userId)
                     .list();
             return memberships.stream()
                     .map(this::convertToResponseDTO)

@@ -149,8 +149,11 @@ public class MembershipController {
     }
 
     @GetMapping("/getAllMemberships")
-    public ResponseEntity<List<MembershipResponseDTO>> getAllMemberships() {
-        List<MembershipResponseDTO> memberships = membershipService.getAllMemberships();
+    public ResponseEntity<List<MembershipResponseDTO>> getAllMemberships(
+            @RequestHeader
+            HttpHeaders headers
+    ) {
+        List<MembershipResponseDTO> memberships = membershipService.getAllMemberships(headers);
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 }
