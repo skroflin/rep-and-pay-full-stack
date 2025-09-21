@@ -40,7 +40,6 @@ export default function MembershipPage() {
                 setTimeout(() => {
                     window.location.href = checkoutUrl
                 }, 1500)
-                console.log(checkoutUrl)
             } else {
                 toast.error("Unable to create checkout session!")
             }
@@ -71,10 +70,25 @@ export default function MembershipPage() {
 
     const { Text, Title } = Typography
 
-    const months = [
-        "January", "February", "March", "April", "May", "June", "July", "August",
-        "September", "October", "November", "December"
-    ]
+    // Primijeniti da se može platiti za trenutni mjesec i iduća dva mjeseca
+
+    // const months = [
+    //     "January", "February", "March", "April", "May", "June", "July", "August",
+    //     "September", "October", "November", "December"
+    // ]
+
+    const getNextThreeMonths = () => {
+        const now = dayjs()
+        return Array.from({ length: 3 }, (_, i) => {
+            const month = now.add(i, "month")
+            return {
+                label: month.format("MMMM"),
+                value: month.month() + 1
+            }
+        })
+    }
+
+    const upcomingMonths = getNextThreeMonths()
 
     const columns = [
         { title: "Start Date", dataIndex: "startDate", key: "startDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
@@ -112,9 +126,9 @@ export default function MembershipPage() {
                             onChange={(val) => setSelectedMonth(val)}
                             prefix={<OrderedListOutlined />}
                         >
-                            {months.map((m, idx) => (
-                                <Select.Option key={idx + 1} value={idx + 1}>
-                                    {m}
+                            {upcomingMonths.map((m) => (
+                                <Select.Option key={m.value} value={m.value}>
+                                    {m.label}
                                 </Select.Option>
                             ))}
                         </Select>
@@ -124,7 +138,7 @@ export default function MembershipPage() {
                             <Button
                                 type="primary"
                                 size="middle"
-                                onClick={() => checkoutMutation.mutate({ price: 3000, month: selectedMonth })}
+                                onClick={() => checkoutMutation.mutate({ price: 3000, month: selectedMonth! })}
                                 icon={<DollarOutlined />}
                                 disabled={selectedMonth === null}
                                 style={{ width: 200 }}

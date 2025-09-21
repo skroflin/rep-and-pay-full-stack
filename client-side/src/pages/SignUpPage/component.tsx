@@ -35,7 +35,10 @@ export default function SignUp() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         toast.error(undefined)
+        console.log(e.target)
         const { name, value } = e.target
+        // console.log(name)
+        // console.log(value)
         setFormData({
             ...formData,
             [name]: value
@@ -48,7 +51,7 @@ export default function SignUp() {
             toast.success(`${formData.username} welcome!`)
             setAuthToken(response.token)
             setUser(formData.username, formData.role, true)
-            setTimeout(() => navigate("/"), 1500)
+            setTimeout(() => navigate("/log-in"), 1500)
         },
         onError: (error: AxiosError, _variables, _context) => {
             if (error.response?.status === 409) {
@@ -123,11 +126,11 @@ export default function SignUp() {
                     autoComplete="off"
                 >
                     <Form.Item
-                        name="firstName"
                         rules={[{ required: true, message: 'Please input your first name!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input
+                            name="firstName"
                             placeholder="First name"
                             prefix={<IdcardOutlined />}
                             value={formData.firstName}
@@ -135,11 +138,11 @@ export default function SignUp() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="lastName"
                         rules={[{ required: true, message: 'Please input your last name/surname!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input
+                            name="lastName"
                             placeholder="Last name"
                             prefix={<IdcardFilled />}
                             value={formData.lastName}
@@ -147,11 +150,11 @@ export default function SignUp() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input
+                            name="username"
                             placeholder="Username"
                             prefix={<UserOutlined />}
                             value={formData.username}
@@ -159,11 +162,11 @@ export default function SignUp() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="email"
                         rules={[{ required: true, message: 'Please input your email!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input
+                            name="email"
                             placeholder="Email"
                             prefix={<MailOutlined />}
                             value={formData.email}
@@ -171,11 +174,11 @@ export default function SignUp() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input.Password
+                            name="password"
                             placeholder="Password"
                             prefix={<LockOutlined />}
                             type="password"
@@ -184,11 +187,11 @@ export default function SignUp() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="confirmPassword"
                         rules={[{ required: true, message: 'Please confirm your password!' }]}
                         style={{ width: "100%" }}
                     >
                         <Input.Password
+                            name="confirmPassword"
                             placeholder="Confirm password"
                             prefix={<LockFilled />}
                             type="password"
@@ -196,15 +199,15 @@ export default function SignUp() {
                             onChange={handleChange}
                         />
                     </Form.Item>
-                    <Form.Item name="role" rules={[{ required: true }]} style={{ width: "100%" }}>
+                    <Form.Item rules={[{ required: true }]} style={{ width: "100%" }}>
                         <Select
                             prefix={<TeamOutlined />}
                             placeholder="Select a role"
                             allowClear
-                            onChange={handleChange}
+                            onChange={(value) => setFormData({ ...formData, role: value })}
                         >
-                            <Option value="user">User</Option>
-                            <Option value="coach">Coach</Option>
+                            <Select.Option value="user" name="role">User</Select.Option>
+                            <Select.Option value="coach" name="role">Coach</Select.Option>
                         </Select>
                     </Form.Item>
                     <Form.Item label={null} style={{ width: "100%", marginTop: 16 }}>

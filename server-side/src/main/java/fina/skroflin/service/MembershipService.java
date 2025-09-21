@@ -68,6 +68,7 @@ public class MembershipService extends MainService {
         }
 
         return new MyMembershipResponseDTO(
+                membership.getId(),
                 membership.getStartDate(),
                 membership.getEndDate(),
                 membership.getMembershipPrice(),

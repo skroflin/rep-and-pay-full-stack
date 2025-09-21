@@ -11,6 +11,7 @@ import java.time.LocalDate;
  * @author skroflin
  */
 public record MyMembershipResponseDTO(
+        Integer id,
         LocalDate startDate,
         LocalDate endDate,
         long membershipPrice,

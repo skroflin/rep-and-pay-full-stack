@@ -539,7 +539,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts.id) from Booking b "
                             + "left join b.trainingSession ts "
                             + "left join b.user u "
-                            + "where u.id = :userId",
+                            + "where u.id = :userId "
+                            + "and b.bookingStatus = accepted",
                     Long.class)
                     .setParameter("userId", userId)
                     .getSingleResult();

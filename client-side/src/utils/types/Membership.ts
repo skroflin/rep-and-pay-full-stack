@@ -1,4 +1,5 @@
 export interface Membership {
+    id: number
     startDate: Date | string
     endDate: Date | string
     membershipPrice: number

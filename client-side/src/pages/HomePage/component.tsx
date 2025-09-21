@@ -91,8 +91,8 @@ export default function HomePage() {
                 enabled: role === "user"
             },
             {
-                queryKey: ["user-bookings"],
-                queryFn: getMyBookings,
+                queryKey: ["num-of-user-bookings"],
+                queryFn: getNumOfMyBookings,
                 enabled: role === "user"
             },
             {
@@ -125,13 +125,13 @@ export default function HomePage() {
         numOfAcceptedTrainerBookings,
         numOfBeginnerTrainingSessions,
         numOfIntermediateTrainingSessions,
-        numOfUserBookings,
         numOfUserTrainingSessions,
+        numOfMyBookings,
         numOfAdvancedTrainingSessions,
         numOfMemberships,
         numOfActiveMemberships,
         numOfExpiredMemberships
-    ] = results.map((r: { data: any; }) => r.data);
+    ] = results.map(r => Number(r.data ?? 0));
 
     return (
         <>
@@ -161,7 +161,7 @@ export default function HomePage() {
                                 <Statistic
                                     title="Number of accepted booking requests"
                                     value={numOfAcceptedTrainerBookings}
-                                    suffix={` /${numOfTrainerBookings}`}
+                                    suffix={`/${numOfTrainerBookings}`}
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
@@ -203,11 +203,11 @@ export default function HomePage() {
                             <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setUserBookingsDrawerOpen(true)}>View details</Button>}>
                                 <Statistic
                                     title="Number of my bookings"
-                                    value={numOfUserBookings ?? 0}
+                                    value={numOfMyBookings ?? 0}
                                     formatter={value => <CountUp end={Number(value)} duration={2} />}
                                 />
                             </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setUserTrainingDrawerOpen(true)}>View details</Button>}>
+                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => { setUserTrainingDrawerOpen(true); console.log("HAA") }}>View details</Button>}>
                                 <Statistic
                                     title="Number of my training sessions"
                                     value={numOfUserTrainingSessions}
@@ -255,7 +255,7 @@ export default function HomePage() {
 
             <ExpiredMembershipDetails
                 open={expiredDrawerOpen}
-                onClose={() => setExpiredDrawerOpen(false)} 
+                onClose={() => setExpiredDrawerOpen(false)}
             />
 
             <AllMembershipDetails
@@ -263,12 +263,12 @@ export default function HomePage() {
                 onClose={() => setMembershipsDrawerOpen(false)}
             />
 
-            <UserTrainingSessionDetails 
+            <UserTrainingSessionDetails
                 open={userTrainingsDrawerOpen}
                 onClose={() => setUserTrainingDrawerOpen(false)}
             />
 
-            <UserBookingDetails 
+            <UserBookingDetails
                 open={userBookingsDrawerOpen}
                 onClose={() => setUserBookingsDrawerOpen(false)}
             />
