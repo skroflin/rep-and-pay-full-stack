@@ -1,7 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
 import { Button, Card, Divider, Flex, Statistic } from "antd";
 import {
-    getMyBookings,
     getNumOfAcceptedTrainerBookings,
     getNumOfActiveMemberships,
     getNumOfAdvancedTrainingSessions,
@@ -135,115 +134,135 @@ export default function HomePage() {
 
     return (
         <>
-            <Flex vertical justify="space-evenly" align="start" style={{ marginTop: 30, minHeight: "80vh" }} wrap>
+            <Flex
+                wrap="wrap"
+                gap={32}
+                justify="center"
+                align="center"
+                style={{ marginTop: 30, minHeight: "80vh", maxWidth: 1200, marginLeft: "auto", marginRight: "auto" }}
+            >
                 {role === "coach" && (
                     <>
-                        <Flex gap={24}>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of training bookings"
-                                    value={numOfTrainerBookings}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of pending booking requests"
-                                    value={numOfPendingTrainerBookings}
-                                    suffix={`/${numOfTrainerBookings}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                        </Flex>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of training bookings"
+                                value={numOfTrainerBookings}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of pending booking requests"
+                                value={numOfPendingTrainerBookings}
+                                suffix={`/${numOfTrainerBookings}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of accepted booking requests"
+                                value={numOfAcceptedTrainerBookings}
+                                suffix={`/${numOfTrainerBookings}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
                         <Divider />
-                        <Flex gap={24}>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of accepted booking requests"
-                                    value={numOfAcceptedTrainerBookings}
-                                    suffix={`/${numOfTrainerBookings}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of training sessions"
-                                    value={numOfMyTrainingSessions}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                        </Flex>
-                        <Divider />
-                        <Flex gap={24}>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of beginner training sessions"
-                                    value={numOfBeginnerTrainingSessions}
-                                    suffix={` /${numOfMyTrainingSessions}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }}>
-                                <Statistic
-                                    title="Number of intermediate training sessions"
-                                    value={numOfIntermediateTrainingSessions}
-                                    suffix={` /${numOfMyTrainingSessions}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                        </Flex>
-                        {/* <Card variant="borderless" style={{ width: 350 }}>
-                            <Statistic title="Number of advanced training sessions" value={numOfAdvancedTrainingSessions} suffix={` /${numOfMyTrainingSessions}`} />
-                        </Card> */}
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of training sessions"
+                                value={numOfMyTrainingSessions}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of beginner training sessions"
+                                value={numOfBeginnerTrainingSessions}
+                                suffix={` /${numOfMyTrainingSessions}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of intermediate training sessions"
+                                value={numOfIntermediateTrainingSessions}
+                                suffix={` /${numOfMyTrainingSessions}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of advanced training sessions"
+                                value={numOfAdvancedTrainingSessions}
+                                suffix={` /${numOfMyTrainingSessions}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
                     </>
                 )}
                 {role === "user" && (
                     <>
-                        <Flex gap={16}>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => setUserBookingsDrawerOpen(true)}>View details</Button>}>
-                                <Statistic
-                                    title="Number of my bookings"
-                                    value={numOfMyBookings ?? 0}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={() => { setUserTrainingDrawerOpen(true); console.log("HAA") }}>View details</Button>}>
-                                <Statistic
-                                    title="Number of my training sessions"
-                                    value={numOfUserTrainingSessions}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                        </Flex>
+                        <Card
+                            variant="borderless"
+                            style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}
+                            extra={<Button type="link" onClick={() => setUserBookingsDrawerOpen(true)}>View details</Button>}
+                        >
+                            <Statistic
+                                title="Number of my bookings"
+                                value={numOfMyBookings ?? 0}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card
+                            variant="borderless"
+                            style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}
+                            extra={<Button type="link" onClick={() => setUserTrainingDrawerOpen(true)}>View details</Button>}
+                        >
+                            <Statistic
+                                title="Number of my training sessions"
+                                value={numOfUserTrainingSessions}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
                     </>
                 )}
                 {role === "superuser" && (
                     <>
-                        <Flex gap={16}>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openMembershipDrawer}>View details</Button>}>
-                                <Statistic
-                                    title="Number of memberships"
-                                    value={numOfMemberships ?? 0}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openActiveDrawer}>View details</Button>}>
-                                <Statistic
-                                    title="Number of active memberships"
-                                    value={numOfActiveMemberships ?? 0}
-                                    suffix={` /${numOfMemberships}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                            <Card variant="borderless" style={{ width: 350 }} extra={<Button type="link" onClick={openExpiredDrawer}>View details</Button>}>
-                                <Statistic
-                                    title="Number of expired memberships"
-                                    value={numOfExpiredMemberships ?? 0}
-                                    suffix={` /${numOfMemberships}`}
-                                    formatter={value => <CountUp end={Number(value)} duration={2} />}
-                                />
-                            </Card>
-                        </Flex>
+                        <Card
+                            variant="borderless"
+                            style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}
+                            extra={<Button type="link" onClick={openMembershipDrawer}>View details</Button>}
+                        >
+                            <Statistic
+                                title="Number of memberships"
+                                value={numOfMemberships ?? 0}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card
+                            variant="borderless"
+                            style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}
+                            extra={<Button type="link" onClick={openActiveDrawer}>View details</Button>}
+                        >
+                            <Statistic
+                                title="Number of active memberships"
+                                value={numOfActiveMemberships ?? 0}
+                                suffix={` /${numOfMemberships}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card
+                            variant="borderless"
+                            style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}
+                            extra={<Button type="link" onClick={openExpiredDrawer}>View details</Button>}
+                        >
+                            <Statistic
+                                title="Number of expired memberships"
+                                value={numOfExpiredMemberships ?? 0}
+                                suffix={` /${numOfMemberships}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
                     </>
                 )}
             </Flex>
