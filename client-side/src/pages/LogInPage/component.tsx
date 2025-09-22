@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Navigate, useNavigate } from "react-router"
-import { isLoggedIn, useUsername, useUserSetter } from "../../user-context/User"
+import { isLoggedIn, useUserSetter } from "../../user-context/User"
 import { useMutation } from "@tanstack/react-query"
 import { loginUser } from "../../utils/api"
 import { setAuthToken, setRole } from "../../utils/helper"
@@ -24,7 +24,7 @@ export default function LoginIn() {
         mutationFn: loginUser,
         onSuccess: (response) => {
             const { jwt, username, role } = response
-            
+
             setAuthToken(jwt)
             setUsername(username)
             setRole(role)
@@ -52,8 +52,11 @@ export default function LoginIn() {
         {
             userLoggedIn ? <Navigate to="/" /> :
                 <Flex vertical justify="center" align="center" style={{ minHeight: "90vh" }}>
-                    <Flex vertical align="center">
-                        <Title level={2} style={{ textAlign: "center" }}>Log In</Title>
+                    <Flex vertical align="center" justify="center">
+                        <Flex>
+                            <Title level={2}>Log In</Title>
+                            <LogInLogo props={{ width: 90, height: 90 }} />
+                        </Flex>
                         <Form
                             name="basic"
                             labelCol={{ span: 24 }}

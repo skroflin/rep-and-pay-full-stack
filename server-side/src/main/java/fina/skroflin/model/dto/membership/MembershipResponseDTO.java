@@ -5,7 +5,6 @@
 package fina.skroflin.model.dto.membership;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  *
@@ -18,7 +17,7 @@ public record MembershipResponseDTO(
         LocalDate startDate,
         LocalDate endDate,
         long membershipPrice,
-        Date paymentDate,
+        LocalDate paymentDate,
         boolean alreadyPaid
         ) {
 

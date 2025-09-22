@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class Membership extends MainEntity {
     @Column(name = "membership_price", columnDefinition = "int")
     private long membershipPrice;
     @Column(name = "payment_date")
-    private Date paymentDate;
+    private LocalDate paymentDate;
     @Column(name = "already_paid", columnDefinition = "bit")
     private boolean alreadyPaid;
 
@@ -88,12 +89,17 @@ public class Membership extends MainEntity {
         this.membershipPrice = membershipPrice;
     }
 
-    public Date getPaymentDate() {
+    @PrePersist
+    public void prePersist() {
+        this.paymentDate = LocalDate.now();
+    }
+
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Date paymentDate) {
-        this.paymentDate = new Date();
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
     }
 
     public boolean isAlreadyPaid() {

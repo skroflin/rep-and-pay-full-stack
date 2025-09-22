@@ -7,7 +7,6 @@ import { registerUser } from "../../utils/api";
 import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
 import { Button, Form, Input, Flex, Select, Spin, Typography, Divider } from "antd";
-import { Option } from "antd/es/mentions";
 import {
     IdcardFilled,
     IdcardOutlined,
@@ -35,10 +34,7 @@ export default function SignUp() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         toast.error(undefined)
-        // console.log(e.target)
         const { name, value } = e.target
-        // console.log(name)
-        // console.log(value)
         setFormData({
             ...formData,
             [name]: value
@@ -51,7 +47,7 @@ export default function SignUp() {
             toast.success(`${formData.username} welcome!`)
             setAuthToken(response.token)
             setUser(formData.username, formData.role, true)
-            setTimeout(() => navigate("/log-in"), 1500)
+            // setTimeout(() => navigate("/log-in"), 1500)
         },
         onError: (error: AxiosError, _variables, _context) => {
             if (error.response?.status === 409) {
@@ -103,9 +99,12 @@ export default function SignUp() {
             style={{ minHeight: "90vh" }}
         >
             <Flex vertical align="center">
-                <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
-                    Sign Up
-                </Title>
+                <Flex align="center" justify="center">
+                    <Title level={2}>
+                        Sign Up
+                    </Title>
+                    <SignUpLogo props={{ width: 100, height: 100 }} />
+                </Flex>
                 <Form
                     name="basic"
                     labelCol={{ span: 24 }}

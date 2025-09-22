@@ -16,7 +16,7 @@ public record MyMembershipResponseDTO(
         LocalDate startDate,
         LocalDate endDate,
         long membershipPrice,
-        Date paymentDate,
+        LocalDate paymentDate,
         boolean alreadyPaid
         ) {
 }

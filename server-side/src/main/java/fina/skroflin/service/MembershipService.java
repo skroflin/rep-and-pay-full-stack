@@ -358,20 +358,11 @@ public class MembershipService extends MainService {
         }
     }
 
-    public List<MembershipResponseDTO> getAllMemberships(HttpHeaders headers) {
+    public List<MembershipResponseDTO> getAllMemberships() {
         try {
-            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
-
-            User user = (User) session.get(User.class, userId);
-            if (user == null) {
-                throw new NoResultException("User not found!");
-            }
             List<Membership> memberships = session.createQuery(
                     "select m from Membership m left join fetch m.user",
                     Membership.class)
-                    .setParameter("userId", userId)
                     .list();
             return memberships.stream()
                     .map(this::convertToResponseDTO)
