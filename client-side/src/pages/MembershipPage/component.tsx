@@ -87,7 +87,7 @@ export default function MembershipPage() {
     const columns = [
         { title: "Start Date", dataIndex: "startDate", key: "startDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
         { title: "End Date", dataIndex: "endDate", key: "endDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
-        { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice", render: (membershipPrice: number) => <Tag color="green" style={{ float: "right" }}>{membershipPrice}</Tag> },
+        { title: "Membership price", dataIndex: "membershipPrice", key: "membershipPrice", render: (membershipPrice: number) => <Tag color="green" style={{ float: "right" }}>{`${(membershipPrice / 100).toFixed(2)} EUR`}</Tag> },
         { title: "Payment Date", dataIndex: "paymentDate", key: "paymentDate", render: (date: Date | string) => dayjs(date).format("DD.MM.YYYY") },
     ]
 
