@@ -1,4 +1,4 @@
-import { Button, Drawer, Space, Descriptions, Typography } from "antd";
+import { Button, Drawer, Space, Descriptions, Typography, Tag } from "antd";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -133,10 +133,10 @@ export default function BookingReviewDrawer({
                         <Text>{booking.userFirstName} {booking.userLastName}</Text>
                     </Descriptions.Item>
                     <Descriptions.Item label="Training type">
-                        <Text style={{ textTransform: "capitalize" }}>{booking.trainingType}</Text>
+                        <Tag color="blue">{booking.trainingType.toUpperCase()}</Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="Training level">
-                        <Text style={{ textTransform: "capitalize" }}>{booking.trainingLevel}</Text>
+                        <Tag color="geekblue">{booking.trainingLevel.toUpperCase()}</Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="Session start">
                         <Text>{dayjs(booking.startOfSession).format("HH:mm")}</Text>
@@ -147,11 +147,11 @@ export default function BookingReviewDrawer({
                     <Descriptions.Item label="Booking status">
                         <Text style={{ textTransform: "capitalize" }}>
                             {booking.bookingStatus === "pending" ? (
-                                <Text type="warning">Pending</Text>
+                                <Tag color="yellow" style={{textTransform: "uppercase"}}>Pending</Tag>
                             ) : booking.bookingStatus === "accepted" ? (
-                                <Text type="success">Approved</Text>
+                                <Tag color="green" style={{textTransform: "uppercase"}}>Approved</Tag>
                             ) : booking.bookingStatus === "rejected" ? (
-                                <Text type="danger">Rejected</Text>
+                                <Tag color="red" style={{textTransform: "uppercase"}}>Rejected</Tag>
                             ) : null}
                         </Text>
                     </Descriptions.Item>

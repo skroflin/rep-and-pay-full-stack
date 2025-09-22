@@ -10,6 +10,7 @@ import {
     Row,
     Select,
     Spin,
+    Tag,
     TimePicker,
     Typography
 } from "antd";
@@ -228,10 +229,10 @@ export default function TrainingSessionPage() {
                                                 <Text><ClockCircleFilled /> {dayjs(session.endOfSession).format("HH:mm")}</Text>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Type">
-                                                <Text style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
+                                                <Tag color="blue">{session.trainingType.toUpperCase()}</Tag>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Level">
-                                                <Text style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
+                                                <Tag color="geekblue">{session.trainingLevel.toUpperCase()}</Tag>
                                             </Descriptions.Item>
                                         </Descriptions>
                                     </List.Item>
