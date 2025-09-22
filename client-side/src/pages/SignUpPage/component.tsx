@@ -100,10 +100,12 @@ export default function SignUp() {
         >
             <Flex vertical align="center">
                 <Flex align="center" justify="center">
-                    <Title level={2}>
-                        Sign Up
-                    </Title>
-                    <SignUpLogo props={{ width: 100, height: 100 }} />
+                    <Flex>
+                        <Title level={2}>
+                            Sign Up
+                        </Title>
+                        <SignUpLogo props={{ width: 90, height: 90 }} />
+                    </Flex>
                 </Flex>
                 <Form
                     name="basic"
