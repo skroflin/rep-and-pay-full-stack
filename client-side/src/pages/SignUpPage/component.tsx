@@ -35,7 +35,7 @@ export default function SignUp() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         toast.error(undefined)
-        console.log(e.target)
+        // console.log(e.target)
         const { name, value } = e.target
         // console.log(name)
         // console.log(value)

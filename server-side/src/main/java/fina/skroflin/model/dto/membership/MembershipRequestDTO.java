@@ -19,7 +19,9 @@ public record MembershipRequestDTO(
         @Schema(example = "2025-09-01")
         LocalDate endDate,
         @Schema(example = "29.99")
-        long membershipPrice
+        long membershipPrice,
+        @Schema(example = "true")
+        boolean alreadyPaid
         ) {
 
 }

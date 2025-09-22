@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 public record MonthOptionResponseDTO(
         String monthLabel,
-        BigDecimal price,
+        BigDecimal price, //testirat hoće li raditi s int/long
         boolean paid,
         boolean selectable
         ) {

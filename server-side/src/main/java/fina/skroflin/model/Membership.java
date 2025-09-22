@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -34,17 +35,25 @@ public class Membership extends MainEntity {
     @Column(name = "membership_price", columnDefinition = "int")
     private long membershipPrice;
     @Column(name = "payment_date")
-    private LocalDate paymentDate;
+    private Date paymentDate;
+    @Column(name = "already_paid", columnDefinition = "bit")
+    private boolean alreadyPaid;
 
     public Membership() {
     }
 
-    public Membership(User user, LocalDate startDate, LocalDate endDate, long membershipPrice) {
+    public Membership(
+            User user, 
+            LocalDate startDate, 
+            LocalDate endDate, 
+            long membershipPrice,
+            boolean alreadyPaid
+    ) {
         this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
         this.membershipPrice = membershipPrice;
-        this.paymentDate = LocalDate.now();
+        this.alreadyPaid = alreadyPaid;
     }
 
     public User getUser() {
@@ -79,11 +88,19 @@ public class Membership extends MainEntity {
         this.membershipPrice = membershipPrice;
     }
 
-    public LocalDate getPaymentDate() {
+    public Date getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDate paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = new Date();
+    }
+
+    public boolean isAlreadyPaid() {
+        return alreadyPaid;
+    }
+
+    public void setAlreadyPaid(boolean alreadyPaid) {
+        this.alreadyPaid = alreadyPaid;
     }
 }

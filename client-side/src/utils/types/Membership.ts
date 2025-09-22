@@ -4,6 +4,7 @@ export interface Membership {
     endDate: Date | string
     membershipPrice: number
     paymentDate: Date | string
+    alreadyPaid: boolean
 }
 
 export interface MembershipResponse {
@@ -13,4 +14,5 @@ export interface MembershipResponse {
     endDate: Date | string
     membershipPrice: number
     paymentDate: Date | string
+    alreadyPaid: boolean
 }

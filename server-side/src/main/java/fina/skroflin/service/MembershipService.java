@@ -57,7 +57,8 @@ public class MembershipService extends MainService {
                 membership.getStartDate(),
                 membership.getEndDate(),
                 membership.getMembershipPrice(),
-                membership.getPaymentDate()
+                membership.getPaymentDate(),
+                membership.isAlreadyPaid()
         );
     }
 
@@ -72,7 +73,8 @@ public class MembershipService extends MainService {
                 membership.getStartDate(),
                 membership.getEndDate(),
                 membership.getMembershipPrice(),
-                membership.getPaymentDate()
+                membership.getPaymentDate(),
+                membership.isAlreadyPaid()
         );
     }
 
@@ -137,7 +139,8 @@ public class MembershipService extends MainService {
                 user,
                 o.startDate(),
                 o.endDate(),
-                o.membershipPrice()
+                o.membershipPrice(),
+                o.alreadyPaid()
         );
 
         session.beginTransaction();
@@ -288,6 +291,7 @@ public class MembershipService extends MainService {
         int year = LocalDate.now().getYear();
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        LocalDate paymentDate = LocalDate.now();
 
         Long count = session.createQuery(
                 "select count(m) from Membership m "
@@ -306,7 +310,7 @@ public class MembershipService extends MainService {
                     + " " + month + "/" + year);
         }
 
-        Membership newMembership = new Membership(user, startDate, endDate, price);
+        Membership newMembership = new Membership(user, startDate, endDate, price, true);
 
         session.beginTransaction();
         session.persist(newMembership);

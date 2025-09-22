@@ -120,11 +120,15 @@ export default function MembershipPage() {
                             onChange={(val) => setSelectedMonth(val)}
                             prefix={<OrderedListOutlined />}
                         >
-                            {upcomingMonths.map((m) => (
-                                <Select.Option key={m.value} value={m.value}>
-                                    {m.label}
-                                </Select.Option>
-                            ))}
+                            {upcomingMonths.map((m) => {
+                                const isPaid = memberships?.some(mem => dayjs(mem.startDate).month() + 1 === m.value && mem.alreadyPaid)
+                                
+                                return (
+                                    <Select.Option key={m.value} value={m.value} disabled={isPaid}>
+                                        {m.label} {isPaid && <Tag color="red">Already paid</Tag>}
+                                    </Select.Option>
+                                )
+                            })}
                         </Select>
                         {checkoutMutation.isPending || confirmMutation.isPending ? (
                             <Spin tip="Loading..." />
