@@ -273,6 +273,8 @@ public class TrainingSessionService extends MainService {
                     o.beginningOfSession(),
                     o.endOfSession()
             );
+            
+            // trainingSession.setAlreadyBooked(false);
 
             session.beginTransaction();
             session.persist(trainingSession);

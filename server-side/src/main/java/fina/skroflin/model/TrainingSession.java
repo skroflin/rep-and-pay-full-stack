@@ -39,9 +39,9 @@ public class TrainingSession extends MainEntity {
     private LocalDateTime beginningOfSession;
     @Column(name = "end_of_session")
     private LocalDateTime endOfSession;
-    @Transient
-    @Column(name = "already_booked", columnDefinition = "bit")
-    private boolean alreadyBooked;
+    // @Transient
+    @Column(name = "already_booked", columnDefinition = "bit", nullable = false)
+    private boolean alreadyBooked = false;
 
     public TrainingSession() {
     }

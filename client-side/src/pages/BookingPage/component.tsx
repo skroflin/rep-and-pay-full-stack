@@ -33,10 +33,12 @@ export default function BookingPage() {
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
-    const { data: activeMembership } = useQuery({
+    const { data: activeMembership = false } = useQuery({
         queryKey: ["has-active-membership"],
         queryFn: hasActiveMembership
     })
+
+    // console.log(activeMembership)
 
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
