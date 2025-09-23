@@ -67,11 +67,11 @@ public class UserService extends MainService {
         List<BookingResponseDTO> bookings
                 = Collections.emptyList();
         if (user.getRole() == Role.user) {
-            bookings = user.getBookings() == null
-                    ? Collections.emptyList()
-                    : user.getBookings().stream()
-                            .map(bookingService::convertToResponseDTO)
-                            .collect(Collectors.toList());
+            if (user.getBookings() != null) {
+                bookings = user.getBookings().stream()
+                        .map(bookingService::convertToResponseDTO)
+                        .collect(Collectors.toList());
+            }
         }
 
         return new UserResponseDTO(
