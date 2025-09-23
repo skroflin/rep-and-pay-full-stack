@@ -33,12 +33,10 @@ export default function BookingPage() {
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
-    const { data: activeMembership = false } = useQuery({
+    const { data: activeMembership } = useQuery({
         queryKey: ["has-active-membership"],
         queryFn: hasActiveMembership
     })
-
-    // console.log(activeMembership)
 
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
@@ -126,6 +124,9 @@ export default function BookingPage() {
                                                 <Button 
                                                     type="link" 
                                                     onClick={() => navigate("/membership")}
+                                                    style={{
+                                                        marginRight: "0em"
+                                                    }}
                                                 >
                                                     link!
                                                 </Button>

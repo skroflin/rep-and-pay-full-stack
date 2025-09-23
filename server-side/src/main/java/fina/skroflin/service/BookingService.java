@@ -17,10 +17,13 @@ import fina.skroflin.model.enums.BookingStatus;
 import fina.skroflin.utils.jwt.JwtTokenUtil;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -194,9 +197,8 @@ public class BookingService extends MainService {
     public void createMyBooking(
             MyBookingRequestDTO o,
             HttpHeaders headers
-    ) {
-        try {
-            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+    ) throws IllegalAccessException {
+        String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
 
@@ -204,15 +206,17 @@ public class BookingService extends MainService {
             if (userProfile == null) {
                 throw new NoResultException("User not found!");
             }
-
+            
+            TrainingSession ts = new TrainingSession();
             if (!membershipService.hasActiveMembership(headers)) {
-                throw new IllegalStateException(
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
                         "You must have a paid membership "
                         + "to book a training session!"
                 );
             }
 
-            TrainingSession ts = (TrainingSession) session.get(
+            ts = (TrainingSession) session.get(
                     TrainingSession.class,
                     o.trainingSessionId()
             );
@@ -233,7 +237,7 @@ public class BookingService extends MainService {
                     .setParameter("trainingSessionId", o.trainingSessionId())
                     .uniqueResult();
             if (userCount > 0) {
-                throw new IllegalArgumentException("You have already booked this"
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already booked this"
                         + " " + "session!");
             }
 
@@ -246,8 +250,12 @@ public class BookingService extends MainService {
                     .setParameter("status", BookingStatus.pending)
                     .uniqueResult();
             if (sessionCount > 0) {
-                throw new IllegalAccessException("This session is already booked!");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This session is already booked!");
             }
+            
+            System.out.println("Headers " + headers);
+            System.out.println("DTO " + o);
+            System.out.println("UserId" + userId);
 
             Booking booking = new Booking(
                     userProfile,
@@ -257,11 +265,6 @@ public class BookingService extends MainService {
             session.beginTransaction();
             session.persist(booking);
             session.getTransaction().commit();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error upon creating booking:"
-                    + e.getMessage(), e);
-        }
     }
 
     public void put(BookingRequestDTO o, int id) {

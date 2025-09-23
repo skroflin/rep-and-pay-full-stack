@@ -197,7 +197,7 @@ public class BookingController {
     public ResponseEntity<String> createMyBooking(
             @RequestHeader HttpHeaders headers,
             @RequestBody(required = true) MyBookingRequestDTO dto
-    ) {
+    ) throws IllegalAccessException {
         bookingService.createMyBooking(dto, headers);
         return new ResponseEntity<>("Created new booking!", HttpStatus.CREATED);
     }

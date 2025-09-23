@@ -86,7 +86,8 @@ public class MembershipController {
 
     @GetMapping("/hasActiveMembership")
     public ResponseEntity<Boolean> hasActiveMembership(
-            @RequestHeader HttpHeaders headers
+            @RequestHeader 
+            HttpHeaders headers
     ) {
         boolean activeMembership = membershipService.hasActiveMembership(headers);
         return new ResponseEntity<>(activeMembership, HttpStatus.OK);
