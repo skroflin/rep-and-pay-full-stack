@@ -3,7 +3,7 @@ import type { MembershipResponse } from "../../../utils/types/Membership";
 import { getActiveMemberships } from "../../../utils/api";
 import { getRole } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Typography } from "antd";
+import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
@@ -92,7 +92,7 @@ export default function ActiveMembershipDetails({
                             <Text>{dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
                         </Descriptions.Item>
                         <Descriptions.Item label="Membership price">
-                            <Text>{membership.membershipPrice}</Text>
+                            <Tag color="green">{`${(membership.membershipPrice / 100).toFixed(2)} EUR`}</Tag>
                         </Descriptions.Item>
                         <Descriptions.Item label="Membership payment date">
                             <Text>{dayjs(membership.paymentDate).format("DD.MM.YYYY")}</Text>

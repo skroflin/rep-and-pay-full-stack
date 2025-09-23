@@ -64,13 +64,6 @@ export default function MembershipPage() {
 
     const { Text, Title } = Typography
 
-    // Primijeniti da se može platiti za trenutni mjesec i iduća dva mjeseca
-
-    // const months = [
-    //     "January", "February", "March", "April", "May", "June", "July", "August",
-    //     "September", "October", "November", "December"
-    // ]
-
     const getNextThreeMonths = () => {
         const now = dayjs()
         return Array.from({ length: 3 }, (_, i) => {
@@ -155,7 +148,7 @@ export default function MembershipPage() {
                     </Title>
                     {membershipLoading ? (
                         <Spin />
-                    ) : (
+                    ) : memberships && memberships.length > 0 ? (
                         <Table
                             columns={columns}
                             dataSource={memberships || []}
@@ -164,6 +157,8 @@ export default function MembershipPage() {
                             scroll={{ x: true }}
                             style={{ width: "100%" }}
                         />
+                    ): (
+                        <Text>No memberships</Text>
                     )}
                 </Flex>
             </Col>

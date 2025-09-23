@@ -1,14 +1,14 @@
 import { useLocation, useNavigate } from "react-router";
 import type { RouteElement } from "../../routes";
-import { isLoggedIn, useRole, useUserSetter } from "../../user-context/User";
+import { isLoggedIn, useRole, useUsername, useUserSetter } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
-import Title from "antd/es/typography/Title";
-import { Button, Divider, Menu } from "antd";
+import { Button, Divider, Menu, Typography } from "antd";
 import {
     LogoutOutlined,
     MenuFoldOutlined,
-    MenuUnfoldOutlined
+    MenuUnfoldOutlined,
+    UserOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
 
@@ -22,6 +22,7 @@ export default function NavBar({ routes }: NavBarProps) {
     const location = useLocation()
     const setUser = useUserSetter()
     const role = useRole()
+    const username = useUsername()
     const [collapsed, setCollapsed] = useState(false)
 
     const toggleCollapsed = () => {
@@ -47,6 +48,8 @@ export default function NavBar({ routes }: NavBarProps) {
         return true
     }
 
+    const { Title, Text } = Typography
+
     const menuItems = routes
         .filter(shouldBeVisible)
         .map((item) => ({
@@ -67,7 +70,7 @@ export default function NavBar({ routes }: NavBarProps) {
             }}
         >
             <Title
-                level={5}
+                level={4}
                 style={{
                     color: "#fff",
                     margin: 0,
@@ -76,6 +79,22 @@ export default function NavBar({ routes }: NavBarProps) {
             >
                 {collapsed ? "R&P" : `Rep & Pay - ${role}`}
             </Title>
+            <Divider style={{ borderColor: "white" }} />
+            <Text
+                style={{
+                    color: "#fff"
+                }}
+            >
+                {collapsed
+                    ? `${username?.slice(0, 2)}`
+                    : (
+                        <>
+                            <UserOutlined /> {username}
+                        </>
+                    )
+                }
+            </Text>
+            <Divider style={{ borderColor: "white" }} />
             <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -92,11 +111,8 @@ export default function NavBar({ routes }: NavBarProps) {
             />
 
             {isUserLoggedIn && (
-                <Divider
-                    style={{
-                        color: "white"
-                    }}
-                >
+                <>
+                    <Divider style={{ borderColor: "white" }} />
                     <Button
                         icon={<LogoutOutlined />}
                         type="primary"
@@ -105,7 +121,7 @@ export default function NavBar({ routes }: NavBarProps) {
                     >
                         {!collapsed && "Sign Out!"}
                     </Button>
-                </Divider>
+                </>
             )}
         </Sider>
     )
