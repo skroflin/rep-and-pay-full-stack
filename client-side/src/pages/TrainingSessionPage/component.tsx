@@ -151,7 +151,7 @@ export default function TrainingSessionPage() {
                                         { value: "push", label: "Push" },
                                         { value: "pull", label: "Pull" },
                                         { value: "legs", label: "Legs" },
-                                        { value: "crossfir", label: "Crossfit" },
+                                        { value: "crossfit", label: "Crossfit" },
                                         { value: "conditioning", label: "Conditioning" },
                                         { value: "yoga", label: "Yoga" },
                                         { value: "weightlifting", label: "Weightlifting" }
@@ -223,16 +223,16 @@ export default function TrainingSessionPage() {
                                     <List.Item>
                                         <Descriptions column={1} size="small" style={{ width: "100%" }}>
                                             <Descriptions.Item label="Start">
-                                                <Text><ClockCircleOutlined /> {dayjs(session.beginningOfSession).format("HH:mm")}</Text>
+                                                <Tag icon={<ClockCircleOutlined />}>{dayjs(session.beginningOfSession).format("HH:mm")}</Tag>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="End">
-                                                <Text><ClockCircleFilled /> {dayjs(session.endOfSession).format("HH:mm")}</Text>
+                                                <Tag icon={<ClockCircleFilled />}>{dayjs(session.endOfSession).format("HH:mm")}</Tag>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Type">
-                                                <Tag color="blue">{session.trainingType.toUpperCase()}</Tag>
+                                                <Tag color="blue" icon={<SettingOutlined />}>{session.trainingType.toUpperCase()}</Tag>
                                             </Descriptions.Item>
                                             <Descriptions.Item label="Level">
-                                                <Tag color="geekblue">{session.trainingLevel.toUpperCase()}</Tag>
+                                                <Tag color="geekblue" icon={<FireOutlined />}>{session.trainingLevel.toUpperCase()}</Tag>
                                             </Descriptions.Item>
                                         </Descriptions>
                                     </List.Item>

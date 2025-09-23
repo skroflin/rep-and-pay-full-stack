@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { useUserSetter } from "../../user-context/User";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
-import { setAuthToken } from "../../utils/helper";
 import type { AxiosError } from "axios";
 import { Button, Form, Input, Flex, Select, Spin, Typography, Divider } from "antd";
 import {
@@ -20,7 +18,6 @@ import {
 import SignUpLogo from "../../misc/Logo/SignUpLogo";
 
 export default function SignUp() {
-    const setUser = useUserSetter()
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
         firstName: "",
@@ -43,11 +40,9 @@ export default function SignUp() {
 
     const signUpUser = useMutation({
         mutationFn: registerUser,
-        onSuccess: (response) => {
-            toast.success(`${formData.username} welcome!`)
-            setAuthToken(response.token)
-            setUser(formData.username, formData.role, true)
-            // setTimeout(() => navigate("/log-in"), 1500)
+        onSuccess: () => {
+            toast.success(`${formData.username} registered successfully!`)
+            setTimeout(() => navigate("/log-in"), 1500)
         },
         onError: (error: AxiosError, _variables, _context) => {
             if (error.response?.status === 409) {
