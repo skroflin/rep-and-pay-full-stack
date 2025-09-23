@@ -382,4 +382,13 @@ public class UserController {
         userService.changeMyPassword(dto, headers);
         return new ResponseEntity<>("Password succefully changed!", HttpStatus.OK); 
    }
+    
+    @GetMapping("/getUserByName")
+    public ResponseEntity<List<UserResponseDTO>> getUserByName(
+            @RequestParam
+            String username
+    ) {
+        List<UserResponseDTO> users = userService.getUserByName(username);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 }

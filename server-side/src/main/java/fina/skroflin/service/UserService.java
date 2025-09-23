@@ -98,7 +98,6 @@ public class UserService extends MainService {
         user.setRole(dto.role());
     }
 
-
     public List<UserResponseDTO> getAll() {
         List<User> users = session.createQuery("from User u", User.class).list();
         return users.stream()
@@ -122,6 +121,24 @@ public class UserService extends MainService {
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<UserResponseDTO> getUserByName(String username) {
+        try {
+            List<User> users = session.createQuery(
+                    "from User u where u.role = user and lower(u.username) like lower (:username)", User.class)
+                    .setParameter("username", "%" + username + "%")
+                    .list();
+            return users.stream()
+                    .map(this::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error there is no user with the username"
+                    + " " + username + " " + e.getMessage(),
+                    e
+            );
+        }
     }
 
     public UserResponseDTO getMyProfile(HttpHeaders headers) {
@@ -160,7 +177,7 @@ public class UserService extends MainService {
                         + "doesn't exist!"
                 );
             }
-            
+
             Long count = session.createQuery(
                     "select count(u) from User u "
                     + "where (u.username = :username "
@@ -246,7 +263,7 @@ public class UserService extends MainService {
                 throw new IllegalArgumentException("There is already a user"
                         + " " + "with the same username or email!");
             }
-            
+
             existingUser.setFirstName(o.firstName());
             existingUser.setLastName(o.lastName());
             existingUser.setEmail(o.email());
@@ -303,7 +320,7 @@ public class UserService extends MainService {
                     bCryptPasswordEncoder.encode(o.password()),
                     o.role()
             );
-            
+
             session.beginTransaction();
             session.persist(newUser);
             session.getTransaction().commit();

@@ -21,6 +21,7 @@ import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBo
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
 import { FrownFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router";
 
 export default function BookingPage() {
     const queryClient = useQueryClient()
@@ -70,6 +71,7 @@ export default function BookingPage() {
     }
 
     const { Text, Title } = Typography
+    const navigate = useNavigate()
 
     return (
         <div
@@ -115,7 +117,18 @@ export default function BookingPage() {
                                 </Descriptions.Item>
                                 <Descriptions.Item>
                                     <Tooltip
-                                        title={!activeMembership ? "You need an active membership in order to book a training session!" : ""}
+                                        title={!activeMembership ? (
+                                            <Text style={{ color: "white"}}>
+                                                You need an active membership in order to book a training session!
+                                                If you need one, please visit the following
+                                                <Button 
+                                                    type="link" 
+                                                    onClick={() => navigate("/membership")}
+                                                >
+                                                    link!
+                                                </Button>
+                                            </Text>
+                                        ) : ""}
                                     >
                                         <Button
                                             type="primary"

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import type { Membership } from "../../utils/types/Membership";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import type { AxiosError } from "axios";
 
 export default function UserPage() {
     const {
@@ -24,8 +25,16 @@ export default function UserPage() {
             setSelectedUser(users.find((u) => u.id == userId) || null)
             setIsModalOpen(true)
         },
-        onError: (err: any, username) => {
-            toast.error(`Error fetching memberships for user ${username}: ${err.message}`)
+        onError: (err: AxiosError, userId: string) => {
+            const user = users.find(u => u.id === userId);
+            const username = user?.username ?? userId;
+            if (err.response?.status === 400) {
+                toast.warning(`User ${username} has no memberships`);
+            } else if (err.response?.status === 500) {
+                toast.error(`Server error while fetching memberships for user ${username}`);
+            } else {
+                toast.error(`Error fetching memberships for user ${username}: ${err.message}`);
+            }
         }
     })
 
@@ -99,7 +108,7 @@ export default function UserPage() {
                         {memberships.map((m, idx) => (
                             <List.Item key={idx}>
                                 <Text>
-                                    Start: <Tag color="blue">{dayjs(m.startDate).format("DD.MM.YYYY")}</Tag>
+                                    Start: <Tag color="green">{dayjs(m.startDate).format("DD.MM.YYYY")}</Tag>
                                 </Text>
                                 <Text>
                                     End: <Tag color="orange">{dayjs(m.endDate).format("DD.MM.YYYY")}</Tag>
@@ -108,7 +117,7 @@ export default function UserPage() {
                                     Price: <Tag color="green">{(m.membershipPrice / 100).toFixed(2)} EUR</Tag>
                                 </Text>
                                 <Text>
-                                    Paid: <Tag color="purple">{dayjs(m.paymentDate).format("DD.MM.YYYY")}</Tag>
+                                    Paid: <Tag color="orange">{dayjs(m.paymentDate).format("DD.MM.YYYY")}</Tag>
                                 </Text>
                             </List.Item>
                         ))}
