@@ -220,6 +220,8 @@ public class BookingService extends MainService {
                     TrainingSession.class,
                     o.trainingSessionId()
             );
+            
+            ts.setAlreadyBooked(true);
             if (ts == null) {
                 throw new NoResultException(
                         "Training session with id"
