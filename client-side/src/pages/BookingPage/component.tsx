@@ -33,9 +33,9 @@ export default function BookingPage() {
         queryFn: () => getAvailableTrainingSessions(selectedDate)
     })
 
-    const { data: activeMembership } = useQuery({
-        queryKey: ["has-active-membership"],
-        queryFn: hasActiveMembership
+    const { data: activeMembership } = useQuery<boolean>({
+        queryKey: ["has-active-membership", selectedDate],
+        queryFn: () => hasActiveMembership(selectedDate)
     })
 
     const bookingMutation = useMutation({

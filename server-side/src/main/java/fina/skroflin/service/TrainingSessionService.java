@@ -291,7 +291,6 @@ public class TrainingSessionService extends MainService {
                     o.alreadyBooked()
             );
 
-            // trainingSession.setAlreadyBooked(false);
             session.beginTransaction();
             session.persist(trainingSession);
             session.getTransaction().commit();

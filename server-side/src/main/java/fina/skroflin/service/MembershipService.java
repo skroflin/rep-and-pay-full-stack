@@ -213,7 +213,7 @@ public class MembershipService extends MainService {
         }
     }
 
-    public boolean hasActiveMembership(HttpHeaders headers) {
+    public boolean hasActiveMembership(HttpHeaders headers, LocalDate selectedDate) {
         String token = jwtTokenUtil.extractTokenFromHeaders(headers);
         Integer userId = jwtTokenUtil.extractClaim(token,
                 claims -> claims.get("UserId", Integer.class));
@@ -227,12 +227,13 @@ public class MembershipService extends MainService {
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
                 + "and m.startDate <= :today "
-                + "and m.endDate >= :today "
-                + "and m.alreadyPaid = true",
+                + "and m.endDate >= :today ",
                 Long.class)
                 .setParameter("userId", userId)
-                .setParameter("today", LocalDate.now())
+                .setParameter("today", selectedDate)
                 .uniqueResult();
+        
+        System.out.println("Aktivna članarina" + " " + count);
 
         return count != null && count > 0;
     }

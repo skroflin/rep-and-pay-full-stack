@@ -208,7 +208,8 @@ public class BookingService extends MainService {
         }
 
         TrainingSession ts = new TrainingSession();
-        if (!membershipService.hasActiveMembership(headers)) {
+        ts = session.get(TrainingSession.class, o.trainingSessionId());
+        if (!membershipService.hasActiveMembership(headers, ts.getBeginningOfSession().toLocalDate())) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You must have a paid membership "

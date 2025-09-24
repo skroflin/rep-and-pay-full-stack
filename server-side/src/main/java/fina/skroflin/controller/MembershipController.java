@@ -12,6 +12,7 @@ import fina.skroflin.model.dto.stripe.StripeCheckoutResponseDTO;
 import fina.skroflin.service.MembershipService;
 import fina.skroflin.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -87,9 +88,12 @@ public class MembershipController {
     @GetMapping("/hasActiveMembership")
     public ResponseEntity<Boolean> hasActiveMembership(
             @RequestHeader 
-            HttpHeaders headers
+            HttpHeaders headers,
+            @RequestParam
+            LocalDate selectedDate
     ) {
-        boolean activeMembership = membershipService.hasActiveMembership(headers);
+        boolean activeMembership = membershipService.hasActiveMembership(headers, selectedDate);
+        System.out.println("Aktivna članarina" + " " + activeMembership);
         return new ResponseEntity<>(activeMembership, HttpStatus.OK);
     }
 
