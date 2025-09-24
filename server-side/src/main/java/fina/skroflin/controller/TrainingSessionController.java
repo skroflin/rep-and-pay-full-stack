@@ -377,7 +377,7 @@ public class TrainingSessionController {
             @RequestHeader HttpHeaders headers
     ) {
         List<TrainingSessionResponseDTO> availableSessionsByDate
-                = trainingSessionService.getAvailableTrainingSessionsByDate(date, headers);
+                = trainingSessionService.getAvailableTrainingSessionsByDate(date);
         return new ResponseEntity<>(availableSessionsByDate, HttpStatus.OK);
     }
 

@@ -64,16 +64,18 @@ public class TrainingSessionService extends MainService {
         if (trainingSession == null) {
             return null;
         }
+
         return new MyTrainingSessionResponseDTO(
                 trainingSession.getId(),
                 trainingSession.getTrainingType(),
                 trainingSession.getTrainingLevel(),
                 trainingSession.getBeginningOfSession(),
                 trainingSession.getEndOfSession(),
-                trainingSession.isAlreadyBooked()
+                trainingSession.isAlreadyBooked(),
+                trainingSession.isBookedByMe()
         );
     }
-    
+
     @Transactional
     public UserTrainingSessionResponseDTO convertToUserResponseDTO(
             Booking booking
@@ -81,13 +83,13 @@ public class TrainingSessionService extends MainService {
         if (booking.getTrainingSession() == null) {
             return null;
         }
-        
+
         return new UserTrainingSessionResponseDTO(
-                booking.getTrainingSession().getId(), 
-                booking.getTrainingSession().getTrainingType(), 
-                booking.getTrainingSession().getTrainingLevel(), 
-                booking.getTrainingSession().getTrainer().getFirstName(), 
-                booking.getTrainingSession().getTrainer().getLastName(), 
+                booking.getTrainingSession().getId(),
+                booking.getTrainingSession().getTrainingType(),
+                booking.getTrainingSession().getTrainingLevel(),
+                booking.getTrainingSession().getTrainer().getFirstName(),
+                booking.getTrainingSession().getTrainer().getLastName(),
                 booking.getTrainingSession().getBeginningOfSession(),
                 booking.getTrainingSession().getEndOfSession()
         );
@@ -97,7 +99,8 @@ public class TrainingSessionService extends MainService {
         try {
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
-                    + "left join fetch ts.trainer", TrainingSession.class)
+                    + "left join fetch ts.trainer", TrainingSession.class
+            )
                     .list();
             return trainingSessions.stream()
                     .map(this::convertToResponseDTO)
@@ -108,12 +111,14 @@ public class TrainingSessionService extends MainService {
         }
     }
 
-    public TrainingSessionResponseDTO getById(int id) {
+    public TrainingSessionResponseDTO
+            getById(int id) {
         try {
             TrainingSession trainingSession = session.createQuery(
                     "select ts from TrainingSession ts "
                     + "left join fetch ts.trainer "
-                    + "where ts.id = :id", TrainingSession.class)
+                    + "where ts.id = :id", TrainingSession.class
+            )
                     .setParameter("id", id)
                     .uniqueResult();
 
@@ -136,12 +141,14 @@ public class TrainingSessionService extends MainService {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
                     + "left join fetch ts.trainer "
                     + "where ts.trainer.id = :userId",
-                    TrainingSession.class)
+                    TrainingSession.class
+            )
                     .setParameter("userId", userId)
                     .list();
             return trainingSessions.stream()
@@ -152,23 +159,25 @@ public class TrainingSessionService extends MainService {
                     + " " + e.getMessage(), e);
         }
     }
-    
+
     public List<UserTrainingSessionResponseDTO> getUserTrainingSessions(
             HttpHeaders headers
     ) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
             List<Booking> bookings = session.createQuery(
                     "select b from Booking b "
                     + "left join fetch b.user u "
                     + "left join fetch b.trainingSession ts "
                     + "where u.id = :userId "
-                    + "and b.bookingStatus = accepted", Booking.class)
+                    + "and b.bookingStatus = accepted", Booking.class
+            )
                     .setParameter("userId", userId)
                     .list();
-            
+
             return bookings.stream()
                     .map(this::convertToUserResponseDTO)
                     .collect(Collectors.toList());
@@ -180,7 +189,8 @@ public class TrainingSessionService extends MainService {
 
     public void post(TrainingSessionRequestDTO o) {
         try {
-            User trainer = (User) session.get(User.class, o.trainerId());
+            User trainer = (User) session.get(User.class,
+                     o.trainerId());
             if (trainer == null || !trainer.equals(trainer.getRole())) {
                 throw new IllegalArgumentException(
                         "Trainer with the id" + " "
@@ -193,7 +203,8 @@ public class TrainingSessionService extends MainService {
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.beginningOfSession = :reservation "
                     + "and ts.endOfSession = :reservation",
-                    Long.class)
+                    Long.class
+            )
                     .setParameter("trainerId", o.trainerId())
                     .setParameter("reservation", o.beginningOfSession())
                     .setParameter("reservation", o.endOfSession())
@@ -229,9 +240,11 @@ public class TrainingSessionService extends MainService {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            User trainerProfile = (User) session.get(User.class, userId);
+            User trainerProfile = (User) session.get(User.class,
+                     userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
@@ -240,7 +253,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.beginningOfSession = :reservation",
-                    Long.class)
+                    Long.class
+            )
                     .setParameter("trainerId", userId)
                     .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
@@ -255,7 +269,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.endOfSession = :reservation",
-                    Long.class)
+                    Long.class
+            )
                     .setParameter("trainerId", userId)
                     .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
@@ -273,9 +288,8 @@ public class TrainingSessionService extends MainService {
                     o.beginningOfSession(),
                     o.endOfSession()
             );
-            
-            // trainingSession.setAlreadyBooked(false);
 
+            // trainingSession.setAlreadyBooked(false);
             session.beginTransaction();
             session.persist(trainingSession);
             session.getTransaction().commit();
@@ -294,9 +308,11 @@ public class TrainingSessionService extends MainService {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            TrainingSession existingSession = session.get(TrainingSession.class, id);
+            TrainingSession existingSession = session.get(TrainingSession.class,
+                     id);
             if (existingSession == null) {
                 throw new NoResultException("Training session with the id"
                         + " " + id + " " + "doesn't exist!");
@@ -311,7 +327,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.dateTime = :reservation",
-                    Long.class)
+                    Long.class
+            )
                     .setParameter("trainerId", userId)
                     .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
@@ -326,7 +343,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.beginningOfSession = :reservation",
-                    Long.class)
+                    Long.class
+            )
                     .setParameter("trainerId", userId)
                     .setParameter("reservation", o.beginningOfSession())
                     .uniqueResult();
@@ -355,14 +373,16 @@ public class TrainingSessionService extends MainService {
     public void put(TrainingSessionRequestDTO o, int id) {
         try {
             TrainingSession existingSession
-                    = (TrainingSession) session.get(TrainingSession.class, id);
+                    = (TrainingSession) session.get(TrainingSession.class,
+                             id);
 
             if (existingSession == null) {
                 throw new NoResultException("Training session with the id"
                         + " " + id + " " + "doesn't exist!");
             }
 
-            User trainer = (User) session.get(User.class, o.trainerId());
+            User trainer = (User) session.get(User.class,
+                     o.trainerId());
             if (trainer == null || !"trainer".equals(trainer.getRole())) {
                 throw new NoResultException("Trainer with the id"
                         + " " + id + " " + "doesn't exist!");
@@ -372,7 +392,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.beginningOfSession = :reservation "
-                    + "and ts.id <> :id", Long.class)
+                    + "and ts.id <> :id", Long.class
+            )
                     .setParameter("trainerId", o.trainerId())
                     .setParameter(":reservation", o.beginningOfSession())
                     .setParameter(":id", id)
@@ -388,7 +409,8 @@ public class TrainingSessionService extends MainService {
                     "select count(ts) from TrainingSession ts "
                     + "where ts.trainer.id = :trainerId "
                     + "and ts.endOfSession = :reservation "
-                    + "and ts.id <> :id", Long.class)
+                    + "and ts.id <> :id", Long.class
+            )
                     .setParameter("trainerId", o.trainerId())
                     .setParameter(":reservation", o.endOfSession())
                     .setParameter(":id", id)
@@ -416,10 +438,12 @@ public class TrainingSessionService extends MainService {
         }
     }
 
-    public String delete(int id) {
+    public String
+            delete(int id) {
         try {
             TrainingSession trainingSession
-                    = (TrainingSession) session.get(TrainingSession.class, id);
+                    = (TrainingSession) session.get(TrainingSession.class,
+                             id);
             if (trainingSession == null) {
                 throw new NoResultException("Training sesion with id"
                         + " " + id + " " + "doesn't exist!");
@@ -436,10 +460,12 @@ public class TrainingSessionService extends MainService {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
             TrainingSession trainingSession
-                    = (TrainingSession) session.get(TrainingSession.class, id);
+                    = (TrainingSession) session.get(TrainingSession.class,
+                             id);
 
             if (trainingSession == null) {
                 throw new NoResultException("Training session with the id"
@@ -463,37 +489,17 @@ public class TrainingSessionService extends MainService {
     }
 
     public List<TrainingSessionResponseDTO> getAvailableTrainingSessionsByDate(
-            LocalDate date,
-            HttpHeaders headers
+            LocalDate date
     ) {
         try {
-            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
-            
             List<TrainingSession> trainingSessions = session.createQuery(
                     "select ts from TrainingSession ts "
-                    + "left join fetch ts.trainer "
                     + "where date(ts.beginningOfSession) = :date",
                     TrainingSession.class)
                     .setParameter("date", date)
                     .list();
             return trainingSessions.stream()
-                    .map(ts -> {
-                        Long count = session.createQuery(
-                                "select count(b) from Booking b "
-                                        + "where b.user.id = :userId "
-                                        + "and b.trainingSession.id = :sessionId", 
-                                Long.class)
-                                .setParameter("userId", userId)
-                                .setParameter("sessionId", ts.getId())
-                                .uniqueResult();
-                        
-                        boolean alreadyBooked = count != null && count > 0;
-                        ts.setAlreadyBooked(alreadyBooked);
-                        
-                        return convertToResponseDTO(ts);
-                    })
+                    .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching training sessions:"
@@ -505,18 +511,21 @@ public class TrainingSessionService extends MainService {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            User trainerProfile = (User) session.get(User.class, userId);
+            User trainerProfile = (User) session.get(User.class,
+                     userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
-            
+
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from TrainingSession ts "
-                            + "left join ts.trainer "
-                            + "where ts.trainer.id = :userId",
-                    Long.class)
+                    + "left join ts.trainer "
+                    + "where ts.trainer.id = :userId",
+                    Long.class
+            )
                     .setParameter("userId", userId)
                     .getSingleResult();
             return numOfMyTrainingSessions;
@@ -525,25 +534,28 @@ public class TrainingSessionService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
-    
+
     public Long getNumOfMyUserTrainingSessions(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
-            
-            User userProfile = (User) session.get(User.class, userId);
+                    claims -> claims.get("UserId", Integer.class
+                    ));
+
+            User userProfile = (User) session.get(User.class,
+                     userId);
             if (userProfile == null) {
                 throw new NoResultException("User not found");
             }
-            
+
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from Booking b "
-                            + "left join b.trainingSession ts "
-                            + "left join b.user u "
-                            + "where u.id = :userId "
-                            + "and b.bookingStatus = accepted",
-                    Long.class)
+                    + "left join b.trainingSession ts "
+                    + "left join b.user u "
+                    + "where u.id = :userId "
+                    + "and b.bookingStatus = accepted",
+                    Long.class
+            )
                     .setParameter("userId", userId)
                     .getSingleResult();
             return numOfMyTrainingSessions;
@@ -552,24 +564,27 @@ public class TrainingSessionService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
-    
+
     public Long getNumOfBeginnerTrainingSessions(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            User trainerProfile = (User) session.get(User.class, userId);
+            User trainerProfile = (User) session.get(User.class,
+                     userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
-            
+
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from TrainingSession ts "
-                            + "left join ts.trainer "
-                            + "where ts.trainer.id = :userId "
-                            + "and ts.trainingLevel = beginner",
-                    Long.class)
+                    + "left join ts.trainer "
+                    + "where ts.trainer.id = :userId "
+                    + "and ts.trainingLevel = beginner",
+                    Long.class
+            )
                     .setParameter("userId", userId)
                     .getSingleResult();
             return numOfMyTrainingSessions;
@@ -578,24 +593,27 @@ public class TrainingSessionService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
-    
+
     public Long getNumOfIntermediateTrainingSessions(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            User trainerProfile = (User) session.get(User.class, userId);
+            User trainerProfile = (User) session.get(User.class,
+                     userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
-            
+
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from TrainingSession ts "
-                            + "left join ts.trainer "
-                            + "where ts.trainer.id = :userId "
-                            + "and ts.trainingLevel = intermediate",
-                    Long.class)
+                    + "left join ts.trainer "
+                    + "where ts.trainer.id = :userId "
+                    + "and ts.trainingLevel = intermediate",
+                    Long.class
+            )
                     .setParameter("userId", userId)
                     .getSingleResult();
             return numOfMyTrainingSessions;
@@ -604,24 +622,27 @@ public class TrainingSessionService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
-    
+
     public Long getNumOfAdvancedTrainingSessions(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+                    claims -> claims.get("UserId", Integer.class
+                    ));
 
-            User trainerProfile = (User) session.get(User.class, userId);
+            User trainerProfile = (User) session.get(User.class,
+                     userId);
             if (trainerProfile == null) {
                 throw new NoResultException("Trainer not found!");
             }
-            
+
             Long numOfMyTrainingSessions = session.createQuery(
                     "select count(ts.id) from TrainingSession ts "
-                            + "left join ts.trainer "
-                            + "where ts.trainer.id = :userId "
-                            + "and ts.trainingLevel = advanced",
-                    Long.class)
+                    + "left join ts.trainer "
+                    + "where ts.trainer.id = :userId "
+                    + "and ts.trainingLevel = advanced",
+                    Long.class
+            )
                     .setParameter("userId", userId)
                     .getSingleResult();
             return numOfMyTrainingSessions;

@@ -138,7 +138,7 @@ export default function BookingPage() {
                                             onClick={() => handleBooking(session)}
                                             loading={bookingMutation.isPending}
                                             disabled={
-                                                pendingSession.includes(session.id) || session.alreadyBooked || !activeMembership
+                                                pendingSession.includes(session.id) || session.isAlreadyBooked || !activeMembership
                                             }
                                             icon={<PlusCircleFilled />}
                                             size="small"
@@ -146,7 +146,7 @@ export default function BookingPage() {
                                                 fontSize: "14px"
                                             }}
                                         >
-                                            {session.alreadyBooked ? "Already booked" : !activeMembership ? "Membership required" : "Book"}
+                                            {session.isAlreadyBooked ? "Already booked" : !activeMembership ? "Membership required" : "Book"}
                                         </Button>
                                     </Tooltip>
                                 </Descriptions.Item>

@@ -226,13 +226,13 @@ public class MembershipService extends MainService {
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
-                + "and m.startDate <= :today "
-                + "and m.endDate >= :today",
+                + "and m.alreadyPaid = true",
                 Long.class)
                 .setParameter("userId", userId)
-                .setParameter("today", LocalDate.now())
                 .uniqueResult();
-
+        
+        System.out.println("Membership count" + " " + count);
+        
         return count != null && count > 0;
     }
 

@@ -25,7 +25,6 @@ public record TrainingSessionResponseDTO(
         TrainingLevel trainingLevel,
         LocalDateTime beginningOfSession,
         LocalDateTime endOfSession,
-        boolean alreadyBooked
+        boolean isAlreadyBooked
         ) {
-
 }
