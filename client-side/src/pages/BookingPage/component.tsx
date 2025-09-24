@@ -97,62 +97,71 @@ export default function BookingPage() {
                 <List
                     bordered
                     dataSource={sessions || []}
-                    renderItem={(session) => (
-                        <List.Item>
-                            <Descriptions>
-                                <Descriptions.Item label="Trainer">
-                                    <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Type">
-                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Level">
-                                    <Text strong style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Start">
-                                    <Text strong>{dayjs(session.beginningOfSession).format("HH:mm")}</Text>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="End">
-                                    <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
-                                </Descriptions.Item>
-                                <Descriptions.Item>
-                                    <Tooltip
-                                        title={!activeMembership ? (
-                                            <Text style={{ color: "white"}}>
-                                                You need an active membership in order to book a training session!
-                                                If you need one, please visit the following
-                                                <Button 
-                                                    type="link" 
-                                                    onClick={() => navigate("/membership")}
-                                                    style={{
-                                                        marginRight: "0em"
-                                                    }}
-                                                >
-                                                    link!
-                                                </Button>
-                                            </Text>
-                                        ) : ""}
-                                    >
-                                        <Button
-                                            type="primary"
-                                            onClick={() => handleBooking(session)}
-                                            loading={bookingMutation.isPending}
-                                            disabled={
-                                                pendingSession.includes(session.id) || session.isAlreadyBooked || !activeMembership
-                                            }
-                                            icon={<PlusCircleFilled />}
-                                            size="small"
-                                            style={{
-                                                fontSize: "14px"
-                                            }}
+                    renderItem={(session) => {
+                        const isBooked = session.isAlreadyBooked;
+                        const noMembership = !activeMembership;
+
+                        let buttonText = "Book";
+                        if (isBooked) buttonText = "Already booked";
+                        else if (noMembership) buttonText = "Membership required";
+
+                        return (
+                            <List.Item>
+                                <Descriptions>
+                                    <Descriptions.Item label="Trainer">
+                                        <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Type">
+                                        <Text strong style={{ textTransform: "capitalize" }}>{session.trainingType}</Text>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Level">
+                                        <Text strong style={{ textTransform: "capitalize" }}>{session.trainingLevel}</Text>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Start">
+                                        <Text strong>{dayjs(session.beginningOfSession).format("HH:mm")}</Text>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="End">
+                                        <Text strong>{dayjs(session.endOfSession).format("HH:mm")}</Text>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item>
+                                        <Tooltip
+                                            title={noMembership ? (
+                                                <Text style={{ color: "white" }}>
+                                                    You need an active membership in order to book a training session!
+                                                    If you need one, please visit the following
+                                                    <Button
+                                                        type="link"
+                                                        onClick={() => navigate("/membership")}
+                                                        style={{ marginRight: "0em" }}
+                                                    >
+                                                        link!
+                                                    </Button>
+                                                </Text>
+                                            ) : ""}
                                         >
-                                            {session.isAlreadyBooked ? "Already booked" : !activeMembership ? "Membership required" : "Book"}
-                                        </Button>
-                                    </Tooltip>
-                                </Descriptions.Item>
-                            </Descriptions>
-                        </List.Item>
-                    )}
+                                            <Button
+                                                type="primary"
+                                                onClick={() => handleBooking(session)}
+                                                loading={bookingMutation.isPending}
+                                                disabled={
+                                                    pendingSession.includes(session.id) ||
+                                                    isBooked ||
+                                                    noMembership
+                                                }
+                                                icon={<PlusCircleFilled />}
+                                                size="small"
+                                                style={{
+                                                    fontSize: "14px"
+                                                }}
+                                            >
+                                                {buttonText}
+                                            </Button>
+                                        </Tooltip>
+                                    </Descriptions.Item>
+                                </Descriptions>
+                            </List.Item>
+                        );
+                    }}
                     pagination={{ pageSize: 1 }}
                     locale={{
                         emptyText: (

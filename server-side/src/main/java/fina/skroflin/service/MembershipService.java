@@ -226,13 +226,14 @@ public class MembershipService extends MainService {
         Long count = session.createQuery(
                 "select count(m) from Membership m "
                 + "where m.user.id = :userId "
+                + "and m.startDate <= :today "
+                + "and m.endDate >= :today "
                 + "and m.alreadyPaid = true",
                 Long.class)
                 .setParameter("userId", userId)
+                .setParameter("today", LocalDate.now())
                 .uniqueResult();
-        
-        System.out.println("Membership count" + " " + count);
-        
+
         return count != null && count > 0;
     }
 
@@ -288,8 +289,9 @@ public class MembershipService extends MainService {
             throw new NoResultException("User not found!");
         }
 
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.plusMonths(1);
+        int year = LocalDate.now().getYear();
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
         Long count = session.createQuery(
                 "select count(m) from Membership m "
@@ -305,7 +307,7 @@ public class MembershipService extends MainService {
         if (count > 0) {
             throw new IllegalArgumentException("There is already a membership "
                     + "for this user" + " " + userId + " " + "and the given month"
-                    + " " + month);
+                    + " " + month + "/" + year);
         }
 
         Membership newMembership = new Membership(user, startDate, endDate, price, true);

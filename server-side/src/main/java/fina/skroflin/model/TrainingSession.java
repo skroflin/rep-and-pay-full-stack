@@ -39,26 +39,19 @@ public class TrainingSession extends MainEntity {
     private LocalDateTime beginningOfSession;
     @Column(name = "end_of_session")
     private LocalDateTime endOfSession;
-    @Transient
+    @Column(name = "already_booked", columnDefinition = "bit")
     private boolean alreadyBooked;
-    @Transient
-    private boolean bookedByMe;
 
     public TrainingSession() {
     }
 
-    public TrainingSession(
-            User trainer, 
-            TrainingType trainingType, 
-            TrainingLevel trainingLevel, 
-            LocalDateTime beginningOfSession, 
-            LocalDateTime endOfSession
-    ) {
+    public TrainingSession(User trainer, TrainingType trainingType, TrainingLevel trainingLevel, LocalDateTime beginningOfSession, LocalDateTime endOfSession, boolean alreadyBooked) {
         this.trainer = trainer;
         this.trainingType = trainingType;
         this.trainingLevel = trainingLevel;
         this.beginningOfSession = beginningOfSession;
         this.endOfSession = endOfSession;
+        this.alreadyBooked = alreadyBooked;
     }
 
     public User getTrainer() {
@@ -107,13 +100,5 @@ public class TrainingSession extends MainEntity {
 
     public void setAlreadyBooked(boolean alreadyBooked) {
         this.alreadyBooked = alreadyBooked;
-    }
-
-    public boolean isBookedByMe() {
-        return bookedByMe;
-    }
-
-    public void setBookedByMe(boolean bookedByMe) {
-        this.bookedByMe = bookedByMe;
     }
 }

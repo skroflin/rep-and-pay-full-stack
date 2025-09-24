@@ -71,8 +71,7 @@ public class TrainingSessionService extends MainService {
                 trainingSession.getTrainingLevel(),
                 trainingSession.getBeginningOfSession(),
                 trainingSession.getEndOfSession(),
-                trainingSession.isAlreadyBooked(),
-                trainingSession.isBookedByMe()
+                trainingSession.isAlreadyBooked()
         );
     }
 
@@ -221,7 +220,9 @@ public class TrainingSessionService extends MainService {
                     o.trainingType(),
                     o.trainingLevel(),
                     o.beginningOfSession(),
-                    o.endOfSession()
+                    o.endOfSession(),
+                    o.alreadyBooked()
+                    
             );
             session.beginTransaction();
             session.persist(ts);
@@ -286,7 +287,8 @@ public class TrainingSessionService extends MainService {
                     o.trainingType(),
                     o.trainingLevel(),
                     o.beginningOfSession(),
-                    o.endOfSession()
+                    o.endOfSession(),
+                    o.alreadyBooked()
             );
 
             // trainingSession.setAlreadyBooked(false);
