@@ -1,4 +1,4 @@
-import { Button, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
+import { Button, Input, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import type { UserRequest } from "../../utils/types/user/User";
@@ -89,6 +89,9 @@ export default function UserPage() {
             <Title>
                 Users
             </Title>
+            <Input.Search placeholder="Search username" style={{
+                marginBottom: 40
+            }}/>
             <Table
                 dataSource={users}
                 columns={columns}
