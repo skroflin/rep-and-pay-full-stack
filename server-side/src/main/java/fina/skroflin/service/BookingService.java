@@ -199,74 +199,74 @@ public class BookingService extends MainService {
             HttpHeaders headers
     ) throws IllegalAccessException {
         String token = jwtTokenUtil.extractTokenFromHeaders(headers);
-            Integer userId = jwtTokenUtil.extractClaim(token,
-                    claims -> claims.get("UserId", Integer.class));
+        Integer userId = jwtTokenUtil.extractClaim(token,
+                claims -> claims.get("UserId", Integer.class));
 
-            User userProfile = (User) session.get(User.class, userId);
-            if (userProfile == null) {
-                throw new NoResultException("User not found!");
-            }
-            
-            TrainingSession ts = new TrainingSession();
-            if (!membershipService.hasActiveMembership(headers)) {
-                throw new ResponseStatusException(
-                        HttpStatus.FORBIDDEN,
-                        "You must have a paid membership "
-                        + "to book a training session!"
-                );
-            }
+        User userProfile = (User) session.get(User.class, userId);
+        if (userProfile == null) {
+            throw new NoResultException("User not found!");
+        }
 
-            ts = (TrainingSession) session.get(
-                    TrainingSession.class,
-                    o.trainingSessionId()
+        TrainingSession ts = new TrainingSession();
+        if (!membershipService.hasActiveMembership(headers)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You must have a paid membership "
+                    + "to book a training session!"
             );
-            
-            ts.setAlreadyBooked(true);
-            if (ts == null) {
-                throw new NoResultException(
-                        "Training session with id"
-                        + " " + o.trainingSessionId()
-                        + "not found!"
-                );
-            }
+        }
 
-            Long userCount = session.createQuery(
-                    "select count(b) from Booking b "
-                    + "where b.user.id = :userId "
-                    + "and b.trainingSession.id = :trainingSessionId ",
-                    Long.class)
-                    .setParameter("userId", userId)
-                    .setParameter("trainingSessionId", o.trainingSessionId())
-                    .uniqueResult();
-            if (userCount > 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already booked this"
-                        + " " + "session!");
-            }
+        ts = (TrainingSession) session.get(
+                TrainingSession.class,
+                o.trainingSessionId()
+        );
 
-            Long sessionCount = session.createQuery(
-                    "select count(b) from Booking b "
-                    + "where b.trainingSession.id = :trainingSessionId "
-                    + "and b.bookingStatus = :status",
-                    Long.class)
-                    .setParameter("trainingSessionId", o.trainingSessionId())
-                    .setParameter("status", BookingStatus.pending)
-                    .uniqueResult();
-            if (sessionCount > 0) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This session is already booked!");
-            }
-            
-            System.out.println("Headers " + headers);
-            System.out.println("DTO " + o);
-            System.out.println("UserId" + userId);
-
-            Booking booking = new Booking(
-                    userProfile,
-                    ts,
-                    BookingStatus.pending
+        ts.setAlreadyBooked(true);
+        if (ts == null) {
+            throw new NoResultException(
+                    "Training session with id"
+                    + " " + o.trainingSessionId()
+                    + "not found!"
             );
-            session.beginTransaction();
-            session.persist(booking);
-            session.getTransaction().commit();
+        }
+
+        Long userCount = session.createQuery(
+                "select count(b) from Booking b "
+                + "where b.user.id = :userId "
+                + "and b.trainingSession.id = :trainingSessionId ",
+                Long.class)
+                .setParameter("userId", userId)
+                .setParameter("trainingSessionId", o.trainingSessionId())
+                .uniqueResult();
+        if (userCount > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already booked this"
+                    + " " + "session!");
+        }
+
+        Long sessionCount = session.createQuery(
+                "select count(b) from Booking b "
+                + "where b.trainingSession.id = :trainingSessionId "
+                + "and b.bookingStatus = :status",
+                Long.class)
+                .setParameter("trainingSessionId", o.trainingSessionId())
+                .setParameter("status", BookingStatus.pending)
+                .uniqueResult();
+        if (sessionCount > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This session is already booked!");
+        }
+
+        System.out.println("Headers " + headers);
+        System.out.println("DTO " + o);
+        System.out.println("UserId" + userId);
+
+        Booking booking = new Booking(
+                userProfile,
+                ts,
+                BookingStatus.pending
+        );
+        session.beginTransaction();
+        session.persist(booking);
+        session.getTransaction().commit();
     }
 
     public void put(BookingRequestDTO o, int id) {

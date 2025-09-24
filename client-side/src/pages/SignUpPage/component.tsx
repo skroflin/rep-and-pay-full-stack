@@ -42,7 +42,7 @@ export default function SignUp() {
         mutationFn: registerUser,
         onSuccess: () => {
             toast.success(`${formData.username} registered successfully!`)
-            setTimeout(() => navigate("/log-in"), 1500)
+            setTimeout(() => navigate("/log-in"), 1000)
         },
         onError: (error: AxiosError, _variables, _context) => {
             if (error.response?.status === 409) {
