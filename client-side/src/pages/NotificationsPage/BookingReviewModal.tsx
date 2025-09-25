@@ -3,7 +3,7 @@ import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateBookingStatus } from "../../utils/api";
+import { rejectBooking, updateBookingStatus } from "../../utils/api";
 import {
     ArrowLeftOutlined,
     ArrowRightOutlined,
@@ -28,6 +28,15 @@ export default function BookingReviewDrawer({
     const updateStatusMutation = useMutation({
         mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "accepted" | "rejected" }) =>
             updateBookingStatus(bookingId, { bookingStatus }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
+            onClose()
+        }
+    })
+
+    const rejectBookingMutation = useMutation({
+        mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "rejected" }) =>
+            rejectBooking(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
             onClose()
@@ -73,9 +82,9 @@ export default function BookingReviewDrawer({
                     }}>
                         <Button
                             danger
-                            loading={updateStatusMutation.isPending}
+                            loading={rejectBookingMutation.isPending}
                             onClick={() =>
-                                updateStatusMutation.mutate({
+                                rejectBookingMutation.mutate({
                                     bookingId: booking.bookingId,
                                     bookingStatus: "rejected"
                                 })
@@ -147,11 +156,11 @@ export default function BookingReviewDrawer({
                     <Descriptions.Item label="Booking status">
                         <Text style={{ textTransform: "capitalize" }}>
                             {booking.bookingStatus === "pending" ? (
-                                <Tag color="yellow" style={{textTransform: "uppercase"}}>Pending</Tag>
+                                <Tag color="yellow" style={{ textTransform: "uppercase" }}>Pending</Tag>
                             ) : booking.bookingStatus === "accepted" ? (
-                                <Tag color="green" style={{textTransform: "uppercase"}}>Approved</Tag>
+                                <Tag color="green" style={{ textTransform: "uppercase" }}>Approved</Tag>
                             ) : booking.bookingStatus === "rejected" ? (
-                                <Tag color="red" style={{textTransform: "uppercase"}}>Rejected</Tag>
+                                <Tag color="red" style={{ textTransform: "uppercase" }}>Rejected</Tag>
                             ) : null}
                         </Text>
                     </Descriptions.Item>

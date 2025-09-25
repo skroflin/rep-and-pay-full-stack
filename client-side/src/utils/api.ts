@@ -104,6 +104,7 @@ export const updateBooking = (req: BookingRequest, bookingId: string) => apiPutC
 export const deleteBooking = (bookingId: string) => apiDeleteCall(`booking/delete?id=${bookingId}`)
 export const getTrainerBookings = () => apiGetCall("booking/getTrainerBookings")
 export const updateBookingStatus = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/updateBookingStatus?id=${bookingId}`, req)
+export const rejectBooking = (bookingId: string, req: UpdateBookingStatusRequest) => apiPutCall<UpdateBookingStatusRequest>(`booking/rejectBooking?id=${bookingId}`, req)
 
 //training session methods
 export const getTrainingSessions = () => apiGetCall("trainingSessions/get")

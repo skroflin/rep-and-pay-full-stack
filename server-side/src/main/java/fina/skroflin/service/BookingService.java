@@ -461,14 +461,13 @@ public class BookingService extends MainService {
             UpdateBookingStatusRequestDTO o,
             HttpHeaders headers
     ) {
+        session.beginTransaction();
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);
             Integer userId = jwtTokenUtil.extractClaim(token,
                     claims -> claims.get("UserId", Integer.class));
 
             Booking booking = (Booking) session.get(Booking.class, id);
-
-            session.beginTransaction();
 
             if (booking == null) {
                 throw new NoResultException("Booking with the id"
@@ -481,14 +480,14 @@ public class BookingService extends MainService {
                 );
             }
 
-            booking.setBookingStatus(BookingStatus.rejected);
-            session.merge(booking);
-
             Integer trainerId = booking.getTrainingSession().getTrainer().getId();
             if (!trainerId.equals(userId)) {
                 throw new SecurityException("You are not authorized to"
                         + " " + "update this booking!");
             }
+
+            booking.setBookingStatus(o.bookingStatus());
+            session.merge(booking);
 
             Long activeBookings = session.createQuery(
                     "select count(b) from Booking b "
