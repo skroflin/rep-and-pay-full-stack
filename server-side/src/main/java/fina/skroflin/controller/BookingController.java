@@ -372,6 +372,16 @@ public class BookingController {
         return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "changed!", HttpStatus.OK);
     }
     
+    @PutMapping("/rejectBooking")
+    public ResponseEntity<String> rejectBooking(
+            @RequestParam int id,
+            @RequestBody UpdateBookingStatusRequestDTO o,
+            @RequestHeader HttpHeaders headers
+    ) {
+        bookingService.updateBookingStatus(id, o, headers);
+        return new ResponseEntity<>("Booking status for booking" + " " + id + " " + "rejected!", HttpStatus.OK);
+    }
+    
     @GetMapping("/getTrainerBookings")
     public ResponseEntity<List<TrainerBookingResponseDTO>> getTrainerBookings(
             @RequestHeader

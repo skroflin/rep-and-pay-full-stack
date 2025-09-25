@@ -456,6 +456,62 @@ public class BookingService extends MainService {
         }
     }
 
+    public void rejectBooking(
+            int id,
+            UpdateBookingStatusRequestDTO o,
+            HttpHeaders headers
+    ) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            Booking booking = (Booking) session.get(Booking.class, id);
+
+            session.beginTransaction();
+
+            if (booking == null) {
+                throw new NoResultException("Booking with the id"
+                        + " " + id + " " + "doesn't exist!");
+            }
+            if (booking.equals(o.bookingStatus().accepted) || booking.equals(o.bookingStatus().accepted)) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "You must enter the status reject to reject booking for the given training session!"
+                );
+            }
+
+            booking.setBookingStatus(BookingStatus.rejected);
+            session.merge(booking);
+
+            Integer trainerId = booking.getTrainingSession().getTrainer().getId();
+            if (!trainerId.equals(userId)) {
+                throw new SecurityException("You are not authorized to"
+                        + " " + "update this booking!");
+            }
+
+            Long activeBookings = session.createQuery(
+                    "select count(b) from Booking b "
+                    + "where b.trainingSession.id = :sessionId "
+                    + "and b.bookingStatus in ('pending', 'approved')",
+                    Long.class)
+                    .setParameter("sessionId", booking.getTrainingSession().getId())
+                    .uniqueResult();
+
+            if (activeBookings == 0) {
+                TrainingSession ts = booking.getTrainingSession();
+                ts.setAlreadyBooked(false);
+                session.merge(ts);
+            }
+
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon updating booking"
+                    + " with id" + " " + id + " " + e.getMessage(), e);
+        }
+    }
+
     public List<TrainerBookingResponseDTO> getTrainerBookings(HttpHeaders headers) {
         try {
             String token = jwtTokenUtil.extractTokenFromHeaders(headers);

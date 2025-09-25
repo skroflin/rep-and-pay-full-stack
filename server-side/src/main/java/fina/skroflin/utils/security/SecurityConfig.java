@@ -104,6 +104,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/updateMyBooking").hasAnyAuthority(Role.user.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/deleteMyBookings").hasAnyAuthority(Role.user.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/updateBookingStatus").hasAnyAuthority(Role.coach.name())
+                        .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/rejectBooking").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.PUT, "/api/fina/skroflin/booking/getTrainerBookings").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getActiveMemberships").hasAnyAuthority(Role.superuser.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/membership/getExpiredMemberships").hasAnyAuthority(Role.superuser.name())
