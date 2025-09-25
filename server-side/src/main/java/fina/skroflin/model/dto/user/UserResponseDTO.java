@@ -22,7 +22,6 @@ public record UserResponseDTO(
         String username,
         String password,
         Role role,
-        boolean isMembershipPaid,
         List<TrainingSessionResponseDTO> trainingSessions,
         List<BookingResponseDTO> bookings
         ) {

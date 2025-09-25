@@ -82,7 +82,6 @@ public class UserService extends MainService {
                 user.getUsername(),
                 user.getPassword(),
                 user.getRole(),
-                user.isIsMembershipPaid(),
                 trainingSessions,
                 bookings
         );
@@ -219,7 +218,6 @@ public class UserService extends MainService {
             userProfile.setUsername(o.username());
             userProfile.setPassword(bCryptPasswordEncoder.encode(o.password()));
             userProfile.setRole(o.role());
-            userProfile.setIsMembershipPaid(o.isMembershipPaid());
 
             session.beginTransaction();
             session.merge(userProfile);
@@ -290,7 +288,6 @@ public class UserService extends MainService {
             existingUser.setUsername(o.username());
             existingUser.setPassword(bCryptPasswordEncoder.encode(o.password()));
             existingUser.setRole(o.role());
-            existingUser.setIsMembershipPaid(o.isMembershipPaid());
 
             updateEntityFromDto(existingUser, o);
             session.beginTransaction();

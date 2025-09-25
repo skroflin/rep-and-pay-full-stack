@@ -34,9 +34,17 @@ export default function BookingPage() {
     })
 
     const { data: activeMembership } = useQuery<boolean>({
-        queryKey: ["has-active-membership", selectedDate],
-        queryFn: () => hasActiveMembership(selectedDate)
-    })
+    queryKey: ["has-active-membership", selectedDate],
+    queryFn: async () => {
+        const res = await hasActiveMembership(selectedDate);
+        if (res && typeof res === "object" && "active" in res) {
+            return (res as { active: boolean }).active;
+        }
+        return res as boolean;
+    }
+});
+
+    console.log("Active membership:", activeMembership)
 
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
@@ -98,6 +106,7 @@ export default function BookingPage() {
                     bordered
                     dataSource={sessions || []}
                     renderItem={(session) => {
+
                         const isBooked = session.isAlreadyBooked;
                         const noMembership = !activeMembership;
 

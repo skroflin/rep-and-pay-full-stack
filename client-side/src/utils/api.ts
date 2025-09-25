@@ -142,7 +142,10 @@ export const getNumOfMyUserTrainingSessions = () => apiGetCall("trainingSession/
 
 //stripe membership methods (user)
 export const createCheckoutSession = (req: CheckoutRequest) => apiPostCall("membership/createCheckoutSession", req)
-export const hasActiveMembership = (date: string) => apiGetCall(`membership/hasActiveMembership?selectedDate=${date}`)
+export const hasActiveMembership = async (date: string): Promise<boolean> => {
+    const result = await apiGetCall(`membership/hasActiveMembership?selectedDate=${date}`);
+    return !!result;
+}
 export const confirmPayment = (status: string) => apiGetCall(`membership/confirm?status=${status}`)
 export const getMyMemberships = () => apiGetCall("membership/getMyMemberships")
 export const getMonthOptions = () => apiGetCall("membership/getMonthOptions")

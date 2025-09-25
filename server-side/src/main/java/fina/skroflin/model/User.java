@@ -37,8 +37,6 @@ public class User extends MainEntity implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(name = "is_membership_paid")
-    private boolean isMembershipPaid;
     @OneToMany(mappedBy = "trainer")
     private List<TrainingSession> trainingSessions;
     @OneToMany(mappedBy = "user")
@@ -57,14 +55,13 @@ public class User extends MainEntity implements UserDetails {
         this.role = role;
     }
 
-    public User(String firstName, String lastName, String email, String username, String password, Role role, boolean isMembershipPaid, List<TrainingSession> trainingSessions, List<Booking> bookings) {
+    public User(String firstName, String lastName, String email, String username, String password, Role role, List<TrainingSession> trainingSessions, List<Booking> bookings) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
         this.password = password;
         this.role = role;
-        this.isMembershipPaid = isMembershipPaid;
         this.trainingSessions = trainingSessions;
         this.bookings = bookings;
     }
@@ -117,14 +114,6 @@ public class User extends MainEntity implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public boolean isIsMembershipPaid() {
-        return isMembershipPaid;
-    }
-
-    public void setIsMembershipPaid(boolean isMembershipPaid) {
-        this.isMembershipPaid = isMembershipPaid;
     }
 
     public List<TrainingSession> getTrainingSessions() {
