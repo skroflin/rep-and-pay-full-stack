@@ -49,7 +49,7 @@ export default function BookingPage() {
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),
         onSuccess: () => {
-            toast.success("Booking request sent!")
+            toast.success(`Booking request sent for ${formatDate(selectedDate)}!`)
             queryClient.invalidateQueries({ queryKey: ["available-sessions", selectedDate] })
         },
         onError: () => toast.error("Failed to create a booking!"),
@@ -80,6 +80,7 @@ export default function BookingPage() {
 
     const { Text, Title } = Typography
     const navigate = useNavigate()
+    const isActiveMembership = activeMembership ?? false;
 
     return (
         <div
@@ -106,9 +107,8 @@ export default function BookingPage() {
                     bordered
                     dataSource={sessions || []}
                     renderItem={(session) => {
-
                         const isBooked = session.isAlreadyBooked;
-                        const noMembership = !activeMembership;
+                        const noMembership = !isActiveMembership;
 
                         let buttonText = "Book";
                         if (isBooked) buttonText = "Already booked";
