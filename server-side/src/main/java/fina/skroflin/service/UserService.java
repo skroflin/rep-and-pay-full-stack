@@ -123,11 +123,12 @@ public class UserService extends MainService {
                 .collect(Collectors.toList());
     }
 
-    public List<UserResponseDTO> getUserByName(String username) {
+    public List<UserResponseDTO> getUserBySearchTerm(String searchTerm) {
         try {
             List<User> users = session.createQuery(
-                    "from User u where u.role = user and lower(u.username) like lower (:username)", User.class)
-                    .setParameter("username", "%" + username + "%")
+                    "select u from User u where u.role = :role and lower(u.username) like lower (:searchTerm) or lower(u.firstName) like lower(:searchTerm) or lower(u.lastName) like (:searchTerm) or lower(u.email) like (:searchTerm)", User.class)
+                    .setParameter("searchTerm", "%" + searchTerm + "%")
+                    .setParameter("role", Role.user)
                     .list();
             return users.stream()
                     .map(this::convertToResponseDTO)
@@ -135,7 +136,26 @@ public class UserService extends MainService {
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error there is no user with the username"
-                    + " " + username + " " + e.getMessage(),
+                    + " " + searchTerm + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    public List<UserResponseDTO> getCoachBySearchTerm(String searchTerm) {
+        try {
+            List<User> users = session.createQuery(
+                    "select u from User u where u.role = :role and lower(u.username) like lower (:searchTerm) or lower(u.firstName) like lower(:searchTerm) or lower(u.lastName) like (:searchTerm) or lower(u.email) like (:searchTerm)", User.class)
+                    .setParameter("searchTerm", "%" + searchTerm + "%")
+                    .setParameter("role", Role.coach)
+                    .list();
+            return users.stream()
+                    .map(this::convertToResponseDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error there is no user with the username"
+                    + " " + searchTerm + " " + e.getMessage(),
                     e
             );
         }

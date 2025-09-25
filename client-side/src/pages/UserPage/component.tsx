@@ -2,7 +2,7 @@ import { Button, Input, List, Modal, Space, Table, Tag, theme, Typography } from
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import type { UserRequest } from "../../utils/types/user/User";
-import { getMembershipByUser, getRegularUsers, getUserByName } from "../../utils/api";
+import { getMembershipByUser, getRegularUsers, getUserBySearchTerm } from "../../utils/api";
 import { toast } from "react-toastify";
 import type { Membership } from "../../utils/types/Membership";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -45,10 +45,9 @@ export default function UserPage() {
     })
 
 
-    // Potrebno primijenit do kraja!
-    const {date: filteredUsers = [], isFilteredLoading} = useQuery<UserRequest[], Error>({
-        queryKey: ["user-by-name", searchTerm],
-        queryFn: () => getUserByName(searchTerm),
+    const { data: filteredUsers = [], isLoading: isFilteredLoading } = useQuery<UserRequest[], Error>({
+        queryKey: ["user-by-search-term", searchTerm],
+        queryFn: () => getUserBySearchTerm(searchTerm),
         enabled: searchTerm.length > 0
     })
 
@@ -98,16 +97,28 @@ export default function UserPage() {
             <Title>
                 Users
             </Title>
-            <Input.Search placeholder="Search username" style={{
-                marginBottom: 40
-            }}/>
-            <Table
-                dataSource={users}
-                columns={columns}
-                rowKey="id"
-                loading={isLoading}
-                pagination={{ pageSize: 5 }}
+            <Input.Search placeholder="Search for users"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                loading={isFilteredLoading}
+                allowClear
+                style={{
+                    marginBottom: 40
+                }}
             />
+
+            {users.length === 0 ? (
+                <Text>No users found</Text>
+            ) : (
+                <Table
+                    dataSource={searchTerm.length > 0 ? filteredUsers : users}
+                    columns={columns}
+                    rowKey="id"
+                    loading={searchTerm.length > 0 ? isFilteredLoading : isLoading}
+                    pagination={{ pageSize: 5 }}
+                />
+            )
+            }
 
             <Modal
                 title={`Selected membership for ${selectedUser?.firstName} ${selectedUser?.lastName}`}

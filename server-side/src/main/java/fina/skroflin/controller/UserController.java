@@ -383,12 +383,21 @@ public class UserController {
         return new ResponseEntity<>("Password succefully changed!", HttpStatus.OK); 
    }
     
-    @GetMapping("/getUserByName")
-    public ResponseEntity<List<UserResponseDTO>> getUserByName(
+    @GetMapping("/getUserBySearchTerm")
+    public ResponseEntity<List<UserResponseDTO>> getUserBySearchTerm(
             @RequestParam
-            String username
+            String searchTerm
     ) {
-        List<UserResponseDTO> users = userService.getUserByName(username);
+        List<UserResponseDTO> users = userService.getUserBySearchTerm(searchTerm);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    
+    @GetMapping("/getCoachBySearchTerm")
+    public ResponseEntity<List<UserResponseDTO>> getCoachBySearchTerm(
+            @RequestParam
+            String searchTerm
+    ) {
+        List<UserResponseDTO> users = userService.getCoachBySearchTerm(searchTerm);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

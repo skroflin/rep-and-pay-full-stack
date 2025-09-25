@@ -1,18 +1,27 @@
-import { Table, Tag, theme, Typography } from "antd";
+import { Input, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { UserRequest } from "../../utils/types/user/User";
 import { getCoaches } from "../../utils/api";
 import { useQuery } from "@tanstack/react-query";
+import { getCoachBySearchTerm } from "../../utils/api";
+import { useState } from "react";
 
 export default function CoachPage() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
 
+    const [searchTerm, setSearchTerm] = useState("")
 
     const { data: coaches = [], isLoading } = useQuery<UserRequest[], Error>({
         queryKey: ["coaches"],
         queryFn: getCoaches
+    })
+
+    const { data: filteredCoaches = [], isLoading: isFilteredLoading } = useQuery<UserRequest[], Error>({
+        queryKey: ["user-by-search-term", searchTerm],
+        queryFn: () => getCoachBySearchTerm(searchTerm),
+        enabled: searchTerm.length > 0
     })
 
     const columns = [
@@ -31,7 +40,7 @@ export default function CoachPage() {
         }
     ]
 
-    const { Title } = Typography
+    const { Title, Text } = Typography
 
     return (
         <Content
@@ -47,13 +56,29 @@ export default function CoachPage() {
             <Title>
                 Coaches
             </Title>
+            <Input.Search placeholder="Search for coaches"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                loading={isFilteredLoading}
+                allowClear
+                style={{
+                    marginBottom: 40
+                }}
+            />
+            {coaches.length === 0 ? (
+                <Text>
+                    There are no coaches in the system.
+                </Text>
+            ) : (
             <Table
-                dataSource={coaches}
+                dataSource={searchTerm.length > 0 ? filteredCoaches : coaches}
                 columns={columns}
                 rowKey="id"
-                loading={isLoading}
+                loading={searchTerm.length > 0 ? isFilteredLoading : isLoading}
                 pagination={{ pageSize: 5 }}
             />
+            )}
+
         </Content>
     )
 }

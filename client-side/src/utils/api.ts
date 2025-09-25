@@ -157,4 +157,5 @@ export const getNumOfExpiredMemberships = () => apiGetCall("membership/getNumOfE
 export const getAllMemberships = () => apiGetCall("membership/getAllMemberships")
 
 //superuser misc methods
-export const getUserByName = (username: string) => apiGetCall(`user/getUserByName?username=${username}`)
+export const getUserBySearchTerm = (searchTerm: string) => apiGetCall(`user/getUserBySearchTerm?searchTerm=${searchTerm}`)
+export const getCoachBySearchTerm = (searchTerm: string) => apiGetCall(`user/getCoachBySearchTerm?searchTerm=${searchTerm}`)
