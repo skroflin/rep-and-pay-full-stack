@@ -109,7 +109,7 @@ export default function NavBar({ routes }: NavBarProps) {
             <Divider style={{ borderColor: "white" }} />
             <Button
                 type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                icon={collapsed ? <MenuUnfoldOutlined /> : <>Close<MenuFoldOutlined style={{marginLeft: 10}}/></>}
                 onClick={toggleCollapsed}
                 style={{ color: "white" }}
             />
