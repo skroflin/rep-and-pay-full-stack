@@ -58,8 +58,42 @@ export default function LoginIn() {
                     spinning={signInUser.isPending}
                     style={{ fontSize: 64 }}
                     tip={
-                        <Title level={3} style={{ textAlign: "center", marginTop: 50 }}>
-                            Logging in...
+                        <Title
+                            level={3}
+                            style={{
+                                textAlign: "center",
+                                marginTop: 50,
+                                fontWeight: "bold"
+                            }}>
+                            Logging in
+                            <span
+                                style={{
+                                    marginLeft: 2,
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {[0, 1, 2].map((i) => (
+                                    <span
+                                        key={i}
+                                        style={{
+                                            opacity: signInUser.isPending ? 1 : 0,
+                                            animation: `fadeDot 1.2s infinite`,
+                                            animationDelay: `${i * 0.3}s`,
+                                        }}
+                                    >
+                                        .
+                                    </span>
+                                ))}
+                            </span>
+                            <style>
+                                {`
+                                    @keyframes fadeDot {
+                                        0% { opacity: 0.2; }
+                                        50% { opacity: 1; }
+                                        100% { opacity: 0.2; }
+                                    }
+                                `}
+                            </style>
                         </Title>
                     }
                 >
