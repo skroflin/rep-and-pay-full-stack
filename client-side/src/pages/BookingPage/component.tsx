@@ -20,7 +20,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
-import { FrownFilled, LockOutlined, OrderedListOutlined, PlusCircleFilled, UnlockOutlined } from "@ant-design/icons";
+import { FrownFilled, LockOutlined, OrderedListOutlined, UnlockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
 export default function BookingPage() {
@@ -36,11 +36,11 @@ export default function BookingPage() {
     const { data: activeMembership } = useQuery<boolean>({
         queryKey: ["has-active-membership", selectedDate],
         queryFn: async () => {
-            const res = await hasActiveMembership(selectedDate);
+            const res = await hasActiveMembership(selectedDate)
             if (res && typeof res === "object" && "active" in res) {
-                return (res as { active: boolean }).active;
+                return (res as { active: boolean }).active
             }
-            return res as boolean;
+            return res as boolean
         }
     });
 
@@ -80,7 +80,7 @@ export default function BookingPage() {
 
     const { Text, Title } = Typography
     const navigate = useNavigate()
-    const isActiveMembership = activeMembership ?? false;
+    const isActiveMembership = activeMembership ?? false
 
     return (
         <div
@@ -107,12 +107,15 @@ export default function BookingPage() {
                     bordered
                     dataSource={sessions || []}
                     renderItem={(session) => {
-                        const isBooked = session.isAlreadyBooked;
-                        const noMembership = !isActiveMembership;
+                        const isBooked = session.isAlreadyBooked
+                        const noMembership = !isActiveMembership
 
-                        let buttonText = "Book";
-                        if (isBooked) buttonText = "Already booked";
-                        else if (noMembership) buttonText = "Membership required";
+                        let buttonText = "Book"
+                        if (isBooked) {
+                            buttonText = "Already booked"
+                        } else if (noMembership) {
+                            buttonText = "Membership required"
+                        }
 
                         return (
                             <List.Item>

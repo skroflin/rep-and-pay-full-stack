@@ -30,6 +30,7 @@ import {
     SnippetsOutlined
 } from "@ant-design/icons";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
+import type { AxiosError } from "axios";
 
 export default function TrainingSessionPage() {
     const queryClient = useQueryClient()
@@ -45,7 +46,13 @@ export default function TrainingSessionPage() {
             setModalOpen(false)
             form.resetFields()
         },
-        onError: () => toast.error("Failed to create your training session")
+        onError: (err: AxiosError) => {
+            if (err.response?.status === 400) {
+                toast.error(`There is already a session booked for this time range on ${formatDate(selectedDate)}!`)
+            } else {
+                toast.error("Failed to create a training session!")
+            }
+        }
     })
 
     const handleDateSelect = (value: Dayjs) => {
@@ -222,6 +229,9 @@ export default function TrainingSessionPage() {
                                 renderItem={(session) => (
                                     <List.Item>
                                         <Descriptions column={1} size="small" style={{ width: "100%" }}>
+                                            <Descriptions.Item label="Coach">
+                                                <Text strong>{session.trainerFirstName} {session.trainerLastName}</Text>
+                                            </Descriptions.Item>
                                             <Descriptions.Item label="Start">
                                                 <Tag icon={<ClockCircleOutlined />}>{dayjs(session.beginningOfSession).format("HH:mm")}</Tag>
                                             </Descriptions.Item>

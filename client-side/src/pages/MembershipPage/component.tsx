@@ -127,7 +127,8 @@ export default function MembershipPage() {
                             <Spin tip="Loading..." />
                         ) : (
                             <Button
-                                type="primary"
+                                variant="solid"
+                                color="green"
                                 size="middle"
                                 onClick={() => checkoutMutation.mutate({ price: 3000, month: selectedMonth! })}
                                 icon={<DollarOutlined />}

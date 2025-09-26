@@ -25,7 +25,7 @@ public class JwtAuthenticationEntryPoint
             HttpServletResponse response,
             AuthenticationException exception
     ) throws IOException {
-        System.out.println("Unauthorized acces:" 
+        System.out.println("Unauthorized access:" 
                 + " " + exception.getMessage());
         response.sendError(
                 HttpServletResponse.SC_UNAUTHORIZED, 

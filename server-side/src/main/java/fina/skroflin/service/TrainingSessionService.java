@@ -529,6 +529,7 @@ public class TrainingSessionService extends MainService {
             )
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of training sessions" + " " + numOfMyTrainingSessions);
             return numOfMyTrainingSessions;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of training sessions"
@@ -559,6 +560,7 @@ public class TrainingSessionService extends MainService {
             )
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of user sessions" + " " + numOfMyTrainingSessions);
             return numOfMyTrainingSessions;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of training sessions"
@@ -588,6 +590,7 @@ public class TrainingSessionService extends MainService {
             )
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of beginner training sessions" + " " + numOfMyTrainingSessions);
             return numOfMyTrainingSessions;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of training sessions"
@@ -617,6 +620,7 @@ public class TrainingSessionService extends MainService {
             )
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of intermediate training sessions" + " " + numOfMyTrainingSessions);
             return numOfMyTrainingSessions;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of training sessions"
@@ -646,6 +650,7 @@ public class TrainingSessionService extends MainService {
             )
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of advanced training sessions" + " " + numOfMyTrainingSessions);
             return numOfMyTrainingSessions;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of training sessions"

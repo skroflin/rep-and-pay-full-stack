@@ -108,6 +108,7 @@ public class UserService extends MainService {
         List<User> users = session.createQuery(
                 "from User u where u.role = coach",
                 User.class).list();
+        System.out.println("Coaches" + " " + users);
         return users.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());

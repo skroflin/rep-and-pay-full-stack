@@ -11,6 +11,7 @@ import {
     UserOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
+import { Header } from "antd/es/layout/layout";
 
 interface NavBarProps {
     routes: RouteElement[]
@@ -80,20 +81,20 @@ export default function NavBar({ routes }: NavBarProps) {
                 {collapsed ? "R&P" : `Rep & Pay - ${role}`}
             </Title>
             <Divider style={{ borderColor: "white" }} />
-            <Text
-                style={{
-                    color: "#fff"
-                }}
-            >
+            <Header>
                 {collapsed
                     ? `${username?.slice(0, 2)}`
                     : (
-                        <>
+                        <Text
+                            style={{
+                                color: "#fff"
+                            }}
+                        >
                             <UserOutlined /> {username}
-                        </>
+                        </Text>
                     )
                 }
-            </Text>
+            </Header>
             <Divider style={{ borderColor: "white" }} />
             <Button
                 type="text"

@@ -559,6 +559,7 @@ public class BookingService extends MainService {
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
+            System.out.println("Num of trainer bookings" + " " + numOfTrainerBookings);
             return numOfTrainerBookings;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of trainer booking"
@@ -586,6 +587,7 @@ public class BookingService extends MainService {
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
+            System.out.println("Num of pending trainer bookings" + " " + numOfTrainerBookings);
             return numOfTrainerBookings;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of trainer booking"
@@ -613,6 +615,7 @@ public class BookingService extends MainService {
                     Long.class)
                     .setParameter("trainerId", userId)
                     .getSingleResult();
+            System.out.println("Num of accepted trainer bookings" + " " + numOfTrainerBookings);
             return numOfTrainerBookings;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of trainer booking"
@@ -637,6 +640,7 @@ public class BookingService extends MainService {
                     Long.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
+            System.out.println("Num of user bookings" + " " + numOfUserBookings);
             return numOfUserBookings;
         } catch (Exception e) {
             throw new RuntimeException("Error upon fetching number of user booking"
