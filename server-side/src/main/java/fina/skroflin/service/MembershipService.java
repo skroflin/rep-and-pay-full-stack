@@ -190,7 +190,7 @@ public class MembershipService extends MainService {
                     "select m from Membership m "
                     + "left join fetch m.user u "
                     + "where u.id = :userId "
-                    + "order by m.startDate desc", Membership.class)
+                    + "order by m.startDate asc", Membership.class)
                     .setParameter("userId", userId)
                     .list();
 

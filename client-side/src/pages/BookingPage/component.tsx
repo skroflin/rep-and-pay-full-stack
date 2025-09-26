@@ -4,6 +4,7 @@ import {
     Calendar,
     Descriptions,
     Divider,
+    Flex,
     List,
     Spin,
     Tooltip,
@@ -20,7 +21,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
-import { FrownFilled, LockOutlined, OrderedListOutlined, UnlockOutlined } from "@ant-design/icons";
+import { FrownFilled, LoadingOutlined, LockOutlined, OrderedListOutlined, UnlockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
 export default function BookingPage() {
@@ -101,7 +102,13 @@ export default function BookingPage() {
             </Title>
 
             {isLoading ? (
-                <Spin />
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading available sessions...</Title>
+                </Flex>
             ) : (
                 <List
                     bordered

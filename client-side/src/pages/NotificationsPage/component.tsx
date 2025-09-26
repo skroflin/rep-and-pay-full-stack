@@ -3,8 +3,8 @@ import { useState } from "react";
 import type { TrainerBookingResponse } from "../../utils/types/Booking";
 import { getTrainerBookings } from "../../utils/api";
 import dayjs from "dayjs";
-import { Badge, Calendar, Spin } from "antd";
-import { BookOutlined, PlusOutlined, ScheduleOutlined } from "@ant-design/icons";
+import { Badge, Calendar, Flex, Spin, Typography } from "antd";
+import { BookOutlined, LoadingOutlined, PlusOutlined, ScheduleOutlined } from "@ant-design/icons";
 import BookingReviewModal from "./BookingReviewModal";
 import { getUsername } from "../../utils/helper";
 
@@ -92,6 +92,8 @@ export default function NotificationsPage() {
         )
     }
 
+    const { Title } = Typography
+
     return (
         <div
             style={{
@@ -102,7 +104,16 @@ export default function NotificationsPage() {
             <h1>
                 Booking requests for {username}<BookOutlined />
             </h1>
-            {isLoading && <Spin />}
+            {
+                isLoading &&
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading dates...</Title>
+                </Flex>
+            }
 
             <Calendar
                 onSelect={onSelectDate}

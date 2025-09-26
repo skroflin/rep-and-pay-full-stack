@@ -3,8 +3,8 @@ import type { MembershipResponse } from "../../../utils/types/Membership";
 import { getExpiredMemberships } from "../../../utils/api";
 import { getRole } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { Button, Descriptions, Drawer, Flex, Space, Spin, Tag, Typography } from "antd";
+import { ArrowLeftOutlined, ArrowRightOutlined, ContainerOutlined, LoadingOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 export default function ExpiredMembershipDetails({
@@ -42,8 +42,9 @@ export default function ExpiredMembershipDetails({
             title={
                 <span>
                     <Title level={4}>
-                        Expired memberships
+                        Expired memberships <ContainerOutlined />
                     </Title>
+                    <Title style={{ marginLeft: 10 }} level={5}>{dayjs(membership.startDate).format("MMMM - YYYY.")}</Title>
                     <Text style={{ float: "right" }}>
                         {currentIndex + 1} of {memberships.length}
                     </Text>
@@ -74,7 +75,13 @@ export default function ExpiredMembershipDetails({
             placement="right"
         >
             {expiredMembershipLoading ? (
-                <Spin />
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading expired memberships...</Title>
+                </Flex>
             ) : (
                 memberships && (
                     <Descriptions

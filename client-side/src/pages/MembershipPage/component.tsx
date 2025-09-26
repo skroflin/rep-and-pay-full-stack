@@ -6,7 +6,7 @@ import { createCheckoutSession, confirmPayment, getMyMemberships } from "../../u
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import { DollarOutlined, OrderedListOutlined } from "@ant-design/icons";
+import { DollarOutlined, LoadingOutlined, OrderedListOutlined } from "@ant-design/icons";
 import type { Membership } from "../../utils/types/Membership";
 import dayjs from "dayjs";
 
@@ -115,7 +115,7 @@ export default function MembershipPage() {
                         >
                             {upcomingMonths.map((m) => {
                                 const isPaid = memberships?.some(mem => dayjs(mem.startDate).month() + 1 === m.value && mem.alreadyPaid)
-                                
+
                                 return (
                                     <Select.Option key={m.value} value={m.value} disabled={isPaid}>
                                         {m.label} {isPaid && <Tag color="red">Already paid</Tag>}
@@ -148,7 +148,13 @@ export default function MembershipPage() {
                         Payment history
                     </Title>
                     {membershipLoading ? (
-                        <Spin />
+                        <Flex align="center" justify="center" vertical>
+                            <Spin
+                                indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                                style={{ fontSize: 64 }}
+                            />
+                            <Title level={4} style={{ marginTop: 16 }}>Loading memberships...</Title>
+                        </Flex>
                     ) : memberships && memberships.length > 0 ? (
                         <Table
                             columns={columns}
@@ -158,7 +164,7 @@ export default function MembershipPage() {
                             scroll={{ x: true }}
                             style={{ width: "100%" }}
                         />
-                    ): (
+                    ) : (
                         <Text>No memberships</Text>
                     )}
                 </Flex>

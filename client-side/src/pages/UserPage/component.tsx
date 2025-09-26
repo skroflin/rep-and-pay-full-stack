@@ -1,4 +1,4 @@
-import { Button, Input, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
+import { Button, Divider, Input, List, Modal, Space, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import type { UserRequest } from "../../utils/types/user/User";
@@ -107,6 +107,8 @@ export default function UserPage() {
                 }}
             />
 
+            <Divider style={{ marginTop: 0 }} />
+
             {users.length === 0 ? (
                 <Text>No users found</Text>
             ) : (
@@ -129,20 +131,24 @@ export default function UserPage() {
                 {memberships.length > 0 ? (
                     <List bordered>
                         {memberships.map((m, idx) => (
-                            <List.Item key={idx}>
-                                <Text>
-                                    Start: <Tag color="blue">{dayjs(m.startDate).format("DD.MM.YYYY")}</Tag>
-                                </Text>
-                                <Text>
-                                    End: <Tag color="blue-inverse">{dayjs(m.endDate).format("DD.MM.YYYY")}</Tag>
-                                </Text>
-                                <Text>
-                                    Price: <Tag color="green">{(m.membershipPrice / 100).toFixed(2)} EUR</Tag>
-                                </Text>
-                                <Text>
-                                    Paid: <Tag color="green-inverse">{dayjs(m.paymentDate).format("DD.MM.YYYY")}</Tag>
-                                </Text>
-                            </List.Item>
+                            <>
+                                <Title style={{ marginLeft: 10 }} level={5}>{dayjs(m.startDate).format("MMMM - YYYY.")}</Title>
+                                <Divider style={{ margin: 0 }} />
+                                <List.Item key={idx}>
+                                    <Text>
+                                        Start: <Tag>{dayjs(m.startDate).format("DD.MM.YYYY.")}</Tag>
+                                    </Text>
+                                    <Text>
+                                        End: <Tag color="volcano">{dayjs(m.endDate).format("DD.MM.YYYY.")}</Tag>
+                                    </Text>
+                                    <Text>
+                                        Price: <Tag color="green">{(m.membershipPrice / 100).toFixed(2)} EUR</Tag>
+                                    </Text>
+                                    <Text>
+                                        Paid: <Tag>{dayjs(m.paymentDate).format("DD.MM.YYYY.")}</Tag>
+                                    </Text>
+                                </List.Item>
+                            </>
                         ))}
                     </List>
                 ) : (

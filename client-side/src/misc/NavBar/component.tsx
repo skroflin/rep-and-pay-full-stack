@@ -11,7 +11,6 @@ import {
     UserOutlined
 } from "@ant-design/icons";
 import { clearAuthToken } from "../../utils/helper";
-import { Header } from "antd/es/layout/layout";
 
 interface NavBarProps {
     routes: RouteElement[]

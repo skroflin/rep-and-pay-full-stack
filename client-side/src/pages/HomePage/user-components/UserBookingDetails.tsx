@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyBookings } from "../../../utils/api";
 import { getRole, getUsername } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Tooltip, Typography } from "antd";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { Button, Descriptions, Drawer, Flex, Space, Spin, Tag, Tooltip, Typography } from "antd";
+import { ArrowLeftOutlined, ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { MyBookingResponse } from "../../../utils/types/user-authenticated/MyBooking";
 
@@ -76,7 +76,13 @@ export default function UserBookingDetails({
             placement="right"
         >
             {bookingsLoading ? (
-                <Spin />
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading user bookings...</Title>
+                </Flex>
             ) : (
                 bookings && (
                     <Tooltip title={`Booking request for ${dayjs(booking.startOfSession).format("DD.MM.YYYY")}`}>

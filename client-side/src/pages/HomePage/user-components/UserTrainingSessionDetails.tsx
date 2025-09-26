@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserTrainingSessions } from "../../../utils/api";
 import { getRole, getUsername } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Tooltip, Typography } from "antd";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { Button, Descriptions, Drawer, Flex, Space, Spin, Tag, Tooltip, Typography } from "antd";
+import { ArrowLeftOutlined, ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { UserTrainingSessionResponse } from "../../../utils/types/user-authenticated/UserTrainingSessions";
 
@@ -76,7 +76,13 @@ export default function UserTrainingSessionDetails({
             placement="right"
         >
             {trainingSessionsLoading ? (
-                <Spin />
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading user training sessions...</Title>
+                </Flex>
             ) : (
                 trainingSessions && (
                     <Tooltip

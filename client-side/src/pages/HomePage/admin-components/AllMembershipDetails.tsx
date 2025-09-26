@@ -3,8 +3,8 @@ import type { MembershipResponse } from "../../../utils/types/Membership";
 import { getAllMemberships } from "../../../utils/api";
 import { getRole } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Drawer, Space, Spin, Tag, Typography } from "antd";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { Button, Descriptions, Drawer, Flex, Space, Spin, Tag, Typography } from "antd";
+import { ArrowLeftOutlined, ArrowRightOutlined, ContainerOutlined, LoadingOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 export default function AllMembershipDetails({
@@ -41,8 +41,8 @@ export default function AllMembershipDetails({
             onClose={onClose}
             title={
                 <span>
-                    <Title level={4}>
-                        All memberships
+                    <Title level={4} style={{ textAlign: "center", width: "100%" }}>
+                        All memberships <ContainerOutlined />
                     </Title>
                     <Text style={{ float: "right" }}>
                         {currentIndex + 1} of {memberships.length}
@@ -74,7 +74,13 @@ export default function AllMembershipDetails({
             placement="right"
         >
             {allMembershipsLoading ? (
-                <Spin />
+                <Flex align="center" justify="center" vertical>
+                    <Spin
+                        indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                        style={{ fontSize: 64 }}
+                    />
+                    <Title level={4} style={{ marginTop: 16 }}>Loading all memberships...</Title>
+                </Flex>
             ) : (
                 memberships && (
                     <Descriptions
@@ -89,7 +95,7 @@ export default function AllMembershipDetails({
                             <Text>{dayjs(membership.startDate).format("DD.MM.YYYY")}</Text>
                         </Descriptions.Item>
                         <Descriptions.Item label="End date for membership">
-                            <Text>{dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
+                            <Tag color="volcano">{dayjs(membership.endDate).format("DD.MM.YYYY")}</Tag>
                         </Descriptions.Item>
                         <Descriptions.Item label="Membership price">
                             <Tag color="green">{`${(membership.membershipPrice / 100).toFixed(2)} EUR`}</Tag>

@@ -5,6 +5,7 @@ import {
     Col,
     Descriptions,
     Drawer,
+    Flex,
     Form,
     List,
     Row,
@@ -25,6 +26,7 @@ import {
     ClockCircleOutlined,
     FireOutlined,
     FormOutlined,
+    LoadingOutlined,
     PlusCircleFilled,
     SettingOutlined,
     SnippetsOutlined
@@ -220,7 +222,13 @@ export default function TrainingSessionPage() {
                             Existing sessions for {formatDate(dayjs(selectedDate).format("YYYY-MM-DD"))} <SnippetsOutlined />
                         </Title>
                         {isLoading ? (
-                            <Spin />
+                            <Flex align="center" justify="center" vertical>
+                                <Spin
+                                    indicator={<LoadingOutlined style={{ color: "black", fontSize: 48 }} spin />}
+                                    style={{ fontSize: 64 }}
+                                />
+                                <Title level={4} style={{ marginTop: 16 }}>Loading dates...</Title>
+                            </Flex>
                         ) : sessions && sessions.length > 0 ? (
                             <List
                                 pagination={{ pageSize: 1 }}
