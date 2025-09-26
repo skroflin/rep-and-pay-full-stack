@@ -8,6 +8,7 @@ import type { Membership } from "../../utils/types/Membership";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import type { AxiosError } from "axios";
+import { MailOutlined, TeamOutlined, ToolOutlined } from "@ant-design/icons";
 
 export default function UserPage() {
     const {
@@ -44,6 +45,7 @@ export default function UserPage() {
         queryFn: getRegularUsers
     })
 
+    const { Text, Title } = Typography
 
     const { data: filteredUsers = [], isLoading: isFilteredLoading } = useQuery<UserRequest[], Error>({
         queryKey: ["user-by-search-term", searchTerm],
@@ -55,9 +57,9 @@ export default function UserPage() {
         { title: "First name", dataIndex: "firstName", key: "firstName" },
         { title: "Last name", dataIndex: "lastName", key: "lastName" },
         { title: "Username", dataIndex: "username", key: "username" },
-        { title: "Email", dataIndex: "email", key: "email" },
+        { title: <><Text>Mail</Text><MailOutlined style={{ marginLeft: 5 }} /></>, dataIndex: "email", key: "email" },
         {
-            title: "Role",
+            title: <><Text>Role</Text><TeamOutlined style={{ marginLeft: 5 }} /></>,
             dataIndex: "role",
             key: "role",
             render: (role: string) => {
@@ -66,7 +68,7 @@ export default function UserPage() {
             }
         },
         {
-            title: "Functions",
+            title: <><Text>Functions</Text><ToolOutlined style={{ marginLeft: 5 }} /></>,
             key: "functions",
             render: (_: any, record: UserRequest) => (
                 <Space>
@@ -81,8 +83,6 @@ export default function UserPage() {
             )
         }
     ]
-
-    const { Text, Title } = Typography
 
     return (
         <Content

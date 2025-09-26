@@ -1,10 +1,11 @@
-import { Input, Table, Tag, theme, Typography } from "antd";
+import { Divider, Input, Table, Tag, theme, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import type { UserRequest } from "../../utils/types/user/User";
 import { getCoaches } from "../../utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { getCoachBySearchTerm } from "../../utils/api";
 import { useState } from "react";
+import { MailOutlined, TeamOutlined } from "@ant-design/icons";
 
 export default function CoachPage() {
     const {
@@ -24,13 +25,15 @@ export default function CoachPage() {
         enabled: searchTerm.length > 0
     })
 
+    const { Title, Text } = Typography
+
     const columns = [
         { title: "First name", dataIndex: "firstName", key: "firstName" },
         { title: "Last name", dataIndex: "lastName", key: "lastName" },
         { title: "Username", dataIndex: "username", key: "username" },
-        { title: "Email", dataIndex: "email", key: "email" },
+        { title: <><Text>Email<MailOutlined style={{ marginLeft: 5 }} /></Text></>, dataIndex: "email", key: "email" },
         {
-            title: "Role",
+            title: <><Text>Role<TeamOutlined style={{ marginLeft: 5 }} /></Text></>,
             dataIndex: "role",
             key: "role",
             render: (role: string) => {
@@ -39,8 +42,6 @@ export default function CoachPage() {
             }
         }
     ]
-
-    const { Title, Text } = Typography
 
     return (
         <Content
@@ -65,18 +66,21 @@ export default function CoachPage() {
                     marginBottom: 40
                 }}
             />
+
+            <Divider style={{ marginTop: 0 }} />
+
             {coaches.length === 0 ? (
                 <Text>
                     There are no coaches in the system.
                 </Text>
             ) : (
-            <Table
-                dataSource={searchTerm.length > 0 ? filteredCoaches : coaches}
-                columns={columns}
-                rowKey="id"
-                loading={searchTerm.length > 0 ? isFilteredLoading : isLoading}
-                pagination={{ pageSize: 5 }}
-            />
+                <Table
+                    dataSource={searchTerm.length > 0 ? filteredCoaches : coaches}
+                    columns={columns}
+                    rowKey="id"
+                    loading={searchTerm.length > 0 ? isFilteredLoading : isLoading}
+                    pagination={{ pageSize: 5 }}
+                />
             )}
 
         </Content>
