@@ -71,17 +71,29 @@ export default function NavBar({ routes }: NavBarProps) {
             }}
         >
             <Title
-                level={4}
+                level={2}
                 style={{
                     color: "#fff",
                     margin: 0,
                     fontStyle: "italic"
                 }}
             >
-                {collapsed ? "R&P" : `Rep & Pay - ${role}`}
+                {collapsed ? "R&P" : "Rep & Pay"}
+            </Title>
+            <Title
+                level={5}
+                style={{
+                    color: "#fff"
+                }}
+            >
+                {collapsed ? "" : `${role}`}
             </Title>
             <Divider style={{ borderColor: "white" }} />
-            <Header>
+            <Text
+                style={{
+                    color: "#fff"
+                }}
+            >
                 {collapsed
                     ? `${username?.slice(0, 2)}`
                     : (
@@ -94,7 +106,7 @@ export default function NavBar({ routes }: NavBarProps) {
                         </Text>
                     )
                 }
-            </Header>
+            </Text>
             <Divider style={{ borderColor: "white" }} />
             <Button
                 type="text"
