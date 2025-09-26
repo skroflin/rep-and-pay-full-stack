@@ -91,7 +91,7 @@ export default function BookingReviewDrawer({
                             }
                             icon={<CloseCircleOutlined />}
                             disabled={
-                                booking.bookingStatus === "rejected"
+                                booking.bookingStatus === "rejected" || booking.bookingStatus === "accepted"
                             }
                         >
                             Reject
@@ -107,7 +107,7 @@ export default function BookingReviewDrawer({
                             }
                             icon={<CheckCircleOutlined />}
                             disabled={
-                                booking.bookingStatus === "accepted"
+                                booking.bookingStatus === "accepted" || booking.bookingStatus === "rejected"
                             }
                         >
                             Approve

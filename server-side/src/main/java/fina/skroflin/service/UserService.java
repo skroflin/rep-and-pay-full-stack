@@ -122,16 +122,38 @@ public class UserService extends MainService {
                 .collect(Collectors.toList());
     }
 
-    public List<UserResponseDTO> getUserBySearchTerm(String searchTerm) {
+    private List<UserResponseDTO> searchUserByTerm(String searchTerm, Role role) {
         try {
             List<User> users = session.createQuery(
-                    "select u from User u where u.role = :role and lower(u.username) like lower (:searchTerm) or lower(u.firstName) like lower(:searchTerm) or lower(u.lastName) like (:searchTerm) or lower(u.email) like (:searchTerm)", User.class)
+                    "select u from User u where u.role = :role "
+                    + "and (lower(u.username) like lower (:searchTerm) "
+                    + "or lower(u.firstName) like lower(:searchTerm) "
+                    + "or lower(u.lastName) like lower(:searchTerm) "
+                    + "or lower(u.email) like lower(:searchTerm))",
+                    User.class)
                     .setParameter("searchTerm", "%" + searchTerm + "%")
-                    .setParameter("role", Role.user)
+                    .setParameter("role", role)
                     .list();
+            
+            if (users.isEmpty()) {
+                return List.of();
+            }
+            
             return users.stream()
                     .map(this::convertToResponseDTO)
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error error while searching for" + " " + searchTerm + " " + "with role"
+                    + " " + role + " " + e.getMessage(),
+                    e
+            );
+        }
+    }
+    
+    public List<UserResponseDTO> getUserBySearchTerm(String searchTerm) {
+        try {
+            return searchUserByTerm(searchTerm, Role.user);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error there is no user with the username"
@@ -140,20 +162,13 @@ public class UserService extends MainService {
             );
         }
     }
-    
+
     public List<UserResponseDTO> getCoachBySearchTerm(String searchTerm) {
         try {
-            List<User> users = session.createQuery(
-                    "select u from User u where u.role = :role and lower(u.username) like lower (:searchTerm) or lower(u.firstName) like lower(:searchTerm) or lower(u.lastName) like (:searchTerm) or lower(u.email) like (:searchTerm)", User.class)
-                    .setParameter("searchTerm", "%" + searchTerm + "%")
-                    .setParameter("role", Role.coach)
-                    .list();
-            return users.stream()
-                    .map(this::convertToResponseDTO)
-                    .collect(Collectors.toList());
+            return searchUserByTerm(searchTerm, Role.coach);
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Error there is no user with the username"
+                    "Error there is no coach with the username"
                     + " " + searchTerm + " " + e.getMessage(),
                     e
             );

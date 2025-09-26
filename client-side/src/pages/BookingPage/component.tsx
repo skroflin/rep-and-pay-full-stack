@@ -20,7 +20,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { MyBookingRequest } from "../../utils/types/user-authenticated/MyBooking";
 import type { TrainingSessionResponse } from "../../utils/types/TrainingSession";
 import { formatDate } from "../../misc/formatDate";
-import { FrownFilled, OrderedListOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { FrownFilled, LockOutlined, OrderedListOutlined, PlusCircleFilled, UnlockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
 export default function BookingPage() {
@@ -34,15 +34,15 @@ export default function BookingPage() {
     })
 
     const { data: activeMembership } = useQuery<boolean>({
-    queryKey: ["has-active-membership", selectedDate],
-    queryFn: async () => {
-        const res = await hasActiveMembership(selectedDate);
-        if (res && typeof res === "object" && "active" in res) {
-            return (res as { active: boolean }).active;
+        queryKey: ["has-active-membership", selectedDate],
+        queryFn: async () => {
+            const res = await hasActiveMembership(selectedDate);
+            if (res && typeof res === "object" && "active" in res) {
+                return (res as { active: boolean }).active;
+            }
+            return res as boolean;
         }
-        return res as boolean;
-    }
-});
+    });
 
     console.log("Active membership:", activeMembership)
 
@@ -157,7 +157,7 @@ export default function BookingPage() {
                                                     isBooked ||
                                                     noMembership
                                                 }
-                                                icon={<PlusCircleFilled />}
+                                                icon={isBooked || noMembership ? <LockOutlined /> : <UnlockOutlined />}
                                                 size="small"
                                                 style={{
                                                     fontSize: "14px"

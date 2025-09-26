@@ -93,7 +93,6 @@ public class MembershipController {
             LocalDate selectedDate
     ) {
         boolean activeMembership = membershipService.hasActiveMembership(headers, selectedDate);
-        System.out.println("Aktivna članarina" + " " + activeMembership);
         return new ResponseEntity<>(activeMembership, HttpStatus.OK);
     }
 

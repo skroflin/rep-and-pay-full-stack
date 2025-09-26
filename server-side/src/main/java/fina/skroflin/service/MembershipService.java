@@ -232,8 +232,6 @@ public class MembershipService extends MainService {
                 .setParameter("userId", userId)
                 .setParameter("today", selectedDate)
                 .uniqueResult();
-        
-        System.out.println("Aktivna članarina" + " " + count);
 
         return count != null && count > 0;
     }
