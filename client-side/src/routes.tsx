@@ -95,7 +95,7 @@ const routes: RouteElement[] = [
         icon: <CalendarOutlined />
     },
     {
-        key: "Training Session",
+        key: "Training Sessions",
         path: "/training-sessions",
         element: <TrainingSessionPage />,
         onNavBar: true,

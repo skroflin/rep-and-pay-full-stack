@@ -622,6 +622,34 @@ public class BookingService extends MainService {
                     + " " + "sessions" + " " + e.getMessage(), e);
         }
     }
+    
+    public Long getNumOfRejectedTrainerBookings(HttpHeaders headers) {
+        try {
+            String token = jwtTokenUtil.extractTokenFromHeaders(headers);
+            Integer userId = jwtTokenUtil.extractClaim(token,
+                    claims -> claims.get("UserId", Integer.class));
+
+            User trainerProfile = (User) session.get(User.class, userId);
+            if (trainerProfile == null) {
+                throw new NoResultException("Trainer not found!");
+            }
+
+            Long numOfTrainerBookings = session.createQuery(
+                    "select count(b.id) from Booking b "
+                    + "left join b.user u "
+                    + "left join b.trainingSession ts "
+                    + "where ts.trainer.id = :trainerId "
+                    + "and b.bookingStatus = rejected",
+                    Long.class)
+                    .setParameter("trainerId", userId)
+                    .getSingleResult();
+            System.out.println("Num of rejected trainer bookings" + " " + numOfTrainerBookings);
+            return numOfTrainerBookings;
+        } catch (Exception e) {
+            throw new RuntimeException("Error upon fetching number of trainer booking"
+                    + " " + "sessions" + " " + e.getMessage(), e);
+        }
+    }
 
     public Long getNumOfMyBookings(HttpHeaders headers) {
         try {

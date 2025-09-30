@@ -420,6 +420,16 @@ public class BookingController {
         return new ResponseEntity<>(numOfAcceptedTrainerBookings, HttpStatus.OK);
     }
     
+    @GetMapping("/getNumOfRejectedTrainerBookings")
+    public ResponseEntity<Long> getNumOfRejectedTrainerBookings(
+            @RequestHeader
+            HttpHeaders headers
+    ){
+        Long numOfAcceptedTrainerBookings =
+                bookingService.getNumOfRejectedTrainerBookings(headers);
+        return new ResponseEntity<>(numOfAcceptedTrainerBookings, HttpStatus.OK);
+    }
+    
     @GetMapping("/getNumOfMyBookings")
     public ResponseEntity<Long> getNumOfMyBookings(
             @RequestHeader

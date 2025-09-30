@@ -12,6 +12,7 @@ import {
     getNumOfMyTrainingSessions,
     getNumOfMyUserTrainingSessions,
     getNumOfPendingTrainerBookings,
+    getNumOfRejectedTrainerBookings,
     getNumOfTrainerBookings
 } from "../../utils/api";
 import { getRole } from "../../utils/helper";
@@ -75,6 +76,11 @@ export default function HomePage() {
                 enabled: role === "coach"
             },
             {
+                queryKey: ["num-of-rejected-trainer-bookings"],
+                queryFn: getNumOfRejectedTrainerBookings,
+                enabled: role === "coach"
+            },
+            {
                 queryKey: ["num-of-beginner-training-sessions"],
                 queryFn: getNumOfBeginnerTrainingSessions,
                 enabled: role === "coach"
@@ -122,6 +128,7 @@ export default function HomePage() {
         numOfTrainerBookings,
         numOfPendingTrainerBookings,
         numOfAcceptedTrainerBookings,
+        numOfRejectedTrainerBookings,
         numOfBeginnerTrainingSessions,
         numOfIntermediateTrainingSessions,
         numOfUserTrainingSessions,
@@ -162,6 +169,14 @@ export default function HomePage() {
                             <Statistic
                                 title="Number of accepted booking requests"
                                 value={numOfAcceptedTrainerBookings}
+                                suffix={`/${numOfTrainerBookings}`}
+                                formatter={value => <CountUp end={Number(value)} duration={2} />}
+                            />
+                        </Card>
+                        <Card variant="borderless" style={{ minWidth: 280, maxWidth: 350, flex: "1 1 320px" }}>
+                            <Statistic
+                                title="Number of rejected booking requests"
+                                value={numOfRejectedTrainerBookings}
                                 suffix={`/${numOfTrainerBookings}`}
                                 formatter={value => <CountUp end={Number(value)} duration={2} />}
                             />

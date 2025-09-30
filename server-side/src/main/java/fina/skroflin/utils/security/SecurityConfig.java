@@ -113,6 +113,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/booking/getNumOfTrainerBookings").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/booking/getNumOfPendingTrainerBookings").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/booking/getNumOfAcceptedTrainerBookings").hasAnyAuthority(Role.coach.name())
+                        .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/booking/getNumOfRejectedTrainerBookings").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getNumOfBeginnerTrainingSessions").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getNumOfIntermediateTrainingSessions").hasAnyAuthority(Role.coach.name())
                         .requestMatchers(HttpMethod.GET, "/api/fina/skroflin/trainingSession/getNumOfAdvancedTrainingSessions").hasAnyAuthority(Role.coach.name())

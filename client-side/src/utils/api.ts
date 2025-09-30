@@ -133,6 +133,7 @@ export const getNumOfMyTrainingSessions = () => apiGetCall("trainingSession/getN
 export const getNumOfTrainerBookings = () => apiGetCall("booking/getNumOfTrainerBookings")
 export const getNumOfPendingTrainerBookings = () => apiGetCall("booking/getNumOfPendingTrainerBookings")
 export const getNumOfAcceptedTrainerBookings = () => apiGetCall("booking/getNumOfAcceptedTrainerBookings")
+export const getNumOfRejectedTrainerBookings = () => apiGetCall("booking/getNumOfRejectedTrainerBookings")
 export const getNumOfBeginnerTrainingSessions = () => apiGetCall("trainingSession/getNumOfBeginnerTrainingSessions")
 export const getNumOfIntermediateTrainingSessions = () => apiGetCall("trainingSession/getNumOfIntermediateTrainingSessions")
 export const getNumOfAdvancedTrainingSessions = () => apiGetCall("trainingSession/getNumOfAdvancedTrainingSessions")
