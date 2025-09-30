@@ -13,6 +13,7 @@ import {
     SnippetsOutlined
 } from "@ant-design/icons";
 import { formatDate } from "../../misc/formatDate";
+import { toast } from "react-toastify";
 
 export default function BookingReviewDrawer({
     bookings,
@@ -25,12 +26,15 @@ export default function BookingReviewDrawer({
 }) {
 
     const queryClient = useQueryClient()
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const booking = bookings[currentIndex]
 
     const updateStatusMutation = useMutation({
         mutationFn: ({ bookingId, bookingStatus }: { bookingId: string, bookingStatus: "accepted" | "rejected" }) =>
             updateBookingStatus(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
+            toast.success(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}!`,  { position: "top-center" })
             onClose()
         }
     })
@@ -40,19 +44,16 @@ export default function BookingReviewDrawer({
             rejectBooking(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
+            toast.warning(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}! Request for ${booking.userFirstName} ${booking.userLastName} rejected.`,  { position: "top-center" })
             onClose()
         }
     })
-
-    const [currentIndex, setCurrentIndex] = useState(0)
 
     useEffect(() => {
         if (open) setCurrentIndex(0)
     }, [open, bookings])
 
     if (!bookings || bookings.length === 0) return null
-
-    const booking = bookings[currentIndex]
 
     const { Text, Title } = Typography
 

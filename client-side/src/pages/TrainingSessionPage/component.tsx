@@ -65,14 +65,14 @@ export default function TrainingSessionPage() {
 
     const handleSubmit = (values: any) => {
         if (!selectedDate || !values.timeRange) {
-            toast.warning("Please select a date and time range", { position: "top-center" })
+            toast.warning("Please select a date and time range!", { position: "top-center" })
             return
         }
 
         const [startTime, endTime] = values.timeRange
 
         if (endTime.isSame(startTime) || endTime.isBefore(startTime)) {
-            toast.warning("End time must be after start time and not equal to start time", { position: "top-center" })
+            toast.warning("End time must be after start time and not equal to start time!", { position: "top-center" })
             return
         }
 
@@ -88,14 +88,32 @@ export default function TrainingSessionPage() {
             .millisecond(0)
 
         const hasOverlap = (sessions || []).some(session => {
-            const existingStart = dayjs(session.beginningOfSession);
-            const existingEnd = dayjs(session.endOfSession);
-            return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+            const existingStart = dayjs(session.beginningOfSession)
+            const existingEnd = dayjs(session.endOfSession)
+            return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)
         })
 
         if (hasOverlap) {
-            toast.warning("This session overlaps with an existing session!", { position: "top-center" })
-            return;
+            const overlappingSessionIndex = (sessions || []).findIndex(session => {
+                const existingStart = dayjs(session.beginningOfSession)
+                const existingEnd = dayjs(session.endOfSession)
+                return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)
+            })
+
+            if (overlappingSessionIndex !== -1 && sessions) {
+                const overlappingSession = sessions[overlappingSessionIndex]
+                const coachName = `${overlappingSession.trainerFirstName} ${overlappingSession.trainerLastName}`
+                toast.warning(
+                    `This session overlaps with an existing session by coach ${coachName}!`,
+                    { position: "top-center" }
+                )
+            } else {
+                toast.warning(`This session overlaps with an existing session!`, { position: "top-center" })
+            }
+            return
+
+            // toast.warning(`This session overlaps with an existing session!`, { position: "top-center" })
+            // return;
         }
 
         const beginningOfSession = dayjs(selectedDate)
