@@ -263,7 +263,7 @@ public class MembershipService extends MainService {
                                                             .setUnitAmount((long) o.price())
                                                             .setProductData(
                                                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                            .setName("Gym membership")
+                                                                            .setName("Gym membership for" + " " + o.month())
                                                                             .setDescription("Gym membership for Rep & Pay")
                                                                             .build()
                                                             )

@@ -45,7 +45,7 @@ export default function BookingPage() {
         }
     });
 
-    console.log("Active membership:", activeMembership)
+    // console.log("Active membership:", activeMembership)
 
     const bookingMutation = useMutation({
         mutationFn: (req: MyBookingRequest) => createMyBooking(req),

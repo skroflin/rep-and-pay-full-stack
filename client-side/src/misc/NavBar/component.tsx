@@ -3,7 +3,7 @@ import type { RouteElement } from "../../routes";
 import { isLoggedIn, useRole, useUsername, useUserSetter } from "../../user-context/User";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
-import { Button, Divider, Menu, Typography } from "antd";
+import { Button, Divider, Flex, Menu, Typography } from "antd";
 import {
     LogoutOutlined,
     MenuFoldOutlined,
@@ -107,12 +107,6 @@ export default function NavBar({ routes }: NavBarProps) {
                 }
             </Text>
             <Divider style={{ borderColor: "white" }} />
-            <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <>Close<MenuFoldOutlined style={{marginLeft: 10}}/></>}
-                onClick={toggleCollapsed}
-                style={{ color: "white" }}
-            />
 
             <Menu
                 theme="dark"
@@ -125,14 +119,31 @@ export default function NavBar({ routes }: NavBarProps) {
             {isUserLoggedIn && (
                 <>
                     <Divider style={{ borderColor: "white" }} />
-                    <Button
-                        icon={<LogoutOutlined />}
-                        type="primary"
-                        danger
-                        onClick={onSignOut}
+                    <Flex
+                        justify="center"
+                        align="center"
                     >
-                        {!collapsed && "Sign Out!"}
-                    </Button>
+                        <Button
+                            icon={<LogoutOutlined />}
+                            type="primary"
+                            danger
+                            onClick={onSignOut}
+                        >
+                            {!collapsed && "Sign Out!"}
+                        </Button>
+                    </Flex>
+                    <Flex
+                        justify="center"
+                        align="center"
+                        style={{ marginTop: 20 }}
+                    >
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <>Close<MenuFoldOutlined style={{ marginLeft: 10 }} /></>}
+                            onClick={toggleCollapsed}
+                            style={{ color: "white" }}
+                        />
+                    </Flex>
                 </>
             )}
         </Sider>
