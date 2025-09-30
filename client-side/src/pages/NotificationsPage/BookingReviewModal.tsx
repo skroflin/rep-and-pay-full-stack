@@ -34,7 +34,7 @@ export default function BookingReviewDrawer({
             updateBookingStatus(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
-            toast.success(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}!`,  { position: "top-center" })
+            toast.success(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}!`, { position: "top-center" })
             onClose()
         }
     })
@@ -44,7 +44,7 @@ export default function BookingReviewDrawer({
             rejectBooking(bookingId, { bookingStatus }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["trainer-bookings"] })
-            toast.warning(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}! Request for ${booking.userFirstName} ${booking.userLastName} rejected.`,  { position: "top-center" })
+            toast.warning(`Booking status updated for ${dayjs(booking.startOfSession).format("DD.MM.YYYY.")}! Request for ${booking.userFirstName} ${booking.userLastName} rejected.`, { position: "top-center" })
             onClose()
         }
     })
