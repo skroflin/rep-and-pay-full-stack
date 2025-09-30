@@ -4,7 +4,16 @@ import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../utils/api";
 import type { AxiosError } from "axios";
-import { Button, Form, Input, Flex, Select, Spin, Typography, Divider } from "antd";
+import { 
+    Button,
+    Form,
+    Input,
+    Flex,
+    Select,
+    Spin,
+    Typography,
+    Divider
+} from "antd";
 import {
     HourglassOutlined,
     IdcardFilled,

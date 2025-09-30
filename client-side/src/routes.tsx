@@ -9,7 +9,7 @@ import {
     useRole
 } from "./user-context/User"
 import { Layout } from "antd"
-import { ToastContainer } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginIn from "./pages/LogInPage/component";
 import SignUp from "./pages/SignUpPage/component";
@@ -185,6 +185,7 @@ export function AllRoutes() {
                     draggable
                     pauseOnHover
                     theme="colored"
+                    transition={Bounce}
                 />
             </Layout>
             <Footer />

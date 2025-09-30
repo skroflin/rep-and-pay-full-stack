@@ -132,6 +132,7 @@ export default function NavBar({ routes }: NavBarProps) {
                             {!collapsed && "Sign Out!"}
                         </Button>
                     </Flex>
+                    <Divider style={{ borderColor: "white" }} />
                     <Flex
                         justify="center"
                         align="center"

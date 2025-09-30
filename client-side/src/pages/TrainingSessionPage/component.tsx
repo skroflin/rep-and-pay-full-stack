@@ -43,16 +43,16 @@ export default function TrainingSessionPage() {
     const createSessionMutation = useMutation({
         mutationFn: (req: MyTrainingSessionRequest) => createMyTrainingSession(req),
         onSuccess: () => {
-            toast.success("Your training session is created!")
+            toast.success("Your training session is created!", { position: "top-center" })
             queryClient.invalidateQueries({ queryKey: ["my-training-session"] })
             setModalOpen(false)
             form.resetFields()
         },
         onError: (err: AxiosError) => {
             if (err.response?.status === 400) {
-                toast.error(`There is already a session booked for this time range on ${formatDate(selectedDate)}!`)
+                toast.error(`There is already a session booked for this time range on ${formatDate(selectedDate)}!`, { position: "top-center" })
             } else {
-                toast.error("Failed to create a training session!")
+                toast.error("Failed to create a training session!", { position: "top-center" })
             }
         }
     })
@@ -65,11 +65,38 @@ export default function TrainingSessionPage() {
 
     const handleSubmit = (values: any) => {
         if (!selectedDate || !values.timeRange) {
-            toast.warning("Please select a date and time range")
+            toast.warning("Please select a date and time range", { position: "top-center" })
             return
         }
 
         const [startTime, endTime] = values.timeRange
+
+        if (endTime.isSame(startTime) || endTime.isBefore(startTime)) {
+            toast.warning("End time must be after start time and not equal to start time", { position: "top-center" })
+            return
+        }
+
+        const newStart = dayjs(selectedDate)
+            .hour(startTime.hour())
+            .minute(startTime.minute())
+            .second(0).millisecond(0)
+
+        const newEnd = dayjs(selectedDate)
+            .hour(endTime.hour())
+            .minute(endTime.minute())
+            .second(0)
+            .millisecond(0)
+
+        const hasOverlap = (sessions || []).some(session => {
+            const existingStart = dayjs(session.beginningOfSession);
+            const existingEnd = dayjs(session.endOfSession);
+            return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+        })
+
+        if (hasOverlap) {
+            toast.warning("This session overlaps with an existing session!", { position: "top-center" })
+            return;
+        }
 
         const beginningOfSession = dayjs(selectedDate)
             .hour(startTime.hour())

@@ -30,16 +30,16 @@ export default function MembershipPage() {
         mutationFn: (req: CheckoutRequest) => createCheckoutSession(req),
         onSuccess: (checkoutUrl) => {
             if (checkoutUrl) {
-                toast.info("Redirecting you to payment site...")
+                toast.info("Redirecting you to payment site...", {position: "top-center"})
                 setTimeout(() => {
                     window.location.href = checkoutUrl
                 }, 1500)
             } else {
-                toast.error("Unable to create checkout session!")
+                toast.error("Unable to create checkout session!", {position: "top-center"})
             }
         },
         onError: () => {
-            toast.error("Error upon creating checkout session!")
+            toast.error("Error upon creating checkout session!", {position: "top-center"})
         }
     })
 
@@ -47,10 +47,10 @@ export default function MembershipPage() {
         mutationFn: (status: string) => confirmPayment(status),
         onSuccess: () => {
             if (status == "success") {
-                toast.success("Payment successful!")
+                toast.success("Payment successful!", {position: "top-center"})
                 navigate("/")
             } else if (status === "cancel") {
-                toast.error("Payment cancelled!")
+                toast.error("Payment cancelled!", {position: "top-center"})
             }
         },
         onError: () => toast.error("Error upon pay confirmation!")

@@ -7,6 +7,7 @@ import { rejectBooking, updateBookingStatus } from "../../utils/api";
 import {
     ArrowLeftOutlined,
     ArrowRightOutlined,
+    CarryOutOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
     SnippetsOutlined
@@ -53,7 +54,7 @@ export default function BookingReviewDrawer({
 
     const booking = bookings[currentIndex]
 
-    const { Text } = Typography
+    const { Text, Title } = Typography
 
     return (
         <Drawer
@@ -61,11 +62,14 @@ export default function BookingReviewDrawer({
             onClose={onClose}
             title={
                 <span>
-                    <Text style={{
-                        float: "left"
-                    }}>
-                        Review booking for {formatDate(dayjs(booking.startOfSession).format("YYYY-MM-DD"))}
-                    </Text>
+                    <Title
+                        level={4}
+                        style={{
+                            textAlign: "center"
+                        }}
+                    >
+                        Review bookings for {formatDate(dayjs(booking.startOfSession).format("YYYY-MM-DD"))} <CarryOutOutlined />
+                    </Title>
                     <Text style={{
                         float: "right"
                     }}>
