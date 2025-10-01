@@ -20,7 +20,6 @@ public record UserResponseDTO(
         String lastName,
         String email,
         String username,
-        String password,
         Role role,
         List<TrainingSessionResponseDTO> trainingSessions,
         List<BookingResponseDTO> bookings

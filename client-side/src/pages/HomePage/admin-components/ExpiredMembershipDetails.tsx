@@ -96,7 +96,7 @@ export default function ExpiredMembershipDetails({
                             <Text>{dayjs(membership.startDate).format("DD.MM.YYYY")}</Text>
                         </Descriptions.Item>
                         <Descriptions.Item label="End date for membership">
-                            <Text>{dayjs(membership.endDate).format("DD.MM.YYYY")}</Text>
+                            <Tag color="volcano">{dayjs(membership.endDate).format("DD.MM.YYYY")}</Tag>
                         </Descriptions.Item>
                         <Descriptions.Item label="Membership price">
                             <Tag color="green">{`${(membership.membershipPrice / 100).toFixed(2)} EUR`}</Tag>

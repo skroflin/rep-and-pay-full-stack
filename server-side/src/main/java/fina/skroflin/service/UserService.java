@@ -80,7 +80,6 @@ public class UserService extends MainService {
                 user.getLastName(),
                 user.getEmail(),
                 user.getUsername(),
-                user.getPassword(),
                 user.getRole(),
                 trainingSessions,
                 bookings
